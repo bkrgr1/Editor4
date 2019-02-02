@@ -10,10 +10,17 @@ import javafx.scene.layout.Pane;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
 
+/**
+ * <p>Zeichnet ein Rechteck-Shape.</p>
+ * <p>Als Hintergrund wird ein transparentes {@link Pane} gezeichnet, das etwas größer ist als das Rechteck,
+ * damit auch die Konnektoren gezeichnet werden können.</p>
+ * 
+ * @author bk
+ */
 public class RectangleShapeView extends Pane implements IShapeView {
 	
-	private double addWidth = 15.0;
-	private double addHeight = 15.0;
+	private double additionalWidth = 15.0;
+	private double additionalHeight = 15.0;
 	
 	private Rectangle rect;
 	public Rectangle getRectangle() { return rect; }
@@ -32,25 +39,49 @@ public class RectangleShapeView extends Pane implements IShapeView {
 			DoubleProperty widthProperty, DoubleProperty heightProperty) {
 		
 		// Pane definieren
-		this.translateXProperty().bind(Bindings.add(xProperty, (addWidth * -1.0)));
-		this.translateYProperty().bind(Bindings.add(yProperty, (addHeight * -1.0)));
-		this.prefWidthProperty().bind(Bindings.add(widthProperty, (addWidth * 2.0)));
-		this.prefHeightProperty().bind(Bindings.add(heightProperty, (addHeight * 2.0)));
+		this.translateXProperty().bind(Bindings.add(xProperty, (additionalWidth * -1.0)));
+		this.translateYProperty().bind(Bindings.add(yProperty, (additionalHeight * -1.0)));
+		this.prefWidthProperty().bind(Bindings.add(widthProperty, (additionalWidth * 2.0)));
+		this.prefHeightProperty().bind(Bindings.add(heightProperty, (additionalHeight * 2.0)));
 		
 		// Rectangle erstellen
 		rect = new Rectangle();
-		rect.setTranslateX(addWidth);
-		rect.setTranslateY(addHeight);
+		rect.setTranslateX(additionalWidth);
+		rect.setTranslateY(additionalHeight);
 		rect.widthProperty().bind(widthProperty);
 		rect.heightProperty().bind(heightProperty);
 		rect.setFill(Color.YELLOW);
 		rect.setStroke(Color.BLACK);
 		
 		// die Konnectoren als Kreise zeichnen
-		Node connector1 = new CircleConnector(widthProperty, heightProperty, addWidth, addHeight);
-		connectors.add(connector1);
+		Node connector = null;
+		
+		// Konnektor-1: Mitte rechte Seite
+		connector = new CircleConnector(
+				Bindings.add(widthProperty, additionalWidth), 
+				Bindings.add(Bindings.divide(heightProperty, 2.0), additionalHeight));
+		connectors.add(connector);
+		
+		// Konnektor-2: Mitte unten
+		connector = new CircleConnector(
+				Bindings.add(Bindings.divide(widthProperty, 2.0), additionalWidth),
+				Bindings.add(heightProperty, additionalHeight));
+		connectors.add(connector);
+		
+		// Konnektor-3: Mitte linke Seite
+		connector = new CircleConnector(
+				Bindings.add(Bindings.multiply(xProperty,  0.0), additionalWidth), 
+				Bindings.add(Bindings.divide(heightProperty, 2.0), additionalHeight));
+		connectors.add(connector);
+		
+		// Konnektor-4: Mitte oben
+		connector = new CircleConnector(
+				Bindings.add(Bindings.divide(widthProperty, 2.0), additionalWidth),
+				Bindings.add(Bindings.multiply(heightProperty(), 0.0), additionalHeight));
+		connectors.add(connector);
 		
 		// Rectangle und Konnektoren zum Pane hinzufügen
-		this.getChildren().addAll(rect, connector1);
+		this.getChildren().add(rect);
+		this.getChildren().addAll(connectors);
 	}
 }

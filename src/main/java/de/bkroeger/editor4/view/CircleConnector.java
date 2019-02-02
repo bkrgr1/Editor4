@@ -1,22 +1,29 @@
 package de.bkroeger.editor4.view;
 
-import javafx.beans.binding.Bindings;
-import javafx.beans.property.DoubleProperty;
+import javafx.beans.binding.DoubleBinding;
 import javafx.scene.paint.Color;
-import javafx.scene.shape.Ellipse;
+import javafx.scene.shape.Circle;
 
-public class CircleConnector extends Ellipse {
+/**
+ * <p>Zeichnet einen kreisförmigen Connector an der angegebenen Position.</p>
+ * 
+ * @author bk
+ */
+public class CircleConnector extends Circle {
 	
-	private double radiusX = 5.0;
-	private double radiusY = 5.0;
+	private static final double RADIUS = 5.0;
 
-	public CircleConnector(DoubleProperty widthProperty, DoubleProperty heightProperty,
-			double addWidth, double addHeight) {
+	/**
+	 * Constructor
+	 * @param centerX
+	 * @param centerY
+	 */
+	public CircleConnector(DoubleBinding centerX, DoubleBinding centerY) {
 		super();
-		this.setRadiusX(radiusX);
-		this.setRadiusY(radiusY);
-		this.translateXProperty().bind(Bindings.add(widthProperty, addWidth));
-		this.translateYProperty().bind(Bindings.add(Bindings.divide(heightProperty, 2.0), addHeight));
+		
+		this.setRadius(RADIUS);
+		this.centerXProperty().bind(centerX);
+		this.centerYProperty().bind(centerY);
 		this.setStroke(Color.BLACK);
 		this.setFill(Color.TRANSPARENT);
 	}

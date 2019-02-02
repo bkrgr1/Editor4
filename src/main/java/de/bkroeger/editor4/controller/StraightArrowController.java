@@ -13,6 +13,7 @@ import javafx.geometry.Point2D;
 import javafx.scene.Cursor;
 import javafx.scene.Node;
 import javafx.scene.input.MouseEvent;
+import javafx.scene.shape.Circle;
 
 /**
  * Dieser Controller steuert die Bewegungen eines geraden Pfeils ohne Kurven oder Ecken.
@@ -173,23 +174,21 @@ public class StraightArrowController implements IArrowController {
 //						connector.setStroke(Color.RED);
 	
 						// Connector-Mittelpunkt in Scene-Koordinaten umrechnen
-						Point2D localConnectorPoint = new Point2D(shapeConnector.getLayoutX(), shapeConnector.getLayoutY());
+						Point2D localConnectorPoint = new Point2D(
+								((Circle)shapeConnector).centerXProperty().get(), 
+								((Circle)shapeConnector).centerYProperty().get());
 						Point2D sceneConnectorPoint = shapeConnector.localToScene(localConnectorPoint);
 						
 						// Koordinaten in lokale Arrow-Koordinaten umrechnen
 						Point2D arrowConnectorPoint = ((Node)arrow).sceneToLocal(sceneConnectorPoint);
 						
-						// Delta zwischen dem ConnectorPoint und dem Arrow-Anfang berechnen
-						Point2D deltaStart = new Point2D(arrowConnectorPoint.getX(),
-								arrowConnectorPoint.getY());
-						
 						// Anfangspunkt verschieben
-						arrowModel.getX1Property().set(arrowModel.getX1Property().get() + deltaStart.getX());
-						arrowModel.getY1Property().set(arrowModel.getY1Property().get() + deltaStart.getY());
+						arrowModel.getX1Property().set(arrowModel.getX1Property().get() + arrowConnectorPoint.getX());
+						arrowModel.getY1Property().set(arrowModel.getY1Property().get() + arrowConnectorPoint.getY());
 						
 						// Endpunkt verschieben
-						arrowModel.getX2Property().set(arrowModel.getX2Property().get() + deltaStart.getX());
-						arrowModel.getY2Property().set(arrowModel.getY2Property().get() + deltaStart.getY());
+						arrowModel.getX2Property().set(arrowModel.getX2Property().get() + arrowConnectorPoint.getX());
+						arrowModel.getY2Property().set(arrowModel.getY2Property().get() + arrowConnectorPoint.getY());
 					}
 				}
 
