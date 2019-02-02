@@ -10,7 +10,7 @@ import javafx.scene.layout.Pane;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
 
-public class RectangleShapeView extends Pane {
+public class RectangleShapeView extends Pane implements IShapeView {
 	
 	private double addWidth = 15.0;
 	private double addHeight = 15.0;

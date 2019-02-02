@@ -48,7 +48,7 @@ public class Editor4 extends Application {
 	    EditorModel editorModel = new EditorModel();
 	    editorModel.addShapeModel(new RectangleShapeModel(100.0, 100.0, 100.0, 100.0));
 	    
-	    editorModel.addArrowModel(new StraightArrowModel(150.0, 90.0, 200.0, 80.0));
+	    editorModel.addArrowModel(new StraightArrowModel(250.0, 90.0, 350.0, 90.0, -15.0));
 
 		// create a drawing canvas
 		EditorPane editorPane = new EditorPane(PANEL_WIDTH, PANEL_HEIGHT);
