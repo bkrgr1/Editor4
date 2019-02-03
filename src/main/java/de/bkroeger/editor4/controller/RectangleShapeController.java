@@ -4,14 +4,16 @@ import java.util.List;
 
 import de.bkroeger.editor4.model.IShapeModel;
 import de.bkroeger.editor4.model.RectangleShapeModel;
+import de.bkroeger.editor4.view.IConnector;
+import de.bkroeger.editor4.view.IShapeView;
 import de.bkroeger.editor4.view.RectangleShapeView;
 import javafx.scene.Node;
 
 public class RectangleShapeController implements IShapeController {
 	
-	private RectangleShapeView view;
+	private IShapeView view;
 	@Override
-	public Node getView() { return view; }
+	public Node getView() { return (Node) view; }
 
 	
 	public RectangleShapeController(IShapeModel model, EditorController parentController) {
@@ -21,7 +23,6 @@ public class RectangleShapeController implements IShapeController {
 				rectModel.getWidthProperty(), rectModel.getHeightProperty());
 	}
 
-
 	@Override
-	public List<Node> getConnectors() { return view.getConnectors(); }
+	public List<IConnector> getConnectors() { return view.getConnectors(); }
 }

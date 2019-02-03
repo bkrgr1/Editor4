@@ -55,7 +55,6 @@ public class Editor4 extends Application {
 		
 		EditorController editorCtrl = new EditorController(editorModel, editorPane);
 
-
 		// add the pane to the root layout
 		StackPane root = new StackPane();
 		root.getChildren().add(editorCtrl.getView());

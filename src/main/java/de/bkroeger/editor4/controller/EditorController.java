@@ -1,12 +1,12 @@
 package de.bkroeger.editor4.controller;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import de.bkroeger.editor4.model.EditorModel;
 import de.bkroeger.editor4.model.IArrowModel;
 import de.bkroeger.editor4.model.IShapeModel;
 import de.bkroeger.editor4.view.EditorPane;
-import javafx.scene.Node;
 
 /**
  * Controller
@@ -19,7 +19,9 @@ public class EditorController {
 	private EditorPane view;
 	public EditorPane getView() { return this.view; }
 	
-	private List<Node> connectors;
+	private List<IShapeController> shapes = new ArrayList<>();
+	
+	private List<IArrowController> arrows = new ArrayList<>();
 
 	/**
 	 * Constructor
@@ -34,15 +36,15 @@ public class EditorController {
 		for (IShapeModel editorShapeModel : model.getShapeModels()) {
 			
 			IShapeController shapeCtrl = ShapeControllerFactory.getController(editorShapeModel, this);
+			shapes.add(shapeCtrl);
 			
 			this.view.getChildren().add(shapeCtrl.getView());
-			
-			connectors = shapeCtrl.getConnectors();
 		}
 		
 		for (IArrowModel editorArrowModel : model.getArrowModels()) {
 			
-			IArrowController arrowCtrl = ArrowControllerFactory.getController(editorArrowModel, this, connectors);
+			IArrowController arrowCtrl = ArrowControllerFactory.getController(editorArrowModel, this, shapes);
+			arrows.add(arrowCtrl);
 			
 			this.view.getChildren().add(arrowCtrl.getView());
 		}

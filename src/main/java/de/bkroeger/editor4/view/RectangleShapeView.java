@@ -25,8 +25,8 @@ public class RectangleShapeView extends Pane implements IShapeView {
 	private Rectangle rect;
 	public Rectangle getRectangle() { return rect; }
 	
-	private List<Node> connectors = new ArrayList<>();
-	public List<Node> getConnectors() { return connectors; }
+	private List<IConnector> connectors = new ArrayList<>();
+	public List<IConnector> getConnectors() { return connectors; }
 
 	/**
 	 * Constructor
@@ -54,7 +54,7 @@ public class RectangleShapeView extends Pane implements IShapeView {
 		rect.setStroke(Color.BLACK);
 		
 		// die Konnectoren als Kreise zeichnen
-		Node connector = null;
+		IConnector connector = null;
 		
 		// Konnektor-1: Mitte rechte Seite
 		connector = new CircleConnector(
@@ -82,6 +82,8 @@ public class RectangleShapeView extends Pane implements IShapeView {
 		
 		// Rectangle und Konnektoren zum Pane hinzufügen
 		this.getChildren().add(rect);
-		this.getChildren().addAll(connectors);
+		List<Node> nodeConnectors = new ArrayList<>();
+		for (IConnector c : connectors) { nodeConnectors.add((Node)c); }
+		this.getChildren().addAll(nodeConnectors);
 	}
 }

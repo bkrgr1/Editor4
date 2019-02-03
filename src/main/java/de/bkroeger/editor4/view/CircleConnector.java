@@ -9,7 +9,7 @@ import javafx.scene.shape.Circle;
  * 
  * @author bk
  */
-public class CircleConnector extends Circle {
+public class CircleConnector extends Circle implements IConnector {
 	
 	private static final double RADIUS = 5.0;
 

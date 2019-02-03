@@ -6,6 +6,7 @@ import java.util.logging.Logger;
 import de.bkroeger.editor4.model.IArrowModel;
 import de.bkroeger.editor4.model.StraightArrowModel;
 import de.bkroeger.editor4.view.IArrowView;
+import de.bkroeger.editor4.view.IConnector;
 import de.bkroeger.editor4.view.StraightArrowView;
 import javafx.event.EventHandler;
 import javafx.geometry.Bounds;
@@ -23,12 +24,19 @@ import javafx.scene.shape.Circle;
 public class StraightArrowController implements IArrowController {
 
 	private static final Logger logger = Logger.getLogger(StraightArrowController.class.getName());
+	
+	private static final int START_CONNECTOR = 0;
+	@SuppressWarnings("unused")
+	private static final int END_CONNECTOR = 1;
 
 	private Double mouseX;
 	private Double mouseY;
 	
 	private StraightArrowModel arrowModel;
 	private IArrowView arrowView;
+	
+	@SuppressWarnings("unused")
+	private List<IShapeController> shapes;
 
 	@Override
 	public Node getView() { return (Node) arrowView; }
@@ -39,9 +47,10 @@ public class StraightArrowController implements IArrowController {
 	 * @param parentController
 	 * @param connectors
 	 */
-	public StraightArrowController(IArrowModel model, EditorController parentController, List<Node> connectors) {
+	public StraightArrowController(IArrowModel model, EditorController parentController, List<IShapeController> shapes) {
 		
-		arrowModel = (StraightArrowModel) model;
+		this.arrowModel = (StraightArrowModel) model;
+		this.shapes = shapes;
 		
 		// den Pfeil zeichnen
 		arrowView = new StraightArrowView(arrowModel.getX1Property(), arrowModel.getY1Property(),
@@ -52,8 +61,8 @@ public class StraightArrowController implements IArrowController {
 		((Node)arrowView).setOnMouseEntered(new MouseEnteredEventHandler(arrowView));
 		((Node)arrowView).setOnMouseExited(new MouseExitedEventHandler(arrowView));
 		((Node)arrowView).setOnMousePressed(new MousePressedEventHandler(arrowView));
-		((Node)arrowView).setOnMouseDragged(new MouseDraggedEventHandler(arrowView, connectors));
-		((Node)arrowView).setOnMouseReleased(new MouseReleasedEventHandler(arrowView, connectors));
+		((Node)arrowView).setOnMouseDragged(new MouseDraggedEventHandler(arrowView, shapes));
+		((Node)arrowView).setOnMouseReleased(new MouseReleasedEventHandler(arrowView, shapes));
 	}
 
 	// ===============================================================
@@ -141,11 +150,11 @@ public class StraightArrowController implements IArrowController {
 	class MouseReleasedEventHandler implements EventHandler<MouseEvent> {
 
 		private IArrowView arrow;
-		private List<Node> connectors;
+		private List<IShapeController> shapes;
 
-		public MouseReleasedEventHandler(IArrowView arrowView, List<Node> connectors) {
+		public MouseReleasedEventHandler(IArrowView arrowView, List<IShapeController> shapes) {
 			this.arrow = arrowView;
-			this.connectors = connectors;
+			this.shapes = shapes;
 		}
 
 		@Override
@@ -165,30 +174,39 @@ public class StraightArrowController implements IArrowController {
 				arrowModel.getY2Property().set(arrowModel.getY2Property().get() + deltaY);
 				//arrow.setStroke(Color.BLUE);
 
-				// ist die Pfeilspitze in der Nähe eines Connectors?
-				// TODO: Woher weiss ich, ob der Anfang oder das Ende des Arrows in der Nähe ist?
-				for (Node shapeConnector : connectors) {
-					if (intersectsWithConnectorPoint(shapeConnector, (Node)arrow)) {
-						// ja,
-						logger.info("Arrow intersects with connector!");
-//						connector.setStroke(Color.RED);
-	
-						// Connector-Mittelpunkt in Scene-Koordinaten umrechnen
-						Point2D localConnectorPoint = new Point2D(
-								((Circle)shapeConnector).centerXProperty().get(), 
-								((Circle)shapeConnector).centerYProperty().get());
-						Point2D sceneConnectorPoint = shapeConnector.localToScene(localConnectorPoint);
-						
-						// Koordinaten in lokale Arrow-Koordinaten umrechnen
-						Point2D arrowConnectorPoint = ((Node)arrow).sceneToLocal(sceneConnectorPoint);
-						
-						// Anfangspunkt verschieben
-						arrowModel.getX1Property().set(arrowModel.getX1Property().get() + arrowConnectorPoint.getX());
-						arrowModel.getY1Property().set(arrowModel.getY1Property().get() + arrowConnectorPoint.getY());
-						
-						// Endpunkt verschieben
-						arrowModel.getX2Property().set(arrowModel.getX2Property().get() + arrowConnectorPoint.getX());
-						arrowModel.getY2Property().set(arrowModel.getY2Property().get() + arrowConnectorPoint.getY());
+				// ist eine Pfeilspitze in der Nähe eines Connectors von einem der Shapes?
+				for (int shapeConnectorIndex=0; shapeConnectorIndex<shapes.size(); shapeConnectorIndex++) {
+					IShapeController shape = shapes.get(shapeConnectorIndex);
+					for (int arrowConnectorIndex=0; arrowConnectorIndex<shape.getConnectors().size(); arrowConnectorIndex++) {
+						IConnector shapeConnector = shape.getConnectors().get(arrowConnectorIndex);
+						Node shapeConnectorNode = (Node) shapeConnector;
+						for (IConnector arrowConnector : arrow.getConnectors()) {
+							Node arrowConnectorNode = (Node) arrowConnector;
+							if (intersectsWithConnectorPoint(shapeConnectorNode, arrowConnectorNode)) {
+								// ja,
+								logger.info("Arrow intersects with connector!");
+		//						connector.setStroke(Color.RED);
+			
+								// Connector-Mittelpunkt in Scene-Koordinaten umrechnen
+								Point2D localConnectorPoint = new Point2D(
+										((Circle)shapeConnector).centerXProperty().get(), 
+										((Circle)shapeConnector).centerYProperty().get());
+								Point2D sceneConnectorPoint = shapeConnectorNode.localToScene(localConnectorPoint);
+								
+								// Koordinaten in lokale Arrow-Koordinaten umrechnen
+								Point2D arrowConnectorPoint = ((Node)arrowView).sceneToLocal(sceneConnectorPoint);
+								
+								if (arrowConnectorIndex == START_CONNECTOR) {
+									// Anfangspunkt verschieben
+									arrowModel.getX1Property().set(arrowModel.getX1Property().get() + arrowConnectorPoint.getX());
+									arrowModel.getY1Property().set(arrowModel.getY1Property().get() + arrowConnectorPoint.getY());
+								} else {
+									// Endpunkt verschieben
+									arrowModel.getX2Property().set(arrowModel.getX2Property().get() + arrowConnectorPoint.getX());
+									arrowModel.getY2Property().set(arrowModel.getY2Property().get() + arrowConnectorPoint.getY());
+								}
+							}
+						}
 					}
 				}
 
@@ -210,11 +228,11 @@ public class StraightArrowController implements IArrowController {
 	class MouseDraggedEventHandler implements EventHandler<MouseEvent> {
 
 		private IArrowView arrow;
-		private List<Node> connectors;
+		private List<IShapeController> shapes;
 
-		public MouseDraggedEventHandler(IArrowView arrowView, List<Node> connectors) {
+		public MouseDraggedEventHandler(IArrowView arrowView, List<IShapeController> shapes) {
 			this.arrow = arrowView;
-			this.connectors = connectors;
+			this.shapes = shapes;
 		}
 
 		@Override
@@ -232,11 +250,18 @@ public class StraightArrowController implements IArrowController {
 			arrowModel.getX2Property().set(arrowModel.getX2Property().get() + deltaX);
 			arrowModel.getY2Property().set(arrowModel.getY2Property().get() + deltaY);
 
-			// ist die Pfeilspitze in der Nähe des Rechtecks?
-			for (int i=0; i<connectors.size(); i++) {
-				Node connector = connectors.get(i);
-				if (intersectsWithConnectorPoint(connector, (Node)arrow)) {
-					logger.info("Arrow intersects with connector "+i);
+			// ist eine Pfeilspitze in der Nähe eines Connectors von einem der Shapes?
+			for (int j=0; j<shapes.size(); j++) {
+				IShapeController shape = shapes.get(j);
+				for (int i=0; i<shape.getConnectors().size(); i++) {
+					IConnector shapeConnector = shape.getConnectors().get(i);
+					Node shapeConnectorNode = (Node) shapeConnector;
+					for (IConnector arrowConnector : arrow.getConnectors()) {
+						Node arrowConnectorNode = (Node) arrowConnector;
+						if (intersectsWithConnectorPoint(shapeConnectorNode, arrowConnectorNode)) {
+							logger.info("Arrow intersects with shape "+j+" connector "+i);
+						}
+					}
 				}
 			}
 			event.consume();
@@ -245,16 +270,17 @@ public class StraightArrowController implements IArrowController {
 
 	/**
 	 * Prüft, ob ein Pfeil mit dem Connector überschneidet.
-	 * @param node
-	 * @param connector
+	 *
+	 * @param shapeConnectorNode
+	 * @param arrowConnectorNode
 	 * @return
 	 */
-	private boolean intersectsWithConnectorPoint(Node node, Node connector) {
+	private boolean intersectsWithConnectorPoint(Node shapeConnectorNode, Node arrowConnectorNode) {
 
-		Bounds connectorBounds = node.sceneToLocal(connector.localToScene(connector.getBoundsInLocal()));
-		Bounds nodeBounds = node.getBoundsInLocal();
+		Bounds connectorBounds = shapeConnectorNode.sceneToLocal(arrowConnectorNode.localToScene(arrowConnectorNode.getBoundsInLocal()));
+		Bounds nodeBounds = shapeConnectorNode.getBoundsInLocal();
 		logger.fine("Connector bounds = " + connectorBounds.toString() + " Node bounds = " + nodeBounds);
-		if (node.intersects(connectorBounds)) {
+		if (shapeConnectorNode.intersects(connectorBounds)) {
 			return true;
 		}
 		return false;
