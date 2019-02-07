@@ -3,6 +3,7 @@ package de.bkroeger.editor4.view;
 import java.util.ArrayList;
 import java.util.List;
 
+import de.bkroeger.editor4.model.Vector2D;
 import javafx.beans.binding.Bindings;
 import javafx.beans.property.DoubleProperty;
 import javafx.geometry.Insets;
@@ -15,6 +16,8 @@ import javafx.scene.paint.Color;
 import javafx.scene.shape.LineTo;
 import javafx.scene.shape.MoveTo;
 import javafx.scene.shape.Path;
+import javafx.scene.transform.Rotate;
+import javafx.scene.transform.Transform;
 
 /**
  * <p>Zeichnet einen direkten Pfeil.</p>
@@ -27,7 +30,7 @@ public class StraightArrowView extends Pane implements IArrowView {
 	private static final double radiusX = 5.0;
 	private static final double radiusY = 5.0;
 	
-	private static final Color BACKGROUND_COLOR = Color.LIGHTCORAL;
+	private static final Color BACKGROUND_COLOR = Color.LIGHTGREEN;
 	
 	private List<IConnector> connectors = new ArrayList<>();
 	@Override
@@ -37,11 +40,21 @@ public class StraightArrowView extends Pane implements IArrowView {
 			DoubleProperty x2Property, DoubleProperty y2Property,
 			DoubleProperty rotateProperty) {
 		
+		// aus den beiden Punkten einen Vector inkl. Winkel berechnen
+		Vector2D v1 = new Vector2D(x1Property.get(), y1Property.get(), 
+				x2Property.get(), y2Property.get());
+		
 		// ein Pane in der notwendigen Grösse erzeugen
 		this.layoutXProperty().bind(Bindings.add(x1Property, radiusX / -2.0));
 		this.layoutYProperty().bind(Bindings.add(y1Property, radiusY / -2.0));
-		this.prefWidthProperty().bind(Bindings.add(Bindings.subtract(x2Property, x1Property), radiusX));
-		this.prefHeightProperty().bind(Bindings.add(Bindings.subtract(y2Property, y1Property), radiusY));
+		// das Pane drehen; der Winkel ergibt sich aus den beiden Punkten
+		Transform rotateTransform = new Rotate(v1.getAlpha() *-1.0, 
+				radiusX / 2.0, 
+				radiusY / 2.0);
+		this.getTransforms().add(rotateTransform);
+		this.setPrefWidth(v1.getLength() + radiusX);
+		this.setPrefHeight(radiusY);
+		this.setBackground(new Background(new BackgroundFill(BACKGROUND_COLOR, CornerRadii.EMPTY, Insets.EMPTY)));
 		
 		// einen Path für den Pfeil erzeugen
 		Path path = new Path();
@@ -49,12 +62,12 @@ public class StraightArrowView extends Pane implements IArrowView {
 		// Anfangsposition
 		MoveTo moveto1 = new MoveTo();
 		moveto1.xProperty().set(radiusX / 2.0);
-		moveto1.yProperty().set(radiusX / 2.0);
+		moveto1.yProperty().set(radiusY / 2.0);
 		
 		// Linie zum Ziel
 		LineTo lineto1 = new LineTo();
-		lineto1.xProperty().bind(Bindings.add(Bindings.subtract(x2Property, x1Property), radiusX / 2.0));
-		lineto1.yProperty().bind(Bindings.add(Bindings.subtract(y2Property, y1Property), radiusY / 2.0));
+		lineto1.xProperty().set(v1.getLength() + (radiusX / 2.0));
+		lineto1.yProperty().set(radiusY / 2.0);
 		
 		path.setStroke(Color.BLUE);
 		path.getElements().addAll(moveto1, lineto1);
@@ -67,18 +80,18 @@ public class StraightArrowView extends Pane implements IArrowView {
 		((Node)connector).setVisible(false);
 		connectors.add(connector);
 		connector = new CircleConnector(
-				Bindings.add(Bindings.subtract(x2Property, x1Property), radiusX / 2.0), 
-				Bindings.add(Bindings.subtract(y2Property, y1Property), radiusY / 2.0));
+				Bindings.add(Bindings.multiply(x1Property, 0.0), radiusX / 2.0 + v1.getLength()), 
+				Bindings.add(Bindings.multiply(y1Property, 0.0), radiusY / 2.0));
 		((Node)connector).setVisible(false);
 		connectors.add(connector);
 		
 		this.getChildren().add(path);
 		List<Node> nodeConnectors = new ArrayList<>();
-		for (IConnector c : connectors) { nodeConnectors.add((Node)c); }
+		for (IConnector con : connectors) { nodeConnectors.add((Node)con); }
 		this.getChildren().addAll(nodeConnectors);
 		
-		this.setBackground(new Background(new BackgroundFill(Color.TRANSPARENT, CornerRadii.EMPTY, Insets.EMPTY)));
-		this.rotateProperty().bind(rotateProperty);
+//		this.setBackground(new Background(new BackgroundFill(Color.TRANSPARENT, CornerRadii.EMPTY, Insets.EMPTY)));
+//		this.rotateProperty().bind(rotateProperty);
 	}
 	
 	@Override

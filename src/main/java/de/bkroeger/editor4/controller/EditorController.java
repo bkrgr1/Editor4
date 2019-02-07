@@ -7,6 +7,7 @@ import de.bkroeger.editor4.model.EditorModel;
 import de.bkroeger.editor4.model.IArrowModel;
 import de.bkroeger.editor4.model.IShapeModel;
 import de.bkroeger.editor4.view.EditorPane;
+import javafx.scene.text.Text;
 
 /**
  * Controller
@@ -47,6 +48,11 @@ public class EditorController {
 			arrows.add(arrowCtrl);
 			
 			this.view.getChildren().add(arrowCtrl.getView());
+			
+			Text t1 = new Text(""+editorArrowModel.getX1Property().get()+"/"+editorArrowModel.getY1Property().get());
+			t1.setLayoutX(editorArrowModel.getX1Property().get());
+			t1.setLayoutY(editorArrowModel.getY1Property().get());
+			this.view.getChildren().add(t1);
 		}
 	}
 }
