@@ -12,6 +12,9 @@ import javafx.scene.shape.Circle;
 public class CircleConnector extends Circle implements IConnector {
 	
 	private static final double RADIUS = 5.0;
+	private static final double STROKE_WIDTH = 0.5;
+	private static final Color CONNECTOR_COLOR = Color.YELLOW;
+	private static final Color SELECTED_COLOR = Color.RED;
 
 	/**
 	 * Constructor
@@ -25,6 +28,16 @@ public class CircleConnector extends Circle implements IConnector {
 		this.centerXProperty().bind(centerX);
 		this.centerYProperty().bind(centerY);
 		this.setStroke(Color.BLACK);
-		this.setFill(Color.TRANSPARENT);
+		this.setStrokeWidth(STROKE_WIDTH);
+		this.setFill(CONNECTOR_COLOR);
+	}
+	
+	@Override
+	public void setSelected(boolean isSelected) {
+		if (isSelected) {
+			this.setFill(SELECTED_COLOR);
+		} else {
+			this.setFill(CONNECTOR_COLOR);
+		}
 	}
 }

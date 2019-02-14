@@ -4,6 +4,8 @@ import java.util.logging.Logger;
 
 import de.bkroeger.editor4.controller.EditorController;
 import de.bkroeger.editor4.model.EditorModel;
+import de.bkroeger.editor4.model.IArrowModel;
+import de.bkroeger.editor4.model.IShapeModel;
 import de.bkroeger.editor4.model.RectangleShapeModel;
 import de.bkroeger.editor4.model.StraightArrowModel;
 import de.bkroeger.editor4.view.EditorPane;
@@ -46,9 +48,13 @@ public class Editor4 extends Application {
 
 	    // create the editorModel
 	    EditorModel editorModel = new EditorModel();
-	    editorModel.addShapeModel(new RectangleShapeModel(100.0, 100.0, 100.0, 100.0));
 	    
-	    editorModel.addArrowModel(new StraightArrowModel(250.0, 100.0, 350.0, 50.0, -15.0));
+	    IShapeModel rectModel = new RectangleShapeModel(100.0, 100.0, 100.0, 100.0);
+	    editorModel.addShapeModel(rectModel);
+	    
+	    IArrowModel arrowModel = new StraightArrowModel(250.0, 100.0, 350.0, 50.0, -15.0);
+	    arrowModel.setStrokeWidth(2.0);
+	    editorModel.addArrowModel(arrowModel);
 
 		// create a drawing canvas
 		EditorPane editorPane = new EditorPane(PANEL_WIDTH, PANEL_HEIGHT);

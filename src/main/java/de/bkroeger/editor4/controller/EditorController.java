@@ -49,9 +49,9 @@ public class EditorController {
 			
 			this.view.getChildren().add(arrowCtrl.getView());
 			
-			Text t1 = new Text(""+editorArrowModel.getX1Property().get()+"/"+editorArrowModel.getY1Property().get());
-			t1.setLayoutX(editorArrowModel.getX1Property().get());
-			t1.setLayoutY(editorArrowModel.getY1Property().get());
+			Text t1 = new Text(""+editorArrowModel.x1Property().get()+"/"+editorArrowModel.y1Property().get());
+			t1.setLayoutX(editorArrowModel.x1Property().get());
+			t1.setLayoutY(editorArrowModel.y1Property().get());
 			this.view.getChildren().add(t1);
 		}
 	}
