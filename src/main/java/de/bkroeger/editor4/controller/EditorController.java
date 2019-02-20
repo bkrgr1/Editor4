@@ -7,7 +7,6 @@ import de.bkroeger.editor4.model.EditorModel;
 import de.bkroeger.editor4.model.IArrowModel;
 import de.bkroeger.editor4.model.IShapeModel;
 import de.bkroeger.editor4.view.EditorPane;
-import javafx.scene.text.Text;
 
 /**
  * Controller
