@@ -17,12 +17,13 @@ public class EditorController {
 	
 	private EditorModel model;
 	public EditorModel getModel() { return this.model; }
+	
 	private EditorPane view;
 	public EditorPane getView() { return this.view; }
 	
-	private List<IShapeController> shapes = new ArrayList<>();
+	private List<IShapeController> shapeControllers = new ArrayList<>();
 	
-	private List<IArrowController> arrows = new ArrayList<>();
+	private List<IArrowController> arrowControllers = new ArrayList<>();
 
 	/**
 	 * Constructor
@@ -34,25 +35,22 @@ public class EditorController {
 		this.model = model;
 		this.view = view;
 		
+		// alle Shapes zeichnen
 		for (IShapeModel editorShapeModel : model.getShapeModels()) {
 			
 			IShapeController shapeCtrl = ShapeControllerFactory.getController(editorShapeModel, this);
-			shapes.add(shapeCtrl);
+			shapeControllers.add(shapeCtrl);
 			
 			this.view.getChildren().add(shapeCtrl.getView());
 		}
 		
+		// alle Verbinder zeichnen
 		for (IArrowModel editorArrowModel : model.getArrowModels()) {
 			
-			IArrowController arrowCtrl = ArrowControllerFactory.getController(editorArrowModel, this, shapes);
-			arrows.add(arrowCtrl);
+			IArrowController arrowCtrl = ArrowControllerFactory.getController(editorArrowModel, this, shapeControllers);
+			arrowControllers.add(arrowCtrl);
 			
 			this.view.getChildren().add(arrowCtrl.getView());
-			
-			Text t1 = new Text(""+editorArrowModel.x1Property().get()+"/"+editorArrowModel.y1Property().get());
-			t1.setLayoutX(editorArrowModel.x1Property().get());
-			t1.setLayoutY(editorArrowModel.y1Property().get());
-			this.view.getChildren().add(t1);
 		}
 	}
 }

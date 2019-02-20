@@ -1,5 +1,8 @@
 package de.bkroeger.editor4.model;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import javafx.beans.property.DoubleProperty;
 import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.SimpleDoubleProperty;
@@ -48,15 +51,16 @@ public class StraightArrowModel implements IArrowModel {
 	
 	private DoubleProperty strokeWidthProperty = new SimpleDoubleProperty(1.0);
 	@Override
-	public Double getStrokeWidth() { return strokeWidthProperty.get(); }
 	public DoubleProperty strokeWidthProperty() { return strokeWidthProperty; }
-	@Override
-	public void setStrokeWidth(double w) { strokeWidthProperty.set(w);; }
 	
 	private ObjectProperty<LineStrokeType> strokeTypeProperty;
 	@Override
 	public LineStrokeType getStrokeType() { return strokeTypeProperty.get(); }
 	public ObjectProperty<LineStrokeType> strokeTypeProperty() { return strokeTypeProperty; }
+	
+	private List<IConnectorModel> connectorModels = new ArrayList<>();
+	@Override
+	public List<IConnectorModel> getConnectorModels() { return this.connectorModels; }
 
 
 	/**
@@ -74,5 +78,10 @@ public class StraightArrowModel implements IArrowModel {
 		this.x2Property = new SimpleDoubleProperty(x2);
 		this.y2Property = new SimpleDoubleProperty(y2);
 		this.rotateProperty = new SimpleDoubleProperty(rotate);
+		
+		IConnectorModel connectorModel = new DefaultConnectorModel(this.x1Property, this.y1Property);
+		connectorModels.add(connectorModel);
+		connectorModel = new DefaultConnectorModel(this.x2Property, this.y2Property);
+		connectorModels.add(connectorModel);
 	}
 }

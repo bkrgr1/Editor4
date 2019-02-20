@@ -1,5 +1,7 @@
 package de.bkroeger.editor4.model;
 
+import java.util.List;
+
 import javafx.beans.property.DoubleProperty;
 import javafx.scene.paint.Color;
 
@@ -12,15 +14,16 @@ public interface IArrowModel {
 	public DoubleProperty x2Property();
 	public DoubleProperty y2Property();
 	public DoubleProperty rotateProperty();
+	
+	public List<IConnectorModel> getConnectorModels();
 
-	LineEndingType getLineStartType();
+	public LineEndingType getLineStartType();
 
-	LineEndingType getLineEndType();
+	public LineEndingType getLineEndType();
 
-	Color getColor();
+	public Color getColor();
 
-	Double getStrokeWidth();
-	void setStrokeWidth(double w);
+	public DoubleProperty strokeWidthProperty();
 
-	LineStrokeType getStrokeType();
+	public LineStrokeType getStrokeType();
 }

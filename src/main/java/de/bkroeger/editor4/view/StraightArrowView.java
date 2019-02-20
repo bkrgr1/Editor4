@@ -42,6 +42,9 @@ public class StraightArrowView extends Pane implements IArrowView {
 	private List<IConnector> connectors = new ArrayList<>();
 	@Override
 	public List<IConnector> getConnectors() { return connectors; }
+	
+	private Vector2D vector1;
+	public DoubleProperty lengthProperty() { return vector1.lengthProperty(); }
 
 	/**
 	 * Constructor
@@ -61,18 +64,18 @@ public class StraightArrowView extends Pane implements IArrowView {
 			DoubleProperty strokeWidthProperty) {
 		
 		// aus den beiden Punkten einen Vector inkl. Winkel berechnen
-		Vector2D v1 = new Vector2D(x1Property.get(), y1Property.get(), 
+		vector1 = new Vector2D(x1Property.get(), y1Property.get(), 
 				x2Property.get(), y2Property.get());
 		
 		// ein Pane in der notwendigen Grösse erzeugen
 		this.layoutXProperty().bind(Bindings.add(x1Property, radiusX / -2.0));
 		this.layoutYProperty().bind(Bindings.add(y1Property, radiusY / -2.0));
 		// das Pane drehen; der Winkel ergibt sich aus den beiden Punkten
-		Transform rotateTransform = new Rotate(v1.getAlpha() *-1.0, 
+		Transform rotateTransform = new Rotate(vector1.getAlpha() *-1.0, 
 				radiusX / 2.0, 
 				radiusY / 2.0);
 		this.getTransforms().add(rotateTransform);
-		this.setPrefWidth(v1.getLength() + radiusX);
+		this.setPrefWidth(vector1.getLength() + radiusX);
 		this.setPrefHeight(radiusY);
 		this.setSelected(false);
 		
@@ -86,7 +89,7 @@ public class StraightArrowView extends Pane implements IArrowView {
 		
 		// Linie zum Ziel
 		LineTo lineto1 = new LineTo();
-		lineto1.xProperty().set(v1.getLength() + (radiusX / 2.0));
+		lineto1.xProperty().set(vector1.getLength() + (radiusX / 2.0));
 		lineto1.yProperty().set(radiusY / 2.0);
 		
 		// Farbe setzen
@@ -110,25 +113,30 @@ public class StraightArrowView extends Pane implements IArrowView {
 		// Path zum Pane hinzufügen
 		this.getChildren().add(path);
 
-		// Konnektoren am Anfang und Ende
-		IConnector connector = null;
-		connector = new CircleConnector(
-				Bindings.add(Bindings.multiply(x1Property, 0.0), radiusX / 2.0), 
-				Bindings.add(Bindings.multiply(y1Property, 0.0), radiusY / 2.0));
-		((Node)connector).setVisible(false);
-		connectors.add(connector);
-		connector = new CircleConnector(
-				Bindings.add(Bindings.multiply(x1Property, 0.0), radiusX / 2.0 + v1.getLength()), 
-				Bindings.add(Bindings.multiply(y1Property, 0.0), radiusY / 2.0));
-		((Node)connector).setVisible(false);
-		connectors.add(connector);
-		
-		// Konnektoren zum Pane hinzufügen
-		List<Node> nodeConnectors = new ArrayList<>();
-		for (IConnector con : connectors) { nodeConnectors.add((Node)con); }
-		this.getChildren().addAll(nodeConnectors);
+//		// Konnektoren am Anfang und Ende
+//		IConnector connector = null;
+//		connector = createStraightConnectorController(x1Property, y1Property, 0L);
+//		connectors.add(connector);
+//		connector = createStraightConnectorController(x2Property, y2Property, vector1.getLength());
+//		connectors.add(connector);
+//		
+//		// Konnektoren zum Pane hinzufügen
+//		List<Node> nodeConnectors = new ArrayList<>();
+//		for (IConnector con : connectors) { nodeConnectors.add((Node)con); }
+//		this.getChildren().addAll(nodeConnectors);
 		
 	}
+
+//	private IConnector createStraightConnectorController(DoubleProperty xProperty, 
+//			DoubleProperty yProperty, double length) {
+//		
+//		IConnector connector;
+//		connector = new StraightConnectorView(
+//				Bindings.add(Bindings.multiply(xProperty, 0.0), radiusX / 2.0 + length), 
+//				Bindings.add(Bindings.multiply(yProperty, 0.0), radiusY / 2.0));
+//		((Node)connector).setVisible(false);
+//		return connector;
+//	}
 	
 	@Override
 	public void setSelected(boolean isSelected) {

@@ -1,13 +1,16 @@
 package de.bkroeger.editor4.controller;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Logger;
 
 import de.bkroeger.editor4.model.IArrowModel;
+import de.bkroeger.editor4.model.IConnectorModel;
 import de.bkroeger.editor4.model.StraightArrowModel;
 import de.bkroeger.editor4.view.IArrowView;
 import de.bkroeger.editor4.view.IConnector;
 import de.bkroeger.editor4.view.StraightArrowView;
+import de.bkroeger.editor4.view.StraightConnectorView;
 import javafx.event.EventHandler;
 import javafx.geometry.Bounds;
 import javafx.geometry.Point2D;
@@ -37,9 +40,14 @@ public class StraightArrowController implements IArrowController {
 	
 	@SuppressWarnings("unused")
 	private List<IShapeController> shapes;
+	
+	private List<StraightConnectorView> connectorViews = new ArrayList<>();
 
 	@Override
 	public Node getView() { return (Node) arrowView; }
+	
+	@Override
+	public IArrowModel getModel() { return arrowModel; }
 	
 	/**
 	 * Constructor
@@ -62,22 +70,24 @@ public class StraightArrowController implements IArrowController {
 				arrowModel.strokeTypeProperty(),
 				arrowModel.strokeWidthProperty());
 		
+		// Connectoren zeichnen
+		boolean isStart = true;
+		for (IConnectorModel connectorModel : model.getConnectorModels()) {
+			
+			// einen Controller für den Connector-Punkt erzeugen
+			IConnectorController connCtrl = new StraightConnectorController(connectorModel, this, isStart);
+			isStart = false;
+			StraightConnectorView connView = (StraightConnectorView) connCtrl.getView();
+			((StraightArrowView)arrowView).getChildren().add(connView);
+			connectorViews.add(connView);
+		}
+		
 		// EventHandler zuordnen
 		((Node)arrowView).setOnMouseEntered(new MouseEnteredEventHandler(arrowView));
 		((Node)arrowView).setOnMouseExited(new MouseExitedEventHandler(arrowView));
 		((Node)arrowView).setOnMousePressed(new MousePressedEventHandler(arrowView));
 		((Node)arrowView).setOnMouseDragged(new MouseDraggedEventHandler(arrowView, shapes));
 		((Node)arrowView).setOnMouseReleased(new MouseReleasedEventHandler(arrowView, shapes));
-		
-		// Eventhandler für Connectoren
-		for (IConnector connector : arrowView.getConnectors()) {
-			
-			((Node)connector).setOnMouseEntered(new ConnectorEnteredEventHandler(connector));
-			((Node)connector).setOnMouseExited(new ConnectorExitedEventHandler(connector));
-			((Node)connector).setOnMousePressed(new ConnectorPressedEventHandler(connector));
-			((Node)connector).setOnMouseDragged(new ConnectorDraggedEventHandler(connector, arrowView));
-			((Node)connector).setOnMouseReleased(new ConnectorReleasedEventHandler(connector, arrowView));
-		}
 	}
 
 	// ===============================================================
@@ -101,6 +111,9 @@ public class StraightArrowController implements IArrowController {
 		public void handle(MouseEvent event) {			
 			((Node)arrowView).getScene().setCursor(Cursor.HAND);
 			arrowView.setSelected(true);
+			for (StraightConnectorView connView : connectorViews) {
+				connView.setVisible(true);
+			}
 			event.consume();
 		}
 	}
@@ -125,6 +138,9 @@ public class StraightArrowController implements IArrowController {
 		public void handle(MouseEvent event) {
 			((Node)arrowView).getScene().setCursor(Cursor.DEFAULT);
 			arrowView.setSelected(false);
+			for (StraightConnectorView connView : connectorViews) {
+				connView.setVisible(true);
+			}
 			event.consume();
 		}
 	}
@@ -302,154 +318,4 @@ public class StraightArrowController implements IArrowController {
 	}
 
 	// ===============================================================
-
-	/**
-	 * Dieser EventHandler wird ausgeführt, wenn die Mouse über dem Arrow ist.
-	 * In diesem Fall, wird der Cursor in einen Hand-Cursor geändert.
-	 *
-	 * @author bk
-	 */
-	class ConnectorEnteredEventHandler implements EventHandler<MouseEvent> {
-		
-		private IConnector arrowView;
-
-		public ConnectorEnteredEventHandler(IConnector arrowView) {
-			this.arrowView = arrowView;
-		}
-
-		
-		@Override
-		public void handle(MouseEvent event) {			
-			((Node)arrowView).getScene().setCursor(Cursor.HAND);
-			arrowView.setSelected(true);
-			event.consume();
-		}
-	}
-
-	// ===============================================================
-
-	/**
-	 * Dieser EventHandler wird ausgeführt, wenn die Mouse den Arrow verlässt.
-	 * In diesem Fall wird der Default-Cursor wieder angezeigt.
-	 *
-	 * @author bk
-	 */
-	class ConnectorExitedEventHandler implements EventHandler<MouseEvent> {
-		
-		private IConnector arrowView;
-
-		public ConnectorExitedEventHandler(IConnector arrowView) {
-			this.arrowView = arrowView;
-		}
-
-		@Override
-		public void handle(MouseEvent event) {
-			((Node)arrowView).getScene().setCursor(Cursor.DEFAULT);
-			arrowView.setSelected(false);
-			event.consume();
-		}
-	}
-
-	// ===============================================================
-
-	/**
-	 * Dieser EventHandler wird aufgerufen, wenn die Mouse über dem Pfeil gedrückt wird.
-	 * Die aktuelle Position der Mouse wird gespeichert.
-	 *
-	 * @author bk
-	 */
-	class ConnectorPressedEventHandler implements EventHandler<MouseEvent> {
-		
-		@SuppressWarnings("unused")
-		private IConnector arrowView;
-
-		public ConnectorPressedEventHandler(IConnector arrowView) {
-			this.arrowView = arrowView;
-		}
-
-		@Override
-		public void handle(MouseEvent event) {
-			mouseX = event.getSceneX();
-			mouseY = event.getSceneY();
-			event.consume();
-		}
-	}
-
-	// ===============================================================
-
-	/**
-	 * Dieser EventHandler wird aufgerufen, wenn die Mouse über dem Pfeil wieder freigegeben wird.
-	 * Wenn dies über einem Connector geschiet, wird der Pfeil an den Connector gebunden.
-	 *
-	 * @author bk
-	 */
-	class ConnectorReleasedEventHandler implements EventHandler<MouseEvent> {
-
-		private IConnector connector;
-		private IArrowView arrow;
-
-		public ConnectorReleasedEventHandler(IConnector connector, IArrowView arrow) {
-			this.connector = connector;
-			this.arrow = arrow;
-		}
-
-		@Override
-		public void handle(MouseEvent event) {
-
-			if (mouseX != null && mouseY != null) {
-
-				double deltaX = event.getSceneX() - mouseX;
-				double deltaY = event.getSceneY() - mouseY;
-				
-				mouseX += deltaX;
-				mouseY += deltaY;
-
-				arrowModel.x1Property().set(arrowModel.x1Property().get() + deltaX);
-				arrowModel.y1Property().set(arrowModel.y1Property().get() + deltaY);
-				arrowModel.x2Property().set(arrowModel.x2Property().get() + deltaX);
-				arrowModel.y2Property().set(arrowModel.y2Property().get() + deltaY);
-				//arrow.setStroke(Color.BLUE);
-
-				event.consume();
-			}
-		}
-	}
-
-	// ===============================================================
-
-	/**
-	 * Dieser EventHandler wird aufgerufen, wenn die Mouse mit dem Pfeil verschoben wird.
-	 * Dazu wird die Differenz zwischen der aktuellen Mouse-Position und der gespeicherten
-	 * Mouse-Position berechnet und der Pfeil entsprechend verschoben.
-	 * Die neue Position wird dann wieder gespeichert.
-	 *
-	 * @author bk
-	 */
-	class ConnectorDraggedEventHandler implements EventHandler<MouseEvent> {
-
-		private IConnector connector;
-		private IArrowView arrow;
-
-		public ConnectorDraggedEventHandler(IConnector connector, IArrowView arrow) {
-			this.connector = connector;
-			this.arrow = arrow;
-		}
-
-		@Override
-		public void handle(MouseEvent event) {
-			
-			double deltaX = event.getSceneX() - mouseX;
-			double deltaY = event.getSceneY() - mouseY;
-			
-			mouseX += deltaX;
-			mouseY += deltaY;
-			
-			// Pfeil verschieben
-			arrowModel.x1Property().set(arrowModel.x1Property().get() + deltaX);
-			arrowModel.y1Property().set(arrowModel.y1Property().get() + deltaY);
-			arrowModel.x2Property().set(arrowModel.x2Property().get() + deltaX);
-			arrowModel.y2Property().set(arrowModel.y2Property().get() + deltaY);
-			event.consume();
-		}
-	}
 }

@@ -57,25 +57,25 @@ public class RectangleShapeView extends Pane implements IShapeView {
 		IConnector connector = null;
 		
 		// Konnektor-1: Mitte rechte Seite
-		connector = new CircleConnector(
+		connector = new StraightConnectorView(
 				Bindings.add(widthProperty, additionalWidth), 
 				Bindings.add(Bindings.divide(heightProperty, 2.0), additionalHeight));
 		connectors.add(connector);
 		
 		// Konnektor-2: Mitte unten
-		connector = new CircleConnector(
+		connector = new StraightConnectorView(
 				Bindings.add(Bindings.divide(widthProperty, 2.0), additionalWidth),
 				Bindings.add(heightProperty, additionalHeight));
 		connectors.add(connector);
 		
 		// Konnektor-3: Mitte linke Seite
-		connector = new CircleConnector(
+		connector = new StraightConnectorView(
 				Bindings.add(Bindings.multiply(xProperty,  0.0), additionalWidth), 
 				Bindings.add(Bindings.divide(heightProperty, 2.0), additionalHeight));
 		connectors.add(connector);
 		
 		// Konnektor-4: Mitte oben
-		connector = new CircleConnector(
+		connector = new StraightConnectorView(
 				Bindings.add(Bindings.divide(widthProperty, 2.0), additionalWidth),
 				Bindings.add(Bindings.multiply(heightProperty(), 0.0), additionalHeight));
 		connectors.add(connector);

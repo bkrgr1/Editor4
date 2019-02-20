@@ -9,7 +9,7 @@ import javafx.scene.shape.Circle;
  * 
  * @author bk
  */
-public class CircleConnector extends Circle implements IConnector {
+public class StraightConnectorView extends Circle implements IConnector {
 	
 	private static final double RADIUS = 5.0;
 	private static final double STROKE_WIDTH = 0.5;
@@ -21,7 +21,7 @@ public class CircleConnector extends Circle implements IConnector {
 	 * @param centerX
 	 * @param centerY
 	 */
-	public CircleConnector(DoubleBinding centerX, DoubleBinding centerY) {
+	public StraightConnectorView(DoubleBinding centerX, DoubleBinding centerY) {
 		super();
 		
 		this.setRadius(RADIUS);
