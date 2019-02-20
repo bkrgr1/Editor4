@@ -90,6 +90,9 @@ public class Vector2D {
 		// der Winkel berechnet sich aus der Umkehrung der Sin-Funktion; 
 		// b / c : Umrechnung auf Einheitskreis
 		this.alphaProperty.set(Math.toDegrees(Math.asin( this.bProperty.get() / this.lengthProperty.get())));
+		if (this.aProperty.get() < 0.0) {
+			this.alphaProperty.set((90.0 - this.alphaProperty.get()) + 90.0);
+		}
 		
 		// wenn sich der horizontale Schenkel ändert, die anderen Werte neu berechnen
 		aProperty.addListener((observable, oldValue, newValue) -> {
@@ -108,6 +111,9 @@ public class Vector2D {
 		// wenn sich die Länge des dritten Schenkels ändert, den Winkel neu bestimmen
 		lengthProperty.addListener((observable, oldValue, newValue) -> {
 			this.alphaProperty.set(Math.toDegrees(Math.asin( this.bProperty.get() / newValue.doubleValue())));
+			if (this.aProperty.get() < 0.0) {
+				this.alphaProperty.set((90.0 - this.alphaProperty.get()) + 90.0);
+			}
 		});		
 
 		logger.fine(String.format("a=%f, b=%f, c=%f, alpha=%f", 

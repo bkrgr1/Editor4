@@ -28,8 +28,8 @@ import javafx.scene.transform.Transform;
  * <p>Der Pfeil zeigt von p1 (Anfang) auf p2 (Ende).</p>
  * <p>Aus den beiden Punkten wird ein Vector mit Location in p1 berechnet.
  * Zum Zeichnen wird ein Pane in der Länge des Vectors plus Randzugabe gezeichnet
- * und um den Vector-Winkel gedreht. Basis für die Drehung ist p1.</p>
- * <p>Innerhalb des Shapes wird der eigentliche Pfeil gezeichnet.</p>
+ * und um den Vector-Winkel gedreht. Drehpunkt ist p1.</p>
+ * <p>Innerhalb dieses Panes wird der eigentliche Pfeil gezeichnet.</p>
  * @author bk
  */
 public class StraightArrowView extends Pane implements IArrowView {
@@ -47,7 +47,7 @@ public class StraightArrowView extends Pane implements IArrowView {
 	public DoubleProperty lengthProperty() { return vector1.lengthProperty(); }
 
 	/**
-	 * Constructor
+	 * Constructor für einen direkten Pfeil aus 2 Punkten mit x- und y-Koordinaten.
 	 * @param x1Property
 	 * @param y1Property
 	 * @param x2Property
