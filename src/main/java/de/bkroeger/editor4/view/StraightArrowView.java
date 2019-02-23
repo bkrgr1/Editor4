@@ -19,6 +19,7 @@ import javafx.scene.paint.Color;
 import javafx.scene.shape.LineTo;
 import javafx.scene.shape.MoveTo;
 import javafx.scene.shape.Path;
+import javafx.scene.shape.PathElement;
 import javafx.scene.transform.Rotate;
 import javafx.scene.transform.Transform;
 
@@ -34,8 +35,9 @@ import javafx.scene.transform.Transform;
  */
 public class StraightArrowView extends Pane implements IArrowView {
 	
-	private static final double radiusX = 5.0;
-	private static final double radiusY = 5.0;
+	private static final double HEADING_LENGTH = 10.0;
+	private static final double RADIUS_X = 8.0;
+	private static final double RADIUS_Y = 8.0;
 	
 	private static final Color BACKGROUND_COLOR = Color.LIGHTGREEN;
 	
@@ -68,42 +70,46 @@ public class StraightArrowView extends Pane implements IArrowView {
 				x2Property, y2Property);
 		
 		// ein Pane in der notwendigen Grösse erzeugen
-		this.layoutXProperty().bind(Bindings.add(x1Property, radiusX / -2.0));
-		this.layoutYProperty().bind(Bindings.add(y1Property, radiusY / -2.0));
+		this.layoutXProperty().bind(Bindings.add(x1Property, RADIUS_X / -2.0));
+		this.layoutYProperty().bind(Bindings.add(y1Property, RADIUS_Y / -2.0));
 		
 		// das Pane drehen; der Winkel ergibt sich aus den beiden Punkten
 		Transform rotateTransform = new Rotate(vector1.getAlpha() *-1.0, 
-				radiusX / 2.0, 
-				radiusY / 2.0);
+				RADIUS_X / 2.0, 
+				RADIUS_Y / 2.0);
 		this.getTransforms().add(rotateTransform);
 		vector1.alphaProperty().addListener((observable, oldValue, newValue) -> {
 			Transform rotTrans = new Rotate(newValue.doubleValue() *-1.0, 
-					radiusX / 2.0, 
-					radiusY / 2.0);
+					RADIUS_X / 2.0, 
+					RADIUS_Y / 2.0);
 			getTransforms().clear();
 			getTransforms().add(rotTrans);
 		});
 		
-		this.setPrefWidth(vector1.lengthProperty().get() + radiusX);
+		this.setPrefWidth(vector1.lengthProperty().get() + RADIUS_X);
 		vector1.lengthProperty().addListener((observable, oldValue, newValue) -> {
-			this.setPrefWidth(vector1.lengthProperty().get() + radiusX);
+			this.setPrefWidth(vector1.lengthProperty().get() + RADIUS_X);
 		});		
 		
-		this.setPrefHeight(radiusY);
+		this.setPrefHeight(RADIUS_Y);
 		this.setSelected(false);
 		
 		// einen Path für den Pfeil erzeugen
 		Path path = new Path();
 		
+		List<PathElement> pathElements = new ArrayList<>();
+		
 		// Anfangsposition
 		MoveTo moveto1 = new MoveTo();
-		moveto1.xProperty().set(radiusX / 2.0);
-		moveto1.yProperty().set(radiusY / 2.0);
+		moveto1.xProperty().set(RADIUS_X / 2.0);
+		moveto1.yProperty().set(RADIUS_Y / 2.0);
+		pathElements.add(moveto1);
 		
 		// Linie zum Ziel
 		LineTo lineto1 = new LineTo();
-		lineto1.xProperty().bind(Bindings.add(vector1.lengthProperty(), (radiusX / 2.0)));
-		lineto1.yProperty().set(radiusY / 2.0);
+		lineto1.xProperty().bind(Bindings.add(vector1.lengthProperty(), (RADIUS_X / 2.0)));
+		lineto1.yProperty().set(RADIUS_Y / 2.0);
+		pathElements.add(lineto1);
 		
 		// Farbe setzen
 		path.setStroke(colorProperty.get());
@@ -116,12 +122,45 @@ public class StraightArrowView extends Pane implements IArrowView {
 		// TODO: Stroke Dash setzen
 		// TODO: Änderungshandler definieren
 		
-		// TODO: Pfeilanfang zeichnen
+		// Pfeilanfang zeichnen
+		switch (lineStartTypeProperty.get()) {
+		case OpenArrow:
+			MoveTo movetoS1 = new MoveTo();
+			movetoS1.xProperty().set(RADIUS_X / 2.0 + HEADING_LENGTH);
+			movetoS1.yProperty().set(0.0);
+			pathElements.add(movetoS1);
+			
+			LineTo linetoS1 = new LineTo();
+			linetoS1.xProperty().set(RADIUS_X / 2.0);
+			linetoS1.yProperty().set(RADIUS_Y / 2.0);
+			pathElements.add(linetoS1);
+
+			MoveTo movetoS2 = new MoveTo();
+			movetoS2.xProperty().set(RADIUS_X / 2.0 + HEADING_LENGTH);
+			movetoS2.yProperty().set(RADIUS_Y);
+			pathElements.add(movetoS2);
+			
+			LineTo linetoS2 = new LineTo();
+			linetoS2.xProperty().set(RADIUS_X / 2.0);
+			linetoS2.yProperty().set(RADIUS_Y / 2.0);
+			pathElements.add(linetoS2);
+			break;
+		case FilledArrow:
+			break;
+		case Circle:
+			break;
+		case Quader:
+			break;
+		case None:
+			break;
+		default:
+			break;
+		}
 		
 		// TODO: Pfeilende zeichnen
 		
 		// alle Path-Elemente zusammenfügen
-		path.getElements().addAll(moveto1, lineto1);
+		path.getElements().addAll(pathElements);
 
 		// Path zum Pane hinzufügen
 		this.getChildren().add(path);

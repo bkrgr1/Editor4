@@ -86,4 +86,10 @@ public class RectangleShapeView extends Pane implements IShapeView {
 		for (IConnector c : connectors) { nodeConnectors.add((Node)c); }
 		this.getChildren().addAll(nodeConnectors);
 	}
+
+	@Override
+	public void setSelected(boolean isSelected) {
+		// TODO Auto-generated method stub
+		
+	}
 }

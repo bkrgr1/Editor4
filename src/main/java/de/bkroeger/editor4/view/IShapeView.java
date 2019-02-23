@@ -6,4 +6,5 @@ public interface IShapeView {
 	
 	public List<IConnector> getConnectors();
 
+	public void setSelected(boolean isSelected);
 }

@@ -5,6 +5,7 @@ import java.util.logging.Logger;
 import de.bkroeger.editor4.controller.EditorController;
 import de.bkroeger.editor4.model.EditorModel;
 import de.bkroeger.editor4.model.IShapeModel;
+import de.bkroeger.editor4.model.LineEndingType;
 import de.bkroeger.editor4.model.RectangleShapeModel;
 import de.bkroeger.editor4.model.StraightArrowModel;
 import de.bkroeger.editor4.view.EditorPane;
@@ -53,6 +54,7 @@ public class Editor4 extends Application {
 	    
 	    StraightArrowModel arrowModel = new StraightArrowModel(250.0, 100.0, 350.0, 50.0, -15.0);
 	    arrowModel.strokeWidthProperty().set(2.0);
+	    arrowModel.lineStartTypeProperty().set(LineEndingType.OpenArrow);
 	    editorModel.addArrowModel(arrowModel);
 
 		// create a drawing canvas

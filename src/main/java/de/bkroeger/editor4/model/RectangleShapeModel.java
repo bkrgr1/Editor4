@@ -6,16 +6,16 @@ import javafx.beans.property.SimpleDoubleProperty;
 public class RectangleShapeModel implements IShapeModel {
 	
 	private DoubleProperty xProperty;
-	public DoubleProperty getXProperty() { return xProperty; }
+	public DoubleProperty xProperty() { return xProperty; }
 	
 	private DoubleProperty yProperty;
-	public DoubleProperty getYProperty() { return yProperty; }
+	public DoubleProperty yProperty() { return yProperty; }
 	
 	private DoubleProperty widthProperty;
-	public DoubleProperty getWidthProperty() { return widthProperty; }
+	public DoubleProperty widthProperty() { return widthProperty; }
 	
 	private DoubleProperty heightProperty;
-	public DoubleProperty getHeightProperty() { return heightProperty; }
+	public DoubleProperty heightProperty() { return heightProperty; }
 
 	@Override
 	public ShapeType getShapeType() { return ShapeType.Rectangle; }

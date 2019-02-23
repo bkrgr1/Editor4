@@ -36,8 +36,10 @@ public class StraightConnectorView extends Circle implements IConnector {
 	public void setSelected(boolean isSelected) {
 		if (isSelected) {
 			this.setFill(SELECTED_COLOR);
+			this.setVisible(true);
 		} else {
 			this.setFill(CONNECTOR_COLOR);
+			this.setVisible(false);
 		}
 	}
 }
