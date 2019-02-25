@@ -123,6 +123,28 @@ public class StraightArrowView extends Pane implements IArrowView {
 		// TODO: Änderungshandler definieren
 		
 		// Pfeilanfang zeichnen
+		drawArrowStart(lineStartTypeProperty, pathElements);
+		lineStartTypeProperty.addListener(
+				(observable, oldvalue, newvalue) -> {
+					drawArrowStart(lineStartTypeProperty, pathElements);
+			    });
+		
+		// Pfeilende zeichnen
+		drawArrowEnd(lineEndTypeProperty, pathElements);
+		lineEndTypeProperty.addListener(
+				(observable, oldvalue, newvalue) -> {
+					drawArrowEnd(lineEndTypeProperty, pathElements);
+			    });
+		
+		// alle Path-Elemente zusammenfügen
+		path.getElements().addAll(pathElements);
+
+		// Path zum Pane hinzufügen
+		this.getChildren().add(path);
+	}
+
+	private void drawArrowStart(ObjectProperty<LineEndingType> lineStartTypeProperty, List<PathElement> pathElements) {
+		
 		switch (lineStartTypeProperty.get()) {
 		case OpenArrow:
 			MoveTo movetoS1 = new MoveTo();
@@ -156,14 +178,43 @@ public class StraightArrowView extends Pane implements IArrowView {
 		default:
 			break;
 		}
-		
-		// TODO: Pfeilende zeichnen
-		
-		// alle Path-Elemente zusammenfügen
-		path.getElements().addAll(pathElements);
+	}
 
-		// Path zum Pane hinzufügen
-		this.getChildren().add(path);
+	private void drawArrowEnd(ObjectProperty<LineEndingType> lineStartTypeProperty, List<PathElement> pathElements) {
+		
+		switch (lineStartTypeProperty.get()) {
+		case OpenArrow:
+			MoveTo movetoS1 = new MoveTo();
+			movetoS1.xProperty().bind(Bindings.add(vector1.lengthProperty(), (RADIUS_X / 2.0) - HEADING_LENGTH));
+			movetoS1.yProperty().set(0.0);
+			pathElements.add(movetoS1);
+			
+			LineTo linetoS1 = new LineTo();
+			linetoS1.xProperty().bind(Bindings.add(vector1.lengthProperty(), (RADIUS_X / 2.0)));
+			linetoS1.yProperty().set(RADIUS_Y / 2.0);
+			pathElements.add(linetoS1);
+
+			MoveTo movetoS2 = new MoveTo();
+			movetoS2.xProperty().bind(Bindings.add(vector1.lengthProperty(), (RADIUS_X / 2.0) - HEADING_LENGTH));
+			movetoS2.yProperty().set(RADIUS_Y);
+			pathElements.add(movetoS2);
+			
+			LineTo linetoS2 = new LineTo();
+			linetoS2.xProperty().bind(Bindings.add(vector1.lengthProperty(), (RADIUS_X / 2.0)));
+			linetoS2.yProperty().set(RADIUS_Y / 2.0);
+			pathElements.add(linetoS2);
+			break;
+		case FilledArrow:
+			break;
+		case Circle:
+			break;
+		case Quader:
+			break;
+		case None:
+			break;
+		default:
+			break;
+		}
 	}
 	
 	@Override

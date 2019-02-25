@@ -3,19 +3,20 @@ package de.bkroeger.editor4.controller;
 import java.util.ArrayList;
 import java.util.List;
 
-import de.bkroeger.editor4.model.EditorModel;
+import de.bkroeger.editor4.model.EditorPageModel;
 import de.bkroeger.editor4.model.IArrowModel;
 import de.bkroeger.editor4.model.IShapeModel;
 import de.bkroeger.editor4.view.EditorPane;
 
 /**
- * Controller
+ * <p>Controller for a document page.</p>
+ * 
  * @author bk
  */
 public class EditorController {
 	
-	private EditorModel model;
-	public EditorModel getModel() { return this.model; }
+	private EditorPageModel model;
+	public EditorPageModel getModel() { return this.model; }
 	
 	private EditorPane view;
 	public EditorPane getView() { return this.view; }
@@ -29,7 +30,7 @@ public class EditorController {
 	 * @param model
 	 * @param view
 	 */
-	public EditorController(EditorModel model, EditorPane view) {
+	public EditorController(EditorPageModel model, EditorPane view) {
 		
 		this.model = model;
 		this.view = view;

@@ -3,7 +3,7 @@ package de.bkroeger.editor4.model;
 import java.util.ArrayList;
 import java.util.List;
 
-public class EditorModel extends BaseModel {
+public class EditorPageModel extends BaseModel {
 	
 	private String title = "Editor4";
 	public String getTitle() { return this.title; }
@@ -20,7 +20,7 @@ public class EditorModel extends BaseModel {
 		this.arrowModels.add(model);
 	}
 
-	public EditorModel() {
+	public EditorPageModel() {
 		super();
 	}
 }
