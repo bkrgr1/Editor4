@@ -2,82 +2,23 @@
   xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
   <modelVersion>4.0.0</modelVersion>
 
-  <groupId>de.bkroeger.editor4</groupId>
-  <artifactId>Editor4</artifactId>
-  <version>0.0.1</version>
-  <packaging>jar</packaging>
-
-    <build>
-        <plugins>
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-compiler-plugin</artifactId>
-                <version>2.3.2</version>
-                <configuration>
-                    <source>1.8</source>
-                    <target>1.8</target>
-                </configuration>
-            </plugin>
-
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-jar-plugin</artifactId>
-                <version>2.2</version>
-                <executions>
-                    <execution>
-                        <goals>
-                            <goal>jar</goal>
-                        </goals>
-                        <id>jar</id>
-                    </execution>
-                </executions>
-                <configuration>
-                      <archive>
-                        <manifestFile>src/main/resources/Manifest.txt</manifestFile>
-                        <manifest>
-                          <addClasspath>true</addClasspath>
-
-                          <mainClass>com.footballradar.jpademo.App</mainClass>
-
-                        </manifest>
-                      </archive>
-                </configuration>
-            </plugin>
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-shade-plugin</artifactId>
-                <version>1.4</version>
-                    <executions>
-                        <execution>
-                                <phase>package</phase>
-                                <goals>
-                                        <goal>shade</goal>
-                                </goals>
-                        </execution>
-                    </executions>
-                    <configuration>
-                            <finalName>${project.artifactId}-${project.version}</finalName>
-                    </configuration>
-            </plugin>
-
-        </plugins>
-
-    </build>
-
-    <repositories>
-    <repository>
-      <url>http://download.java.net/maven/2/</url>
-      <id>hibernate-support</id>
-      <layout>default</layout>
-      <name>Repository for library Library[hibernate-support]</name>
-    </repository>
-  </repositories>
-
-
+    <groupId>de.bkroeger.editor4</groupId>
+    <artifactId>Editor4</artifactId>
+    <version>0.0.1</version>
+    <packaging>jar</packaging>
 
   <properties>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
   </properties>
+
+    <repositories>
+      <repository>
+        <url>http://download.java.net/maven/2/</url>
+        <id>hibernate-support</id>
+        <layout>default</layout>
+        <name>Repository for library Library[hibernate-support]</name>
+      </repository>
+    </repositories>
 
   <dependencies>
     <dependency>
@@ -86,23 +27,83 @@
       <version>3.8.1</version>
       <scope>test</scope>
     </dependency>
-      <dependency>
-          <artifactId>slf4j-api</artifactId>
-          <groupId>org.slf4j</groupId>
-          <type>jar</type>
-          <version>1.6.1</version>
-      </dependency>
-      <dependency>
-          <groupId>org.slf4j</groupId>
-          <artifactId>log4j-over-slf4j</artifactId>
-          <version>1.6.1</version>
-      </dependency>
-      <dependency>
-          <groupId>org.slf4j</groupId>
-          <artifactId>slf4j-simple</artifactId>
-          <version>1.6.1</version>
-      </dependency>
+    <dependency>
+        <artifactId>slf4j-api</artifactId>
+        <groupId>org.slf4j</groupId>
+        <type>jar</type>
+        <version>1.6.1</version>
+    </dependency>
+    <dependency>
+        <groupId>org.slf4j</groupId>
+        <artifactId>log4j-over-slf4j</artifactId>
+        <version>1.6.1</version>
+    </dependency>
+    <dependency>
+        <groupId>org.slf4j</groupId>
+        <artifactId>slf4j-simple</artifactId>
+        <version>1.6.1</version>
+    </dependency>
+    <dependency>
+      <groupId>org.projectlombok</groupId>
+      <artifactId>lombok</artifactId>
+      <version>1.18.6</version>
+      <scope>provided</scope>
+    </dependency>
   </dependencies>
 
+  <build>
+      <plugins>
+          <plugin>
+              <groupId>org.apache.maven.plugins</groupId>
+              <artifactId>maven-compiler-plugin</artifactId>
+              <version>2.3.2</version>
+              <configuration>
+                  <source>1.8</source>
+                  <target>1.8</target>
+              </configuration>
+          </plugin>
+
+          <plugin>
+              <groupId>org.apache.maven.plugins</groupId>
+              <artifactId>maven-jar-plugin</artifactId>
+              <version>2.2</version>
+              <executions>
+                  <execution>
+                      <goals>
+                          <goal>jar</goal>
+                      </goals>
+                      <id>jar</id>
+                  </execution>
+              </executions>
+              <configuration>
+                    <archive>
+                      <manifestFile>src/main/resources/Manifest.txt</manifestFile>
+                      <manifest>
+                        <addClasspath>true</addClasspath>
+
+                        <mainClass>com.footballradar.jpademo.App</mainClass>
+
+                      </manifest>
+                    </archive>
+              </configuration>
+          </plugin>
+          <plugin>
+              <groupId>org.apache.maven.plugins</groupId>
+              <artifactId>maven-shade-plugin</artifactId>
+              <version>1.4</version>
+                  <executions>
+                      <execution>
+                              <phase>package</phase>
+                              <goals>
+                                      <goal>shade</goal>
+                              </goals>
+                      </execution>
+                  </executions>
+                  <configuration>
+                          <finalName>${project.artifactId}-${project.version}</finalName>
+                  </configuration>
+          </plugin>
+      </plugins>
+  </build>
 
 </project>

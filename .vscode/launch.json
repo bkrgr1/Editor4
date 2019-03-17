@@ -1,0 +1,11 @@
+{
+    "configurations": [
+        {
+            "type": "java",
+            "name": "CodeLens (Launch) - Editor4",
+            "request": "launch",
+            "mainClass": "de.bkroeger.editor4.Editor4",
+            "projectName": "Editor4"
+        }
+    ]
+}
