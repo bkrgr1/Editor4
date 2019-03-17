@@ -5,7 +5,7 @@ import java.util.List;
 import javafx.beans.property.DoubleProperty;
 import javafx.scene.paint.Color;
 
-public interface IArrowModel {
+public interface IArrowModel extends IModel {
 	
 	public ArrowType getArrowType();
 	

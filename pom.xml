@@ -9,6 +9,7 @@
 
   <properties>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+    <logging.version>2.11.2</logging.version>
   </properties>
 
     <repositories>
@@ -28,20 +29,14 @@
       <scope>test</scope>
     </dependency>
     <dependency>
-        <artifactId>slf4j-api</artifactId>
-        <groupId>org.slf4j</groupId>
-        <type>jar</type>
-        <version>1.6.1</version>
+      <groupId>org.apache.logging.log4j</groupId>
+      <artifactId>log4j-api</artifactId>
+      <version>${logging.version}</version>
     </dependency>
     <dependency>
-        <groupId>org.slf4j</groupId>
-        <artifactId>log4j-over-slf4j</artifactId>
-        <version>1.6.1</version>
-    </dependency>
-    <dependency>
-        <groupId>org.slf4j</groupId>
-        <artifactId>slf4j-simple</artifactId>
-        <version>1.6.1</version>
+      <groupId>org.apache.logging.log4j</groupId>
+      <artifactId>log4j-core</artifactId>
+      <version>${logging.version}</version>
     </dependency>
     <dependency>
       <groupId>org.projectlombok</groupId>

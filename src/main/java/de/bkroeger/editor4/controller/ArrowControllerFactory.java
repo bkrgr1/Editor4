@@ -6,15 +6,14 @@ import de.bkroeger.editor4.model.IArrowModel;
 
 public class ArrowControllerFactory {
 
-	public static IArrowController getController(IArrowModel shapeModel, 
-			EditorController parentCtrl, 
+	public static IArrowController getController(IArrowModel shapeModel, PageController parentCtrl,
 			List<IShapeController> shapes) {
-		
+
 		switch (shapeModel.getArrowType()) {
 		case straightArrow:
 			IArrowController ctrl = (IArrowController) new StraightArrowController(shapeModel, parentCtrl, shapes);
 			return ctrl;
-			
+
 		default:
 			return null;
 		}

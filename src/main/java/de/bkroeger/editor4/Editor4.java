@@ -1,34 +1,31 @@
 package de.bkroeger.editor4;
 
-import java.util.logging.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
-import de.bkroeger.editor4.controller.EditorController;
-import de.bkroeger.editor4.model.EditorPageModel;
-import de.bkroeger.editor4.model.IShapeModel;
-import de.bkroeger.editor4.model.LineEndingType;
-import de.bkroeger.editor4.model.RectangleShapeModel;
-import de.bkroeger.editor4.model.StraightArrowModel;
-import de.bkroeger.editor4.view.EditorPane;
+import de.bkroeger.editor4.controller.FileController;
+import de.bkroeger.editor4.model.FileModel;
 import javafx.application.Application;
+import javafx.scene.Node;
 import javafx.scene.Scene;
 import javafx.scene.layout.StackPane;
 import javafx.stage.Stage;
 
 /**
- * Dieser Test simuliert die Annäherung eines Pfeils an ein Rechteck-Shape.
- * Wenn beide Shapes sich überlagern (intersects), beginnt der Rahmen des Rechtecks zu blinken.
- * Wenn dann die Maus dann losgelassen wird, wird die Position der Mausspitze mit
- * der Position des Rechteck-Mittelpunktes verknüpft.
+ * Dieser Test simuliert die Annäherung eines Pfeils an ein Rechteck-Shape. Wenn
+ * beide Shapes sich überlagern (intersects), beginnt der Rahmen des Rechtecks
+ * zu blinken. Wenn dann die Maus dann losgelassen wird, wird die Position der
+ * Mausspitze mit der Position des Rechteck-Mittelpunktes verknüpft.
+ * 
  * @author bk
  *
  */
 public class Editor4 extends Application {
 
-	@SuppressWarnings("unused")
-	private static final Logger logger = Logger.getLogger(Editor4.class.getName());
-
 	private static final int PANEL_WIDTH = 800;
 	private static final int PANEL_HEIGHT = 600;
+
+	private static final Logger logger = LogManager.getLogger(Editor4.class.getName());
 
 	/**
 	 * Starts the application
@@ -36,7 +33,9 @@ public class Editor4 extends Application {
 	 * @param args
 	 */
 	public static void main(String[] args) {
-    // launch the application with given arguments
+
+		// launch the application with given arguments
+		logger.debug("Starting Java FX application...");
 		launch(args);
 	}
 
@@ -46,31 +45,20 @@ public class Editor4 extends Application {
 	@Override
 	public void start(Stage primaryStage) {
 
-	    // create the editorModel
-	    EditorPageModel editorModel = new EditorPageModel();
-	    
-	    IShapeModel rectModel = new RectangleShapeModel(100.0, 100.0, 100.0, 100.0);
-	    editorModel.addShapeModel(rectModel);
-	    
-	    StraightArrowModel arrowModel = new StraightArrowModel(250.0, 100.0, 350.0, 50.0, -15.0);
-	    arrowModel.strokeWidthProperty().set(2.0);
-	    arrowModel.lineStartTypeProperty().set(LineEndingType.OpenArrow);
-	    arrowModel.lineEndTypeProperty().set(LineEndingType.OpenArrow);
-	    editorModel.addArrowModel(arrowModel);
+		// create a {@link FileModel} for a new empty file
+		FileModel fileModel = new FileModel();
 
-		// create a drawing canvas
-		EditorPane editorPane = new EditorPane(PANEL_WIDTH, PANEL_HEIGHT);
-		
-		EditorController editorCtrl = new EditorController(editorModel, editorPane);
+		// create a {@link FileController} for the file model
+		FileController fileController = new FileController(fileModel, PANEL_WIDTH, PANEL_HEIGHT);
 
-		// add the pane to the root layout
+		// add the view of the first/only page as pane to the root layout
 		StackPane root = new StackPane();
-		root.getChildren().add(editorCtrl.getView());
+		root.getChildren().add((Node) fileController.getView());
 
 		// create a scene
 		Scene scene = new Scene(root, PANEL_WIDTH, PANEL_HEIGHT);
 		// and show it on the stage
-		primaryStage.setTitle(editorCtrl.getModel().getTitle());
+		primaryStage.setTitle(fileController.getTitle());
 		primaryStage.setScene(scene);
 		primaryStage.show();
 	}
