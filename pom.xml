@@ -2,26 +2,39 @@
   xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
   <modelVersion>4.0.0</modelVersion>
 
-    <groupId>de.bkroeger.editor4</groupId>
-    <artifactId>Editor4</artifactId>
-    <version>0.0.1</version>
-    <packaging>jar</packaging>
+  <groupId>de.bkroeger.editor4</groupId>
+  <artifactId>Editor4</artifactId>
+  <version>0.0.1</version>
+  <packaging>jar</packaging>
+
+  <parent>
+      <groupId>org.springframework.boot</groupId>
+      <artifactId>spring-boot-starter-parent</artifactId>
+      <version>1.5.7.RELEASE</version>
+      <relativePath/> <!-- lookup parent from repository -->
+  </parent>
 
   <properties>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+    <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
+    <java.version>1.8</java.version>
     <logging.version>2.11.2</logging.version>
   </properties>
 
-    <repositories>
-      <repository>
-        <url>http://download.java.net/maven/2/</url>
-        <id>hibernate-support</id>
-        <layout>default</layout>
-        <name>Repository for library Library[hibernate-support]</name>
-      </repository>
-    </repositories>
+  <repositories>
+    <repository>
+      <url>http://download.java.net/maven/2/</url>
+      <id>hibernate-support</id>
+      <layout>default</layout>
+      <name>Repository for library Library[hibernate-support]</name>
+    </repository>
+  </repositories>
 
   <dependencies>
+    <dependency>
+        <groupId>org.springframework.boot</groupId>
+        <artifactId>spring-boot-starter</artifactId>
+    </dependency>
     <dependency>
       <groupId>junit</groupId>
       <artifactId>junit</artifactId>
@@ -44,61 +57,72 @@
       <version>1.18.6</version>
       <scope>provided</scope>
     </dependency>
+    <dependency>
+        <groupId>junit</groupId>
+        <artifactId>junit</artifactId>
+        <version>4.12</version>
+        <scope>test</scope>
+    </dependency>
   </dependencies>
 
   <build>
-      <plugins>
-          <plugin>
-              <groupId>org.apache.maven.plugins</groupId>
-              <artifactId>maven-compiler-plugin</artifactId>
-              <version>2.3.2</version>
-              <configuration>
-                  <source>1.8</source>
-                  <target>1.8</target>
-              </configuration>
-          </plugin>
+    <plugins>
+      <plugin>
+        <groupId>org.springframework.boot</groupId>
+        <artifactId>spring-boot-maven-plugin</artifactId>
+      </plugin>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-compiler-plugin</artifactId>
+        <version>2.3.2</version>
+        <configuration>
+            <source>${java.version}</source>
+            <target>${java.version}</target>
+        </configuration>
+      </plugin>
+      <!--
+      <plugin>
+          <groupId>org.apache.maven.plugins</groupId>
+          <artifactId>maven-jar-plugin</artifactId>
+          <version>2.2</version>
+          <executions>
+              <execution>
+                  <goals>
+                      <goal>jar</goal>
+                  </goals>
+                  <id>jar</id>
+              </execution>
+          </executions>
+          <configuration>
+                <archive>
+                  <manifestFile>src/main/resources/Manifest.txt</manifestFile>
+                  <manifest>
+                    <addClasspath>true</addClasspath>
 
-          <plugin>
-              <groupId>org.apache.maven.plugins</groupId>
-              <artifactId>maven-jar-plugin</artifactId>
-              <version>2.2</version>
+                    <mainClass>com.footballradar.jpademo.App</mainClass>
+
+                  </manifest>
+                </archive>
+          </configuration>
+      </plugin>
+      <plugin>
+          <groupId>org.apache.maven.plugins</groupId>
+          <artifactId>maven-shade-plugin</artifactId>
+          <version>1.4</version>
               <executions>
                   <execution>
-                      <goals>
-                          <goal>jar</goal>
-                      </goals>
-                      <id>jar</id>
+                          <phase>package</phase>
+                          <goals>
+                                  <goal>shade</goal>
+                          </goals>
                   </execution>
               </executions>
               <configuration>
-                    <archive>
-                      <manifestFile>src/main/resources/Manifest.txt</manifestFile>
-                      <manifest>
-                        <addClasspath>true</addClasspath>
-
-                        <mainClass>com.footballradar.jpademo.App</mainClass>
-
-                      </manifest>
-                    </archive>
+                      <finalName>${project.artifactId}-${project.version}</finalName>
               </configuration>
-          </plugin>
-          <plugin>
-              <groupId>org.apache.maven.plugins</groupId>
-              <artifactId>maven-shade-plugin</artifactId>
-              <version>1.4</version>
-                  <executions>
-                      <execution>
-                              <phase>package</phase>
-                              <goals>
-                                      <goal>shade</goal>
-                              </goals>
-                      </execution>
-                  </executions>
-                  <configuration>
-                          <finalName>${project.artifactId}-${project.version}</finalName>
-                  </configuration>
-          </plugin>
-      </plugins>
+      </plugin>
+      -->
+    </plugins>
   </build>
 
 </project>

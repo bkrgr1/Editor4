@@ -10,6 +10,7 @@ import de.bkroeger.editor4.model.IArrowModel;
 import de.bkroeger.editor4.model.IShapeModel;
 import de.bkroeger.editor4.model.PageModel;
 import de.bkroeger.editor4.view.PageView;
+import javafx.scene.Node;
 import javafx.scene.layout.Pane;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
@@ -33,11 +34,27 @@ public class PageController extends BaseController {
 
     private List<IArrowController> arrowControllers = new ArrayList<>();
 
+    /**
+     * <p>
+     * Constructor with page number.
+     * </p>
+     * 
+     * @param pageNo page number
+     */
     public PageController(int pageNo) {
         super();
         this.pageNo = pageNo;
     }
 
+    /**
+     * <p>
+     * Constructor with {@link PageModel}.
+     * </p>
+     * 
+     * @param pageModel   a {@link PageModel}
+     * @param panelWidth  width of the page panel
+     * @param panelHeight height of the page panel
+     */
     public PageController(PageModel pageModel, int panelWidth, int panelHeight) {
         super();
         this.model = pageModel;
@@ -52,18 +69,18 @@ public class PageController extends BaseController {
         // alle Shapes zeichnen
         for (IShapeModel editorShapeModel : pageModel.getShapeModels()) {
 
+            // einen ShapeController für jedes einzelne Shape erzeugen
             IShapeController shapeCtrl = ShapeControllerFactory.getController(editorShapeModel, this);
             shapeControllers.add(shapeCtrl);
-
-            ((Pane) this.view).getChildren().add(shapeCtrl.getView());
+            ((Pane) this.view).getChildren().add((Node) shapeCtrl.getView());
         }
 
         // alle Verbinder zeichnen
         for (IArrowModel editorArrowModel : pageModel.getArrowModels()) {
 
+            // einen ArrowController für jeden einzelnen Pfeil erzeugen
             IArrowController arrowCtrl = ArrowControllerFactory.getController(editorArrowModel, this, shapeControllers);
             arrowControllers.add(arrowCtrl);
-
             ((Pane) this.view).getChildren().add(arrowCtrl.getView());
         }
 

@@ -19,12 +19,21 @@ import javafx.scene.paint.Color;
 public class BaseArrowModel implements IArrowModel {
 
     protected String title;
+
     @Override
-    public String getTitle() { return title; }
+    public String getTitle() {
+        return title;
+    }
 
     protected DoubleProperty x1Property;
+
     @Override
     public DoubleProperty x1Property() {
+        return x1Property;
+    }
+
+    @Override
+    public DoubleProperty xProperty() {
         return x1Property;
     }
 
@@ -32,6 +41,11 @@ public class BaseArrowModel implements IArrowModel {
 
     @Override
     public DoubleProperty y1Property() {
+        return y1Property;
+    }
+
+    @Override
+    public DoubleProperty yProperty() {
         return y1Property;
     }
 
@@ -121,20 +135,20 @@ public class BaseArrowModel implements IArrowModel {
         return this.connectorModels;
     }
 
-	/**
-	 * Constructor
-	 * 
-	 * @param x1     x position of start point
-	 * @param y1     y position of start point
-	 * @param x2     x position of end point
-	 * @param y2     y position of end point
-	 * @param rotate rotation angle in degree
-	 */
+    /**
+     * Constructor
+     * 
+     * @param x1     x position of start point
+     * @param y1     y position of start point
+     * @param x2     x position of end point
+     * @param y2     y position of end point
+     * @param rotate rotation angle in degree
+     */
     public BaseArrowModel(double x1, double y1, double x2, double y2, double rotate) {
         this.x1Property = new SimpleDoubleProperty(x1);
-		this.y1Property = new SimpleDoubleProperty(y1);
-		this.x2Property = new SimpleDoubleProperty(x2);
-		this.y2Property = new SimpleDoubleProperty(y2);
-		this.rotateProperty = new SimpleDoubleProperty(rotate);
+        this.y1Property = new SimpleDoubleProperty(y1);
+        this.x2Property = new SimpleDoubleProperty(x2);
+        this.y2Property = new SimpleDoubleProperty(y2);
+        this.rotateProperty = new SimpleDoubleProperty(rotate);
     }
 }

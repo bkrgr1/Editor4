@@ -1,204 +1,64 @@
 package de.bkroeger.editor4.controller;
 
-import java.util.List;
-
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
+import de.bkroeger.editor4.Handler.ShapeMouseDraggedEventHandler;
+import de.bkroeger.editor4.Handler.ShapeMouseEnteredEventHandler;
+import de.bkroeger.editor4.Handler.ShapeMouseExitedEventHandler;
+import de.bkroeger.editor4.Handler.ShapeMousePressedEventHandler;
+import de.bkroeger.editor4.Handler.ShapeMouseReleasedEventHandler;
 import de.bkroeger.editor4.model.IShapeModel;
 import de.bkroeger.editor4.model.RectangleShapeModel;
-import de.bkroeger.editor4.view.IConnector;
-import de.bkroeger.editor4.view.IShapeView;
+import de.bkroeger.editor4.model.ShapeEventData;
 import de.bkroeger.editor4.view.RectangleShapeView;
-import javafx.event.EventHandler;
-import javafx.scene.Cursor;
 import javafx.scene.Node;
-import javafx.scene.input.MouseEvent;
 
-public class RectangleShapeController implements IShapeController {
+/**
+ * <p>
+ * This controller manages the behaviour of a Rectangle shape.
+ * </p>
+ * <p>
+ * Behaviour:
+ * </p>
+ * <ul>
+ * <li>Mouse entered - shape is selected</li>
+ * <li>Mouse exited - shape is deselected</li>
+ * <li>Mouse pressed - shape is selected and position stored</li>
+ * <li>Mouse dragged - shape is moved with mouse</li>
+ * <li>Mouse released - shape is moved to position and deselected</li>
+ * 
+ * @author bk
+ */
+public class RectangleShapeController extends BaseShapeController implements IShapeController {
 
 	private static final Logger logger = LogManager.getLogger(RectangleShapeController.class.getName());
 
-	private IShapeView view;
-
-	@Override
-	public Node getView() {
-		return (Node) view;
-	}
-
-	private Double mouseX;
-	private Double mouseY;
-
-	private RectangleShapeModel rectModel;
-
+	/**
+	 * <p>
+	 * Constructor with model and parent controller.
+	 * </p>
+	 * 
+	 * @param model            the model for this controller
+	 * @param parentController parent controller or null
+	 */
 	public RectangleShapeController(IShapeModel model, PageController parentController) {
+		super(model, parentController);
 
 		logger.debug("Creating shape controller...");
 
-		rectModel = (RectangleShapeModel) model;
+		RectangleShapeModel rectModel = (RectangleShapeModel) model;
 		view = new RectangleShapeView(rectModel.xProperty(), rectModel.yProperty(), rectModel.widthProperty(),
 				rectModel.heightProperty());
 
+		ShapeEventData eventData = new ShapeEventData(model);
 		// EventHandler zuordnen
-		((Node) view).setOnMouseEntered(new MouseEnteredEventHandler(view));
-		((Node) view).setOnMouseExited(new MouseExitedEventHandler(view));
-		((Node) view).setOnMousePressed(new MousePressedEventHandler(view));
-		((Node) view).setOnMouseDragged(new MouseDraggedEventHandler(view));
-		((Node) view).setOnMouseReleased(new MouseReleasedEventHandler(view));
+		((Node) view).setOnMouseEntered(new ShapeMouseEnteredEventHandler(view));
+		((Node) view).setOnMouseExited(new ShapeMouseExitedEventHandler(view));
+		((Node) view).setOnMousePressed(new ShapeMousePressedEventHandler(view, eventData));
+		((Node) view).setOnMouseDragged(new ShapeMouseDraggedEventHandler(view, eventData));
+		((Node) view).setOnMouseReleased(new ShapeMouseReleasedEventHandler(view, eventData));
 
 		logger.debug("Shape controller created for shape 'Rectangle'");
-	}
-
-	@Override
-	public List<IConnector> getConnectors() {
-		return view.getConnectors();
-	}
-
-	// ===============================================================
-
-	/**
-	 * Dieser EventHandler wird ausgeführt, wenn die Mouse über dem Arrow ist. In
-	 * diesem Fall, wird der Cursor in einen Hand-Cursor geändert.
-	 *
-	 * @author bk
-	 */
-	class MouseEnteredEventHandler implements EventHandler<MouseEvent> {
-
-		private IShapeView shapeView;
-
-		public MouseEnteredEventHandler(IShapeView shapeView) {
-			this.shapeView = shapeView;
-		}
-
-		@Override
-		public void handle(MouseEvent event) {
-			((Node) shapeView).getScene().setCursor(Cursor.HAND);
-			shapeView.setSelected(true);
-			event.consume();
-		}
-	}
-
-	// ===============================================================
-
-	/**
-	 * Dieser EventHandler wird ausgeführt, wenn die Mouse den Arrow verlässt. In
-	 * diesem Fall wird der Default-Cursor wieder angezeigt.
-	 *
-	 * @author bk
-	 */
-	class MouseExitedEventHandler implements EventHandler<MouseEvent> {
-
-		private IShapeView shapeView;
-
-		public MouseExitedEventHandler(IShapeView shapeView) {
-			this.shapeView = shapeView;
-		}
-
-		@Override
-		public void handle(MouseEvent event) {
-			((Node) shapeView).getScene().setCursor(Cursor.DEFAULT);
-			shapeView.setSelected(false);
-			event.consume();
-		}
-	}
-
-	// ===============================================================
-
-	/**
-	 * Dieser EventHandler wird aufgerufen, wenn die Mouse über dem Pfeil gedrückt
-	 * wird. Die aktuelle Position der Mouse wird gespeichert.
-	 *
-	 * @author bk
-	 */
-	class MousePressedEventHandler implements EventHandler<MouseEvent> {
-
-		@SuppressWarnings("unused")
-		private IShapeView shapeView;
-
-		public MousePressedEventHandler(IShapeView shapeView) {
-			this.shapeView = shapeView;
-		}
-
-		@Override
-		public void handle(MouseEvent event) {
-
-			mouseX = event.getSceneX();
-			mouseY = event.getSceneY();
-
-			event.consume();
-		}
-	}
-
-	// ===============================================================
-
-	/**
-	 * Dieser EventHandler wird aufgerufen, wenn die Mouse über dem Pfeil wieder
-	 * freigegeben wird. Wenn dies über einem Connector geschiet, wird der Pfeil an
-	 * den Connector gebunden.
-	 *
-	 * @author bk
-	 */
-	class MouseReleasedEventHandler implements EventHandler<MouseEvent> {
-
-		@SuppressWarnings("unused")
-		private IShapeView arrow;
-
-		public MouseReleasedEventHandler(IShapeView shapeView) {
-			this.arrow = shapeView;
-		}
-
-		@Override
-		public void handle(MouseEvent event) {
-
-			if (mouseX != null && mouseY != null) {
-
-				double deltaX = event.getSceneX() - mouseX;
-				double deltaY = event.getSceneY() - mouseY;
-
-				mouseX += deltaX;
-				mouseY += deltaY;
-
-				rectModel.xProperty().set(rectModel.xProperty().get() + deltaX);
-				rectModel.yProperty().set(rectModel.yProperty().get() + deltaY);
-
-				event.consume();
-			}
-		}
-	}
-
-	// ===============================================================
-
-	/**
-	 * Dieser EventHandler wird aufgerufen, wenn die Mouse mit dem Pfeil verschoben
-	 * wird. Dazu wird die Differenz zwischen der aktuellen Mouse-Position und der
-	 * gespeicherten Mouse-Position berechnet und der Pfeil entsprechend verschoben.
-	 * Die neue Position wird dann wieder gespeichert.
-	 *
-	 * @author bk
-	 */
-	class MouseDraggedEventHandler implements EventHandler<MouseEvent> {
-
-		@SuppressWarnings("unused")
-		private IShapeView arrow;
-
-		public MouseDraggedEventHandler(IShapeView shapeView) {
-			this.arrow = shapeView;
-		}
-
-		@Override
-		public void handle(MouseEvent event) {
-
-			double deltaX = event.getSceneX() - mouseX;
-			double deltaY = event.getSceneY() - mouseY;
-
-			mouseX += deltaX;
-			mouseY += deltaY;
-
-			// Shape verschieben
-			rectModel.xProperty().set(rectModel.xProperty().get() + deltaX);
-			rectModel.yProperty().set(rectModel.yProperty().get() + deltaY);
-
-			event.consume();
-		}
 	}
 }

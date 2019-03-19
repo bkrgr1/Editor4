@@ -1,6 +1,7 @@
 package de.bkroeger.editor4.model;
 
-import java.util.logging.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import javafx.beans.binding.Bindings;
 import javafx.beans.property.DoubleProperty;
@@ -13,7 +14,7 @@ import javafx.beans.property.SimpleDoubleProperty;
  */
 public class Vector2D {
 
-	private static final Logger logger = Logger.getLogger(Vector2D.class.getName());
+	private static final Logger logger = LogManager.getLogger(Vector2D.class.getName());
 
 	/**
 	 * Der Winkel des Vektors
@@ -40,6 +41,7 @@ public class Vector2D {
 	private DoubleProperty lengthProperty = new SimpleDoubleProperty();
 	public  DoubleProperty lengthProperty() { return lengthProperty; }
 	public Double getLength() { return lengthProperty.get(); }
+	public  Double getC() { return getLength(); }
 	
 	/**
 	 * X-Koordinate des Startpunktes
@@ -116,7 +118,7 @@ public class Vector2D {
 			}
 		});		
 
-		logger.fine(String.format("a=%f, b=%f, c=%f, alpha=%f", 
+		logger.debug(String.format("a=%f, b=%f, c=%f, alpha=%f", 
 				aProperty.get(), bProperty.get(), 
 				lengthProperty.get(), alphaProperty.get()));
 	}
