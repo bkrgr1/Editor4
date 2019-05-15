@@ -74,54 +74,12 @@
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-compiler-plugin</artifactId>
-        <version>2.3.2</version>
+        <version>3.1</version>
         <configuration>
             <source>${java.version}</source>
             <target>${java.version}</target>
         </configuration>
       </plugin>
-      <!--
-      <plugin>
-          <groupId>org.apache.maven.plugins</groupId>
-          <artifactId>maven-jar-plugin</artifactId>
-          <version>2.2</version>
-          <executions>
-              <execution>
-                  <goals>
-                      <goal>jar</goal>
-                  </goals>
-                  <id>jar</id>
-              </execution>
-          </executions>
-          <configuration>
-                <archive>
-                  <manifestFile>src/main/resources/Manifest.txt</manifestFile>
-                  <manifest>
-                    <addClasspath>true</addClasspath>
-
-                    <mainClass>com.footballradar.jpademo.App</mainClass>
-
-                  </manifest>
-                </archive>
-          </configuration>
-      </plugin>
-      <plugin>
-          <groupId>org.apache.maven.plugins</groupId>
-          <artifactId>maven-shade-plugin</artifactId>
-          <version>1.4</version>
-              <executions>
-                  <execution>
-                          <phase>package</phase>
-                          <goals>
-                                  <goal>shade</goal>
-                          </goals>
-                  </execution>
-              </executions>
-              <configuration>
-                      <finalName>${project.artifactId}-${project.version}</finalName>
-              </configuration>
-      </plugin>
-      -->
     </plugins>
   </build>
 

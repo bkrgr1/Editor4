@@ -15,75 +15,91 @@ import javafx.scene.Node;
 import javafx.scene.input.MouseEvent;
 
 /**
- * Dieser Controller steuert die Bewegungen eines geraden Pfeils ohne Kurven oder Ecken.
+ * Dieser Controller steuert die Bewegungen eines geraden Pfeils ohne Kurven
+ * oder Ecken.
  * 
  * @author bk
  */
 public class StraightConnectorController implements IConnectorController {
 
 	private static final Logger logger = Logger.getLogger(StraightConnectorController.class.getName());
-	
+
 	private static final double radiusX = 5.0;
 	private static final double radiusY = 5.0;
-	
+
 	private static final DoubleProperty nullProperty = new SimpleDoubleProperty(0.0);
 
 	private Double mouseX;
 	private Double mouseY;
-	
+
 	private IConnector view;
 	private IConnectorModel model;
-	@Override
-	public IConnectorModel getModel() { return model; }
 
 	@Override
-	public Node getView() { return (Node) view; }
-	
+	public IConnectorModel getModel() {
+		return model;
+	}
+
+	@Override
+	public Node getView() {
+		return (Node) view;
+	}
+
 	/**
 	 * Constructor
+	 * 
 	 * @param model
 	 * @param parentController
 	 * @param connectors
 	 */
 	public StraightConnectorController(IConnectorModel model, IArrowController parentController, boolean isStart) {
-		
+
 		this.model = (IConnectorModel) model;
 		StraightArrowView parentView = (StraightArrowView) parentController.getView();
-		
+
 		// den Connector zeichnen
 		view = new StraightConnectorView(
-				Bindings.add(radiusX / 2.0, (isStart ? nullProperty : parentView.lengthProperty())), 
+				Bindings.add(radiusX / 2.0, (isStart ? nullProperty : parentView.lengthProperty())),
 				Bindings.add(Bindings.multiply(model.yProperty(), 0.0), radiusY / 2.0));
-		((Node)view).setVisible(false);
-		
-		
+		((Node) view).setVisible(false);
+
 		// Eventhandler für Connectoren
-		((Node)view).setOnMouseEntered(new ConnectorEnteredEventHandler(view));
-		((Node)view).setOnMouseExited(new ConnectorExitedEventHandler(view));
-		((Node)view).setOnMousePressed(new ConnectorPressedEventHandler(view, model));
-		((Node)view).setOnMouseDragged(new ConnectorDraggedEventHandler(view, model));
-		((Node)view).setOnMouseReleased(new ConnectorReleasedEventHandler(view, model));
+		((Node) view).setOnMouseEntered(new ConnectorEnteredEventHandler(view));
+		((Node) view).setOnMouseExited(new ConnectorExitedEventHandler(view));
+		((Node) view).setOnMousePressed(new ConnectorPressedEventHandler(view, model));
+		((Node) view).setOnMouseDragged(new ConnectorDraggedEventHandler(view, model));
+		((Node) view).setOnMouseReleased(new ConnectorReleasedEventHandler(view, model));
+	}
+
+	/**
+	 * Selektiert oder deselektiert die View.
+	 */
+	@Override
+	public void setSelected(boolean isSelected) {
+
+		this.view.setSelected(isSelected);
 	}
 
 	// ===============================================================
 
 	/**
-	 * Dieser EventHandler wird ausgeführt, wenn die Mouse über einem Arrow-Connector ist.
-	 * In diesem Fall, wird der Cursor in einen Hand-Cursor geändert.
+	 * Dieser EventHandler wird ausgeführt, wenn die Mouse über einem
+	 * Arrow-Connector ist. In diesem Fall, wird der Cursor in einen Hand-Cursor
+	 * geändert.
 	 *
 	 * @author bk
 	 */
 	class ConnectorEnteredEventHandler implements EventHandler<MouseEvent> {
-		
+
 		private IConnector connector;
 
 		public ConnectorEnteredEventHandler(IConnector connector) {
 			this.connector = connector;
 		}
-	
+
 		@Override
-		public void handle(MouseEvent event) {			
-			((Node)connector).getScene().setCursor(Cursor.HAND);
+		public void handle(MouseEvent event) {
+			((Node) connector).getScene().setCursor(Cursor.HAND);
 			connector.setSelected(true);
 			event.consume();
 		}
@@ -92,13 +108,13 @@ public class StraightConnectorController implements IConnectorController {
 	// ===============================================================
 
 	/**
-	 * Dieser EventHandler wird ausgeführt, wenn die Mouse den Arrow-Connector verlässt.
-	 * In diesem Fall wird der Default-Cursor wieder angezeigt.
+	 * Dieser EventHandler wird ausgeführt, wenn die Mouse den Arrow-Connector
+	 * verlässt. In diesem Fall wird der Default-Cursor wieder angezeigt.
 	 *
 	 * @author bk
 	 */
 	class ConnectorExitedEventHandler implements EventHandler<MouseEvent> {
-		
+
 		private IConnector connector;
 
 		public ConnectorExitedEventHandler(IConnector connector) {
@@ -107,7 +123,7 @@ public class StraightConnectorController implements IConnectorController {
 
 		@Override
 		public void handle(MouseEvent event) {
-			((Node)connector).getScene().setCursor(Cursor.DEFAULT);
+			((Node) connector).getScene().setCursor(Cursor.DEFAULT);
 			connector.setSelected(false);
 			event.consume();
 		}
@@ -116,13 +132,13 @@ public class StraightConnectorController implements IConnectorController {
 	// ===============================================================
 
 	/**
-	 * Dieser EventHandler wird aufgerufen, wenn die Mouse über dem Arrow-Connector gedrückt wird.
-	 * Die aktuelle Position der Mouse wird gespeichert.
+	 * Dieser EventHandler wird aufgerufen, wenn die Mouse über dem Arrow-Connector
+	 * gedrückt wird. Die aktuelle Position der Mouse wird gespeichert.
 	 *
 	 * @author bk
 	 */
 	class ConnectorPressedEventHandler implements EventHandler<MouseEvent> {
-		
+
 		@SuppressWarnings("unused")
 		private IConnector connector;
 		private IConnectorModel model;
@@ -136,8 +152,7 @@ public class StraightConnectorController implements IConnectorController {
 		public void handle(MouseEvent event) {
 			mouseX = event.getSceneX();
 			mouseY = event.getSceneY();
-			logger.info(String.format("Connector point pressed at: %f/%f",
-					model.xProperty().get(),
+			logger.info(String.format("Connector point pressed at: %f/%f", model.xProperty().get(),
 					model.yProperty().get()));
 			event.consume();
 		}
@@ -146,8 +161,9 @@ public class StraightConnectorController implements IConnectorController {
 	// ===============================================================
 
 	/**
-	 * Dieser EventHandler wird aufgerufen, wenn die Mouse über einem Arrow-Connector wieder freigegeben wird.
-	 * Die Position des Konnektors wird auf die letzte Mausposition gesetzt.
+	 * Dieser EventHandler wird aufgerufen, wenn die Mouse über einem
+	 * Arrow-Connector wieder freigegeben wird. Die Position des Konnektors wird auf
+	 * die letzte Mausposition gesetzt.
 	 *
 	 * @author bk
 	 */
@@ -169,14 +185,13 @@ public class StraightConnectorController implements IConnectorController {
 
 				double deltaX = event.getSceneX() - mouseX;
 				double deltaY = event.getSceneY() - mouseY;
-				
+
 				mouseX += deltaX;
 				mouseY += deltaY;
-				
-				model.xProperty().set( model.xProperty().get() + deltaX );
-				model.yProperty().set( model.yProperty().get() + deltaY );
-				logger.info(String.format("Connector point released at: %f/%f",
-						model.xProperty().get(),
+
+				model.xProperty().set(model.xProperty().get() + deltaX);
+				model.yProperty().set(model.yProperty().get() + deltaY);
+				logger.info(String.format("Connector point released at: %f/%f", model.xProperty().get(),
 						model.yProperty().get()));
 			}
 
@@ -187,10 +202,11 @@ public class StraightConnectorController implements IConnectorController {
 	// ===============================================================
 
 	/**
-	 * Dieser EventHandler wird aufgerufen, wenn die Mouse mit dem Arrow-Connector verschoben wird.
-	 * Dazu wird die Differenz zwischen der aktuellen Mouse-Position und der gespeicherten
-	 * Mouse-Position berechnet und die Connector-Position entsprechend verschoben.
-	 * Die neue Position wird dann wieder gespeichert.
+	 * Dieser EventHandler wird aufgerufen, wenn die Mouse mit dem Arrow-Connector
+	 * verschoben wird. Dazu wird die Differenz zwischen der aktuellen
+	 * Mouse-Position und der gespeicherten Mouse-Position berechnet und die
+	 * Connector-Position entsprechend verschoben. Die neue Position wird dann
+	 * wieder gespeichert.
 	 *
 	 * @author bk
 	 */
@@ -207,22 +223,21 @@ public class StraightConnectorController implements IConnectorController {
 
 		@Override
 		public void handle(MouseEvent event) {
-			
+
 			if (mouseX != null && mouseY != null) {
-				
+
 				double deltaX = event.getSceneX() - mouseX;
 				double deltaY = event.getSceneY() - mouseY;
-				
+
 				mouseX += deltaX;
 				mouseY += deltaY;
-				
-				model.xProperty().set( model.xProperty().get() + deltaX );
-				model.yProperty().set( model.yProperty().get() + deltaY );
-				logger.info(String.format("Connector point moved to: %f/%f",
-					model.xProperty().get(),
-					model.yProperty().get()));
+
+				model.xProperty().set(model.xProperty().get() + deltaX);
+				model.yProperty().set(model.yProperty().get() + deltaY);
+				logger.info(String.format("Connector point moved to: %f/%f", model.xProperty().get(),
+						model.yProperty().get()));
 			}
-			
+
 			event.consume();
 		}
 	}

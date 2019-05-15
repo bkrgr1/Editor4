@@ -8,4 +8,6 @@ public interface IConnectorController {
 	public Node getView();
 	
 	public IConnectorModel getModel();
+
+	public void setSelected(boolean isSelected);
 }

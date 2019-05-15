@@ -1,5 +1,7 @@
 package de.bkroeger.editor4.model;
 
+import javafx.beans.binding.Bindings;
+
 /**
  * <p>
  * This model contains the data for a straight arrow.
@@ -22,11 +24,13 @@ public class StraightArrowModel extends BaseArrowModel {
 		super(x1, y1, x2, y2, rotate);
 
 		// create a Connector model at the start point
-		IConnectorModel connectorModel = new DefaultConnectorModel(this.x1Property, this.y1Property);
+		IConnectorModel connectorModel = new DefaultConnectorModel(Bindings.add(this.x1Property, 0.0),
+				Bindings.add(this.y1Property, 0.0));
 		connectorModels.add(connectorModel);
 
 		// create a Connector at the end point
-		connectorModel = new DefaultConnectorModel(this.x2Property, this.y2Property);
+		connectorModel = new DefaultConnectorModel(Bindings.add(this.x2Property, 0.0),
+				Bindings.add(this.y2Property, 0.0));
 		connectorModels.add(connectorModel);
 	}
 }

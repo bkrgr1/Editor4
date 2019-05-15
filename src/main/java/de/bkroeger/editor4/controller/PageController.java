@@ -17,18 +17,14 @@ import lombok.EqualsAndHashCode;
 
 /**
  * <p>
- * This controller manges the behaviour of a page view.
+ * This controller manges the behaviour of a diagram page.
  * </p>
  * 
  * @author bk
  */
-@Data
-@EqualsAndHashCode(callSuper = true)
 public class PageController extends BaseController {
 
     private static final Logger logger = LogManager.getLogger(PageController.class.getName());
-
-    private int pageNo;
 
     private List<IShapeController> shapeControllers = new ArrayList<>();
 
@@ -43,7 +39,6 @@ public class PageController extends BaseController {
      */
     public PageController(int pageNo) {
         super();
-        this.pageNo = pageNo;
     }
 
     /**
@@ -58,7 +53,6 @@ public class PageController extends BaseController {
     public PageController(PageModel pageModel, int panelWidth, int panelHeight) {
         super();
         this.model = pageModel;
-        this.pageNo = pageModel.getPageNo();
 
         logger.debug("Creating PageController...");
 
@@ -81,7 +75,7 @@ public class PageController extends BaseController {
             // einen ArrowController für jeden einzelnen Pfeil erzeugen
             IArrowController arrowCtrl = ArrowControllerFactory.getController(editorArrowModel, this, shapeControllers);
             arrowControllers.add(arrowCtrl);
-            ((Pane) this.view).getChildren().add(arrowCtrl.getView());
+            ((Pane) this.view).getChildren().add((Node) arrowCtrl.getView());
         }
 
         logger.debug("Page controller created for page=" + pageModel.getPageNo());

@@ -8,8 +8,6 @@ import org.springframework.context.ConfigurableApplicationContext;
 
 import de.bkroeger.editor4.controller.FileController;
 import de.bkroeger.editor4.model.FileModel;
-import javafx.application.Application;
-import javafx.scene.Node;
 import javafx.scene.Scene;
 import javafx.scene.layout.StackPane;
 import javafx.stage.Stage;
@@ -32,7 +30,6 @@ public class Editor4 extends Application {
 	private static final Logger logger = LogManager.getLogger(Editor4.class.getName());
 
 	private ConfigurableApplicationContext context;
-
 
 	/**
 	 * Starts the application

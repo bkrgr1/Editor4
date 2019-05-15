@@ -3,6 +3,11 @@ package de.bkroeger.editor4.model;
 import lombok.Getter;
 import lombok.Setter;
 
+/**
+ * <p>The ShapeEventData class is used to share data between event handlers.</p>
+ * 
+ * @author berthold
+ */
 @Getter
 @Setter
 public class ShapeEventData {

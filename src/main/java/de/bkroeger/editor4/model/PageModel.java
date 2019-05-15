@@ -19,6 +19,8 @@ public class PageModel extends BaseModel {
 
 	private int pageNo;
 
+	private String pageTitle;
+
 	private List<IShapeModel> shapeModels = new ArrayList<>();
 
 	public void addShapeModel(IShapeModel model) {

@@ -10,6 +10,7 @@ import javafx.beans.binding.Bindings;
 import javafx.beans.property.DoubleProperty;
 import javafx.beans.property.ObjectProperty;
 import javafx.geometry.Insets;
+import javafx.scene.Cursor;
 import javafx.scene.Node;
 import javafx.scene.layout.Background;
 import javafx.scene.layout.BackgroundFill;
@@ -231,13 +232,21 @@ public class StraightArrowView extends Pane implements IArrowView {
 
 	@Override
 	public void setSelected(boolean isSelected) {
-		for (IConnector connector : connectors) {
-			((Node) connector).setVisible(isSelected);
-		}
+
 		if (isSelected) {
+
+			// Background zeigen, um Selected-Status zu demonstrieren
 			this.setBackground(new Background(new BackgroundFill(BACKGROUND_COLOR, CornerRadii.EMPTY, Insets.EMPTY)));
+			if (((Node) this).getScene() != null) {
+				((Node) this).getScene().setCursor(Cursor.HAND);
+			}
 		} else {
+
+			// Background transparent machen, um Not-Selected-Status zu demonstrieren
 			this.setBackground(new Background(new BackgroundFill(Color.TRANSPARENT, CornerRadii.EMPTY, Insets.EMPTY)));
+			if (((Node) this).getScene() != null) {
+				((Node) this).getScene().setCursor(Cursor.DEFAULT);
+			}
 		}
 	}
 }
