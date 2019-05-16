@@ -3,15 +3,16 @@ package de.bkroeger.editor4.model;
 import java.util.ArrayList;
 import java.util.List;
 
-import de.bkroeger.editor4.model.PageModel;
-import lombok.Data;
+import lombok.Getter;
+import lombok.Setter;
 
 /**
  * <p>
  * Definiert die Daten für eine Diagrammdatei.
  * </p>
  */
-@Data
+@Getter
+@Setter
 public class FileModel extends BaseModel {
 
     private String path;
@@ -19,6 +20,7 @@ public class FileModel extends BaseModel {
     private String filename;
 
     private List<PageModel> pages = new ArrayList<>();
+    public List<PageModel> getPages() { return this.pages; }
 
     public FileModel() {
 

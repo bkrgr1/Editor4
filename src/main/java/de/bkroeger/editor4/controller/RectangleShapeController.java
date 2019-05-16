@@ -17,7 +17,6 @@ import de.bkroeger.editor4.model.RectangleShapeModel;
 import de.bkroeger.editor4.model.ShapeEventData;
 import de.bkroeger.editor4.view.RectangleShapeView;
 import javafx.beans.binding.Bindings;
-import javafx.beans.property.DoubleProperty;
 import javafx.scene.Node;
 
 /**

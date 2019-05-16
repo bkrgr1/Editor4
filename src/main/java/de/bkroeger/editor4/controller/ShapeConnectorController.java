@@ -5,7 +5,6 @@ import java.util.logging.Logger;
 import de.bkroeger.editor4.model.IConnectorModel;
 import de.bkroeger.editor4.view.IConnector;
 import de.bkroeger.editor4.view.IShapeView;
-import de.bkroeger.editor4.view.StraightArrowView;
 import de.bkroeger.editor4.view.StraightConnectorView;
 import javafx.beans.binding.Bindings;
 import javafx.beans.property.DoubleProperty;
@@ -28,6 +27,7 @@ public class ShapeConnectorController implements IConnectorController {
 	private static final double radiusX = 5.0;
 	private static final double radiusY = 5.0;
 
+	@SuppressWarnings("unused")
 	private static final DoubleProperty nullProperty = new SimpleDoubleProperty(0.0);
 
 	private Double mouseX;
@@ -56,6 +56,7 @@ public class ShapeConnectorController implements IConnectorController {
 	public ShapeConnectorController(IConnectorModel model, IShapeController parentController) {
 
 		this.model = (IConnectorModel) model;
+		@SuppressWarnings("unused")
 		IShapeView parentView = (IShapeView) parentController.getView();
 
 		// den Connector zeichnen

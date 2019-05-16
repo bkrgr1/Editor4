@@ -1,14 +1,16 @@
 package de.bkroeger.editor4.model;
 
 import javafx.beans.property.DoubleProperty;
-import lombok.Data;
+import lombok.Getter;
+import lombok.Setter;
 
 /**
  * <p>
  * Definiert die Basisfunktionen für ein Model.
  * </p>
  */
-@Data
+@Getter
+@Setter
 public class BaseModel implements IModel {
 
     protected String title;
@@ -34,4 +36,10 @@ public class BaseModel implements IModel {
     public BaseModel(String title) {
         this.title = title;
     }
+
+	@Override
+	public String getTitle() {
+		// TODO Auto-generated method stub
+		return null;
+	}
 }

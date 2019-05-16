@@ -19,10 +19,10 @@ import de.bkroeger.editor4.view.TabView;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.scene.Node;
+import javafx.scene.control.Dialog;
 import javafx.scene.control.SingleSelectionModel;
 import javafx.scene.control.Tab;
 import javafx.scene.control.TabPane;
-import javafx.scene.control.Dialog;
 import lombok.Getter;
 import lombok.Setter;
 

@@ -19,7 +19,8 @@ import de.bkroeger.editor4.view.IView;
  */
 public class BaseShapeController implements IShapeController {
 
-    private static final Logger logger = LogManager.getLogger(BaseShapeController.class.getName());
+    @SuppressWarnings("unused")
+	private static final Logger logger = LogManager.getLogger(BaseShapeController.class.getName());
 
     protected IShapeView view;
 
@@ -28,8 +29,10 @@ public class BaseShapeController implements IShapeController {
         return view;
     }
 
-    protected Double mouseX = new Double(0.0);
-    protected Double mouseY = new Double(0.0);
+    @SuppressWarnings("deprecation")
+	protected Double mouseX = new Double(0.0);
+    @SuppressWarnings("deprecation")
+	protected Double mouseY = new Double(0.0);
 
     protected IModel model;
 

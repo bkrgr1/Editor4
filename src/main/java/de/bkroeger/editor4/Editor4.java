@@ -8,6 +8,8 @@ import org.springframework.context.ConfigurableApplicationContext;
 
 import de.bkroeger.editor4.controller.FileController;
 import de.bkroeger.editor4.model.FileModel;
+import javafx.application.Application;
+import javafx.scene.Node;
 import javafx.scene.Scene;
 import javafx.scene.layout.StackPane;
 import javafx.stage.Stage;

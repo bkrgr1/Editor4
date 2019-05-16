@@ -22,7 +22,8 @@ public class ShapeMousePressedEventHandler implements EventHandler<MouseEvent> {
         this.eventData = eventData;
     }
 
-    @Override
+    @SuppressWarnings("deprecation")
+	@Override
     public void handle(MouseEvent event) {
 
         eventData.setMouseX(new Double(event.getSceneX()));

@@ -12,8 +12,6 @@ import de.bkroeger.editor4.model.PageModel;
 import de.bkroeger.editor4.view.PageView;
 import javafx.scene.Node;
 import javafx.scene.layout.Pane;
-import lombok.Data;
-import lombok.EqualsAndHashCode;
 
 /**
  * <p>
