@@ -6,7 +6,6 @@ import org.apache.logging.log4j.Logger;
 import de.bkroeger.editor4.view.BaseShapeView;
 import javafx.event.EventHandler;
 import javafx.scene.Cursor;
-import javafx.scene.Node;
 import javafx.scene.input.MouseEvent;
 
 /**
@@ -28,8 +27,8 @@ public class ShapeMouseExitedEventHandler implements EventHandler<MouseEvent> {
     @Override
     public void handle(MouseEvent event) {
         logger.debug("Mouse exited shape");
-        ((Node) shapeView).getScene().setCursor(Cursor.DEFAULT);
-        shapeView.setSelected(false);
+        shapeView.getScene().setCursor(Cursor.DEFAULT);
+        shapeView.setMouseOver(false);
         event.consume();
     }
 }

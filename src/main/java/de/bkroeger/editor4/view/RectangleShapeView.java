@@ -1,11 +1,13 @@
 package de.bkroeger.editor4.view;
 
+import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
 
 import javafx.beans.binding.Bindings;
 import javafx.beans.property.DoubleProperty;
 import javafx.scene.Node;
+import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.Pane;
 import javafx.scene.paint.Color;
@@ -20,6 +22,10 @@ import javafx.scene.shape.Rectangle;
  */
 public class RectangleShapeView extends BaseShapeView {
 	
+	private static final String RIGHT_RESIZE_ICON_PATH = "/images/iconmonstr-arrow-63-16.png";
+	private static final String LEFT_RESIZE_ICON_PATH = "/images/iconmonstr-arrow-64-16.png";
+	private static final String TOP_RESIZE_ICON_PATH = "/images/iconmonstr-arrow-66-16.png";
+	private static final String BOTTOM_RESIZE_ICON_PATH = "/images/iconmonstr-arrow-65-16.png";
 	private double additionalWidth = 15.0;
 	private double additionalHeight = 15.0;
 	
@@ -51,6 +57,8 @@ public class RectangleShapeView extends BaseShapeView {
 		rect.setFill(Color.YELLOW);
 		rect.setStroke(Color.BLACK);
 		
+		this.javaFXShape = rect;
+		
 		// die Konnectoren als Kreise zeichnen
 		ImageView connector = null;
 		
@@ -80,8 +88,68 @@ public class RectangleShapeView extends BaseShapeView {
 		
 		// Rectangle und Konnektoren zum Pane hinzufügen
 		this.getChildren().add(rect);
+		
 		List<Node> nodeConnectors = new ArrayList<>();
 		for (ImageView c : connectors) { nodeConnectors.add((Node)c); }
 		this.getChildren().addAll(nodeConnectors);
+		
+		// rechts
+        resizeIcons.add(buildRightResizeIcon(widthProperty, heightProperty));
+        resizeIcons.add(buildLeftResizeIcon(xProperty, heightProperty));
+        resizeIcons.add(buildTopResizeIcon(widthProperty, heightProperty));
+        resizeIcons.add(buildBottomResizeIcon(widthProperty, heightProperty));
+		this.getChildren().addAll(resizeIcons);
+	}
+	
+	private Node buildRightResizeIcon(DoubleProperty widthProperty, DoubleProperty heightProperty) {
+		
+		InputStream input = this.getClass().getResourceAsStream(RIGHT_RESIZE_ICON_PATH);		 
+        Image image = new Image(input);
+        double imageWidth = image.getWidth();
+        double imageHeight = image.getHeight();
+        ImageView icon = new ImageView(image);
+        icon.xProperty().bind(Bindings.add(widthProperty, additionalWidth + imageWidth/-2.0));
+        icon.yProperty().bind(Bindings.add(Bindings.divide(heightProperty, 2.0), additionalHeight + imageHeight/-2.0));
+        icon.setVisible(false);
+        return icon;
+	}
+	
+	private Node buildLeftResizeIcon(DoubleProperty xProperty, DoubleProperty heightProperty) {
+		
+		InputStream input = this.getClass().getResourceAsStream(LEFT_RESIZE_ICON_PATH);		 
+        Image image = new Image(input);
+        double imageWidth = image.getWidth();
+        double imageHeight = image.getHeight();
+        ImageView icon = new ImageView(image);
+        icon.xProperty().bind(Bindings.add(Bindings.multiply(xProperty,  0.0), additionalWidth + imageWidth/-2.0));
+        icon.yProperty().bind(Bindings.add(Bindings.divide(heightProperty, 2.0), additionalHeight + imageHeight/-2.0));
+        icon.setVisible(false);
+        return icon;
+	}
+	
+	private Node buildTopResizeIcon(DoubleProperty widthProperty, DoubleProperty heightProperty) {
+		
+		InputStream input = this.getClass().getResourceAsStream(TOP_RESIZE_ICON_PATH);		 
+        Image image = new Image(input);
+        double imageWidth = image.getWidth();
+        double imageHeight = image.getHeight();
+        ImageView icon = new ImageView(image);
+        icon.xProperty().bind(Bindings.add(Bindings.divide(widthProperty, 2.0), additionalWidth + imageWidth/-2.0));
+        icon.yProperty().bind(Bindings.add(Bindings.multiply(heightProperty(), 0.0), additionalHeight + imageHeight/-2.0));
+        icon.setVisible(false);
+        return icon;
+	}
+	
+	private Node buildBottomResizeIcon(DoubleProperty widthProperty, DoubleProperty heightProperty) {
+		
+		InputStream input = this.getClass().getResourceAsStream(BOTTOM_RESIZE_ICON_PATH);		 
+        Image image = new Image(input);
+        double imageWidth = image.getWidth();
+        double imageHeight = image.getHeight();
+        ImageView icon = new ImageView(image);
+        icon.xProperty().bind(Bindings.add(Bindings.divide(widthProperty, 2.0), additionalWidth + imageWidth/-2.0));
+        icon.yProperty().bind(Bindings.add(heightProperty, additionalHeight + imageHeight/-2.0));
+        icon.setVisible(false);
+        return icon;
 	}
 }
