@@ -10,15 +10,13 @@ import de.bkroeger.editor4.model.IArrowModel;
 import de.bkroeger.editor4.model.IConnectorModel;
 import de.bkroeger.editor4.model.StraightArrowModel;
 import de.bkroeger.editor4.view.IArrowView;
-import de.bkroeger.editor4.view.IConnector;
 import de.bkroeger.editor4.view.StraightArrowView;
-import de.bkroeger.editor4.view.StraightConnectorView;
 import javafx.event.EventHandler;
 import javafx.geometry.Bounds;
 import javafx.geometry.Point2D;
 import javafx.scene.Node;
+import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
-import javafx.scene.shape.Circle;
 
 /**
  * Dieser Controller steuert die Bewegungen eines geraden Pfeils ohne Kurven
@@ -69,8 +67,8 @@ public class StraightArrowController extends BaseArrowController {
 			IConnectorController connCtrl = new StraightConnectorController(connectorModel, this, isStart);
 			connectorControllers.add(connCtrl);
 			isStart = false;
-			StraightConnectorView connView = (StraightConnectorView) connCtrl.getView();
-			((StraightArrowView) this.view).getChildren().add(connView);
+//			StraightConnectorView connView = (StraightConnectorView) connCtrl.getView();
+//			((StraightArrowView) this.view).getChildren().add(connView);
 		}
 
 		// EventHandler zuordnen
@@ -207,9 +205,9 @@ public class StraightArrowController extends BaseArrowController {
 					IShapeController shape = shapes.get(shapeConnectorIndex);
 					for (int arrowConnectorIndex = 0; arrowConnectorIndex < shape.getConnectors()
 							.size(); arrowConnectorIndex++) {
-						IConnector shapeConnector = shape.getConnectors().get(arrowConnectorIndex);
+						ImageView shapeConnector = shape.getConnectors().get(arrowConnectorIndex);
 						Node shapeConnectorNode = (Node) shapeConnector;
-						for (IConnector arrowConnector : arrow.getConnectors()) {
+						for (ImageView arrowConnector : arrow.getConnectors()) {
 							Node arrowConnectorNode = (Node) arrowConnector;
 							if (intersectsWithConnectorPoint(shapeConnectorNode, arrowConnectorNode)) {
 								// ja,
@@ -218,8 +216,8 @@ public class StraightArrowController extends BaseArrowController {
 
 								// Connector-Mittelpunkt in Scene-Koordinaten umrechnen
 								Point2D localConnectorPoint = new Point2D(
-										((Circle) shapeConnector).centerXProperty().get(),
-										((Circle) shapeConnector).centerYProperty().get());
+										((ImageView) shapeConnector).xProperty().get(),
+										((ImageView) shapeConnector).yProperty().get());
 								Point2D sceneConnectorPoint = shapeConnectorNode.localToScene(localConnectorPoint);
 
 								// Koordinaten in lokale Arrow-Koordinaten umrechnen
@@ -283,9 +281,9 @@ public class StraightArrowController extends BaseArrowController {
 			for (int j = 0; j < shapes.size(); j++) {
 				IShapeController shape = shapes.get(j);
 				for (int i = 0; i < shape.getConnectors().size(); i++) {
-					IConnector shapeConnector = shape.getConnectors().get(i);
+					ImageView shapeConnector = shape.getConnectors().get(i);
 					Node shapeConnectorNode = (Node) shapeConnector;
-					for (IConnector arrowConnector : arrow.getConnectors()) {
+					for (ImageView arrowConnector : arrow.getConnectors()) {
 						Node arrowConnectorNode = (Node) arrowConnector;
 						if (intersectsWithConnectorPoint(shapeConnectorNode, arrowConnectorNode)) {
 							logger.info("Arrow intersects with shape " + j + " connector " + i);

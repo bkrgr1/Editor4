@@ -23,6 +23,7 @@ import javafx.scene.shape.Path;
 import javafx.scene.shape.PathElement;
 import javafx.scene.transform.Rotate;
 import javafx.scene.transform.Transform;
+import javafx.scene.image.ImageView;
 
 /**
  * <p>
@@ -53,10 +54,10 @@ public class StraightArrowView extends Pane implements IArrowView {
 
 	private static final Color BACKGROUND_COLOR = Color.LIGHTGREEN;
 
-	private List<IConnector> connectors = new ArrayList<>();
+	private List<ImageView> connectors = new ArrayList<>();
 
 	@Override
-	public List<IConnector> getConnectors() {
+	public List<ImageView> getConnectors() {
 		return connectors;
 	}
 

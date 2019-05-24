@@ -1,7 +1,7 @@
 package de.bkroeger.editor4.Handler;
 
 import de.bkroeger.editor4.model.ShapeEventData;
-import de.bkroeger.editor4.view.IShapeView;
+import de.bkroeger.editor4.view.BaseShapeView;
 import javafx.event.EventHandler;
 import javafx.scene.input.MouseEvent;
 
@@ -16,10 +16,10 @@ import javafx.scene.input.MouseEvent;
 public class ShapeMouseDraggedEventHandler implements EventHandler<MouseEvent> {
 
     @SuppressWarnings("unused")
-    private IShapeView arrow;
+    private BaseShapeView arrow;
     private ShapeEventData eventData;
 
-    public ShapeMouseDraggedEventHandler(IShapeView shapeView, ShapeEventData eventData) {
+    public ShapeMouseDraggedEventHandler(BaseShapeView shapeView, ShapeEventData eventData) {
         this.arrow = shapeView;
         this.eventData = eventData;
     }

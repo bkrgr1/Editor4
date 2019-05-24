@@ -1,17 +1,17 @@
 package de.bkroeger.editor4.controller;
 
+import java.io.InputStream;
 import java.util.logging.Logger;
 
 import de.bkroeger.editor4.model.IConnectorModel;
-import de.bkroeger.editor4.view.IConnector;
-import de.bkroeger.editor4.view.IShapeView;
-import de.bkroeger.editor4.view.StraightConnectorView;
-import javafx.beans.binding.Bindings;
+import de.bkroeger.editor4.view.BaseShapeView;
 import javafx.beans.property.DoubleProperty;
 import javafx.beans.property.SimpleDoubleProperty;
 import javafx.event.EventHandler;
 import javafx.scene.Cursor;
 import javafx.scene.Node;
+import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
 
 /**
@@ -24,7 +24,9 @@ public class ShapeConnectorController implements IConnectorController {
 
 	private static final Logger logger = Logger.getLogger(StraightConnectorController.class.getName());
 
+	@SuppressWarnings("unused")
 	private static final double radiusX = 5.0;
+	@SuppressWarnings("unused")
 	private static final double radiusY = 5.0;
 
 	@SuppressWarnings("unused")
@@ -33,7 +35,7 @@ public class ShapeConnectorController implements IConnectorController {
 	private Double mouseX;
 	private Double mouseY;
 
-	private IConnector view;
+	private ImageView view;
 	private IConnectorModel model;
 
 	@Override
@@ -57,12 +59,16 @@ public class ShapeConnectorController implements IConnectorController {
 
 		this.model = (IConnectorModel) model;
 		@SuppressWarnings("unused")
-		IShapeView parentView = (IShapeView) parentController.getView();
+		BaseShapeView parentView = (BaseShapeView) parentController.getView();
 
 		// den Connector zeichnen
-		view = new StraightConnectorView(Bindings.add(radiusX / 2.0, model.xProperty()),
-				Bindings.add(radiusY / 2.0, model.yProperty()));
-		((Node) view).setVisible(false);
+//		view = new StraightConnectorView(Bindings.add(radiusX / 2.0, model.xProperty()),
+//				Bindings.add(radiusY / 2.0, model.yProperty()));
+		InputStream input = this.getClass().getResourceAsStream("/images/iconmonstr-link-thin-16.png");		 
+        Image image = new Image(input);
+        view = new ImageView(image);
+        
+        ((Node) view).setVisible(false);
 
 		// Eventhandler für Connectoren
 		((Node) view).setOnMouseEntered(new ConnectorEnteredEventHandler(view));
@@ -78,7 +84,7 @@ public class ShapeConnectorController implements IConnectorController {
 	@Override
 	public void setSelected(boolean isSelected) {
 
-		this.view.setSelected(isSelected);
+//		this.view.setSelected(isSelected);
 	}
 
 	// ===============================================================
@@ -92,16 +98,16 @@ public class ShapeConnectorController implements IConnectorController {
 	 */
 	class ConnectorEnteredEventHandler implements EventHandler<MouseEvent> {
 
-		private IConnector connector;
+		private ImageView connector;
 
-		public ConnectorEnteredEventHandler(IConnector connector) {
+		public ConnectorEnteredEventHandler(ImageView connector) {
 			this.connector = connector;
 		}
 
 		@Override
 		public void handle(MouseEvent event) {
 			((Node) connector).getScene().setCursor(Cursor.HAND);
-			connector.setSelected(true);
+//			connector.setSelected(true);
 			event.consume();
 		}
 	}
@@ -116,16 +122,16 @@ public class ShapeConnectorController implements IConnectorController {
 	 */
 	class ConnectorExitedEventHandler implements EventHandler<MouseEvent> {
 
-		private IConnector connector;
+		private ImageView connector;
 
-		public ConnectorExitedEventHandler(IConnector connector) {
+		public ConnectorExitedEventHandler(ImageView connector) {
 			this.connector = connector;
 		}
 
 		@Override
 		public void handle(MouseEvent event) {
 			((Node) connector).getScene().setCursor(Cursor.DEFAULT);
-			connector.setSelected(false);
+//			connector.setSelected(false);
 			event.consume();
 		}
 	}
@@ -141,10 +147,10 @@ public class ShapeConnectorController implements IConnectorController {
 	class ConnectorPressedEventHandler implements EventHandler<MouseEvent> {
 
 		@SuppressWarnings("unused")
-		private IConnector connector;
+		private ImageView connector;
 		private IConnectorModel model;
 
-		public ConnectorPressedEventHandler(IConnector connector, IConnectorModel model) {
+		public ConnectorPressedEventHandler(ImageView connector, IConnectorModel model) {
 			this.connector = connector;
 			this.model = model;
 		}
@@ -171,10 +177,10 @@ public class ShapeConnectorController implements IConnectorController {
 	class ConnectorReleasedEventHandler implements EventHandler<MouseEvent> {
 
 		@SuppressWarnings("unused")
-		private IConnector connector;
+		private ImageView connector;
 		private IConnectorModel model;
 
-		public ConnectorReleasedEventHandler(IConnector connector, IConnectorModel model) {
+		public ConnectorReleasedEventHandler(ImageView connector, IConnectorModel model) {
 			this.connector = connector;
 			this.model = model;
 		}
@@ -214,10 +220,10 @@ public class ShapeConnectorController implements IConnectorController {
 	class ConnectorDraggedEventHandler implements EventHandler<MouseEvent> {
 
 		@SuppressWarnings("unused")
-		private IConnector connector;
+		private ImageView connector;
 		private IConnectorModel model;
 
-		public ConnectorDraggedEventHandler(IConnector connector, IConnectorModel model) {
+		public ConnectorDraggedEventHandler(ImageView connector, IConnectorModel model) {
 			this.connector = connector;
 			this.model = model;
 		}

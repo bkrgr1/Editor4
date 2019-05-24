@@ -6,6 +6,7 @@ import java.util.List;
 import javafx.beans.binding.Bindings;
 import javafx.beans.property.DoubleProperty;
 import javafx.scene.Node;
+import javafx.scene.image.ImageView;
 import javafx.scene.layout.Pane;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
@@ -17,16 +18,13 @@ import javafx.scene.shape.Rectangle;
  * 
  * @author bk
  */
-public class RectangleShapeView extends Pane implements IShapeView {
+public class RectangleShapeView extends BaseShapeView {
 	
 	private double additionalWidth = 15.0;
 	private double additionalHeight = 15.0;
 	
 	private Rectangle rect;
 	public Rectangle getRectangle() { return rect; }
-	
-	private List<IConnector> connectors = new ArrayList<>();
-	public List<IConnector> getConnectors() { return connectors; }
 
 	/**
 	 * Constructor
@@ -54,42 +52,36 @@ public class RectangleShapeView extends Pane implements IShapeView {
 		rect.setStroke(Color.BLACK);
 		
 		// die Konnectoren als Kreise zeichnen
-		IConnector connector = null;
+		ImageView connector = null;
 		
-		// Konnektor-1: Mitte rechte Seite
-		connector = new StraightConnectorView(
-				Bindings.add(widthProperty, additionalWidth), 
-				Bindings.add(Bindings.divide(heightProperty, 2.0), additionalHeight));
-		connectors.add(connector);
-		
-		// Konnektor-2: Mitte unten
-		connector = new StraightConnectorView(
-				Bindings.add(Bindings.divide(widthProperty, 2.0), additionalWidth),
-				Bindings.add(heightProperty, additionalHeight));
-		connectors.add(connector);
-		
-		// Konnektor-3: Mitte linke Seite
-		connector = new StraightConnectorView(
-				Bindings.add(Bindings.multiply(xProperty,  0.0), additionalWidth), 
-				Bindings.add(Bindings.divide(heightProperty, 2.0), additionalHeight));
-		connectors.add(connector);
-		
-		// Konnektor-4: Mitte oben
-		connector = new StraightConnectorView(
-				Bindings.add(Bindings.divide(widthProperty, 2.0), additionalWidth),
-				Bindings.add(Bindings.multiply(heightProperty(), 0.0), additionalHeight));
-		connectors.add(connector);
+//		// Konnektor-1: Mitte rechte Seite
+//		connector = new StraightConnectorView(
+//				Bindings.add(widthProperty, additionalWidth), 
+//				Bindings.add(Bindings.divide(heightProperty, 2.0), additionalHeight));
+//		connectors.add(connector);
+//		
+//		// Konnektor-2: Mitte unten
+//		connector = new StraightConnectorView(
+//				Bindings.add(Bindings.divide(widthProperty, 2.0), additionalWidth),
+//				Bindings.add(heightProperty, additionalHeight));
+//		connectors.add(connector);
+//		
+//		// Konnektor-3: Mitte linke Seite
+//		connector = new StraightConnectorView(
+//				Bindings.add(Bindings.multiply(xProperty,  0.0), additionalWidth), 
+//				Bindings.add(Bindings.divide(heightProperty, 2.0), additionalHeight));
+//		connectors.add(connector);
+//		
+//		// Konnektor-4: Mitte oben
+//		connector = new StraightConnectorView(
+//				Bindings.add(Bindings.divide(widthProperty, 2.0), additionalWidth),
+//				Bindings.add(Bindings.multiply(heightProperty(), 0.0), additionalHeight));
+//		connectors.add(connector);
 		
 		// Rectangle und Konnektoren zum Pane hinzufügen
 		this.getChildren().add(rect);
 		List<Node> nodeConnectors = new ArrayList<>();
-		for (IConnector c : connectors) { nodeConnectors.add((Node)c); }
+		for (ImageView c : connectors) { nodeConnectors.add((Node)c); }
 		this.getChildren().addAll(nodeConnectors);
-	}
-
-	@Override
-	public void setSelected(boolean isSelected) {
-		// TODO Auto-generated method stub
-		
 	}
 }

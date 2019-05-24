@@ -3,15 +3,14 @@ package de.bkroeger.editor4.controller;
 import java.util.logging.Logger;
 
 import de.bkroeger.editor4.model.IConnectorModel;
-import de.bkroeger.editor4.view.IConnector;
 import de.bkroeger.editor4.view.StraightArrowView;
-import de.bkroeger.editor4.view.StraightConnectorView;
 import javafx.beans.binding.Bindings;
 import javafx.beans.property.DoubleProperty;
 import javafx.beans.property.SimpleDoubleProperty;
 import javafx.event.EventHandler;
 import javafx.scene.Cursor;
 import javafx.scene.Node;
+import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
 
 /**
@@ -32,7 +31,7 @@ public class StraightConnectorController implements IConnectorController {
 	private Double mouseX;
 	private Double mouseY;
 
-	private IConnector view;
+	private Node view;
 	private IConnectorModel model;
 
 	@Override
@@ -58,17 +57,17 @@ public class StraightConnectorController implements IConnectorController {
 		StraightArrowView parentView = (StraightArrowView) parentController.getView();
 
 		// den Connector zeichnen
-		view = new StraightConnectorView(
-				Bindings.add(radiusX / 2.0, (isStart ? nullProperty : parentView.lengthProperty())),
-				Bindings.add(Bindings.multiply(model.yProperty(), 0.0), radiusY / 2.0));
-		((Node) view).setVisible(false);
+//		view = new StraightConnectorView(
+//				Bindings.add(radiusX / 2.0, (isStart ? nullProperty : parentView.lengthProperty())),
+//				Bindings.add(Bindings.multiply(model.yProperty(), 0.0), radiusY / 2.0));
+//		((Node) view).setVisible(false);
 
 		// Eventhandler für Connectoren
-		((Node) view).setOnMouseEntered(new ConnectorEnteredEventHandler(view));
-		((Node) view).setOnMouseExited(new ConnectorExitedEventHandler(view));
-		((Node) view).setOnMousePressed(new ConnectorPressedEventHandler(view, model));
-		((Node) view).setOnMouseDragged(new ConnectorDraggedEventHandler(view, model));
-		((Node) view).setOnMouseReleased(new ConnectorReleasedEventHandler(view, model));
+//		((Node) view).setOnMouseEntered(new ConnectorEnteredEventHandler((ImageView) view));
+//		((Node) view).setOnMouseExited(new ConnectorExitedEventHandler((ImageView) view));
+//		((Node) view).setOnMousePressed(new ConnectorPressedEventHandler((ImageView) view, model));
+//		((Node) view).setOnMouseDragged(new ConnectorDraggedEventHandler((ImageView) view, model));
+//		((Node) view).setOnMouseReleased(new ConnectorReleasedEventHandler((ImageView) view, model));
 	}
 
 	/**
@@ -77,7 +76,7 @@ public class StraightConnectorController implements IConnectorController {
 	@Override
 	public void setSelected(boolean isSelected) {
 
-		this.view.setSelected(isSelected);
+//		this.view.setSelected(isSelected);
 	}
 
 	// ===============================================================
@@ -91,16 +90,16 @@ public class StraightConnectorController implements IConnectorController {
 	 */
 	class ConnectorEnteredEventHandler implements EventHandler<MouseEvent> {
 
-		private IConnector connector;
+		private ImageView connector;
 
-		public ConnectorEnteredEventHandler(IConnector connector) {
+		public ConnectorEnteredEventHandler(ImageView connector) {
 			this.connector = connector;
 		}
 
 		@Override
 		public void handle(MouseEvent event) {
 			((Node) connector).getScene().setCursor(Cursor.HAND);
-			connector.setSelected(true);
+//			connector.setSelected(true);
 			event.consume();
 		}
 	}
@@ -115,16 +114,16 @@ public class StraightConnectorController implements IConnectorController {
 	 */
 	class ConnectorExitedEventHandler implements EventHandler<MouseEvent> {
 
-		private IConnector connector;
+		private ImageView connector;
 
-		public ConnectorExitedEventHandler(IConnector connector) {
+		public ConnectorExitedEventHandler(ImageView connector) {
 			this.connector = connector;
 		}
 
 		@Override
 		public void handle(MouseEvent event) {
 			((Node) connector).getScene().setCursor(Cursor.DEFAULT);
-			connector.setSelected(false);
+//			connector.setSelected(false);
 			event.consume();
 		}
 	}
@@ -140,10 +139,10 @@ public class StraightConnectorController implements IConnectorController {
 	class ConnectorPressedEventHandler implements EventHandler<MouseEvent> {
 
 		@SuppressWarnings("unused")
-		private IConnector connector;
+		private ImageView connector;
 		private IConnectorModel model;
 
-		public ConnectorPressedEventHandler(IConnector connector, IConnectorModel model) {
+		public ConnectorPressedEventHandler(ImageView connector, IConnectorModel model) {
 			this.connector = connector;
 			this.model = model;
 		}
@@ -170,10 +169,10 @@ public class StraightConnectorController implements IConnectorController {
 	class ConnectorReleasedEventHandler implements EventHandler<MouseEvent> {
 
 		@SuppressWarnings("unused")
-		private IConnector connector;
+		private ImageView connector;
 		private IConnectorModel model;
 
-		public ConnectorReleasedEventHandler(IConnector connector, IConnectorModel model) {
+		public ConnectorReleasedEventHandler(ImageView connector, IConnectorModel model) {
 			this.connector = connector;
 			this.model = model;
 		}
@@ -213,10 +212,10 @@ public class StraightConnectorController implements IConnectorController {
 	class ConnectorDraggedEventHandler implements EventHandler<MouseEvent> {
 
 		@SuppressWarnings("unused")
-		private IConnector connector;
+		private ImageView connector;
 		private IConnectorModel model;
 
-		public ConnectorDraggedEventHandler(IConnector connector, IConnectorModel model) {
+		public ConnectorDraggedEventHandler(ImageView connector, IConnectorModel model) {
 			this.connector = connector;
 			this.model = model;
 		}

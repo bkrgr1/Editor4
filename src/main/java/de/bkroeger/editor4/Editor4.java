@@ -15,13 +15,9 @@ import javafx.scene.layout.StackPane;
 import javafx.stage.Stage;
 
 /**
- * Dieser Test simuliert die Annäherung eines Pfeils an ein Rechteck-Shape. Wenn
- * beide Shapes sich überlagern (intersects), beginnt der Rahmen des Rechtecks
- * zu blinken. Wenn dann die Maus dann losgelassen wird, wird die Position der
- * Mausspitze mit der Position des Rechteck-Mittelpunktes verknüpft.
+ * <p>Dies ist die Hauptklasse eines graphischen Editors.</p>
  * 
  * @author bk
- *
  */
 @SpringBootApplication
 public class Editor4 extends Application {
@@ -45,15 +41,19 @@ public class Editor4 extends Application {
 		launch(args);
 	}
 
+	/**
+	 * <p>JavaFX init method.</p>
+	 */
 	@Override
 	public void init() throws Exception {
+		
 		SpringApplicationBuilder builder = new SpringApplicationBuilder(Editor4.class);
 		context = builder.run(getParameters().getRaw().toArray(new String[0]));
 		logger.debug("JavaFX init():");
 	}
 
 	/**
-	 * Override the JavaFX start method
+	 * <p>JavaFX start method.</p>
 	 */
 	@Override
 	public void start(Stage primaryStage) {

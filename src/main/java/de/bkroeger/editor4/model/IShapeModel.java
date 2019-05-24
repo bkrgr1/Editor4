@@ -6,9 +6,11 @@ public interface IShapeModel extends IModel {
 
 	public ShapeType getShapeType();
 	
-	public DoubleProperty xProperty(); 
-	public DoubleProperty yProperty();
+	public DoubleProperty getXProperty(); 
 	
-	public DoubleProperty widthProperty();
-	public DoubleProperty heightProperty();
+	public DoubleProperty getYProperty();
+	
+	public DoubleProperty getWidthProperty();
+	
+	public DoubleProperty getHeightProperty();
 }
