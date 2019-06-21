@@ -1,0 +1,109 @@
+{
+	"file": {
+		"id": "74d1f547-5d9f-4f76-b962-0a75a5b45a43",
+		"description": "Eine Test-Datei",
+		"name": "Datei",
+		"nameU": "File",
+		"locale": "de-DE",
+		"sections": [
+			{
+				"sectionType": "Page",
+				"id": "cccf302b-fa4d-4eeb-8ed6-f03bc1a1980a",
+				"description": "Eine Bildschirmseite",
+				"name": "Seite 1",
+				"nameU": "Page 1",
+				"sections": [
+					{
+						"sectionType": "Shape",
+						"id": "9805ca70-1673-4a5a-80bf-a071f7ba6746",
+						"description": "Ein Rechteck",
+						"nameU": "Shape 1",
+						"sections": [
+							{
+								"sectionType": "Path",
+								"nameU": "Path 1",
+								"sections": [
+									{
+										"sectionType": "MoveTo",
+										"nameU": "MoveTo 1",
+										"cells": [
+											{ "cellType": "X", "formula": "5.0" },
+											{ "cellType": "Y", "formula": "5.0" }
+										]
+									},
+									{
+										"sectionType": "LineTo",
+										"nameU": "LineTo 1",
+										"cells": [
+											{ "cellType": "X", "formula": "95.0" },
+											{ "cellType": "Y", "formula": "5.0" }
+										]
+									},
+									{
+										"sectionType": "LineTo",
+										"nameU": "LineTo 2",
+										"cells": [
+											{ "cellType": "X", "formula": "95.0" },
+											{ "cellType": "Y", "formula": "95.0" }
+										]
+									},
+									{
+										"sectionType": "LineTo",
+										"nameU": "LineTo 3",
+										"cells": [
+											{ "cellType": "X", "formula": "5.0" },
+											{ "cellType": "Y", "formula": "95.0" }
+										]
+									},
+									{
+										"sectionType": "ClosePath",
+										"nameU": "ClosePath 1"
+									}
+								],
+								"cells": []
+							},
+							{
+								"sectionType": "Location",
+								"nameU": "Location",
+								"cells": [
+									{ "cellType": "X", "formula": "200.0" },
+									{ "cellType": "Y", "formula": "50.0" },
+									{ "cellType": "Width", "formula": "100.0" },
+									{ "cellType": "Height", "formula": "100.0" },
+									{ "cellType": "Rotate", "formula": "45.0" },
+									{ "cellType": "Scale", "formula": "1.5" }
+								]
+							},
+							{
+								"sectionType": "CenterPoint",
+								"nameU": "CenterPoint 1",
+								"cells": [
+									{ "cellType": "X", "formula": "50.0" },
+									{ "cellType": "Y", "formula": "50.0" }
+								]
+							},
+							{
+								"sectionType": "Style",
+								"nameU": "Style 1",
+								"cells": [
+									{ "cellType": "StrokeWidth", "formula": "0.75" },
+									{ "cellType": "FillColor", "formula": "YELLOW" },
+									{ "cellType": "Transparency", "formula": "75.0" }
+								]
+							}
+						],
+						"cells": [
+							{ "cellType": "ShapeDimension", "formula": "2" }
+						]
+					}
+				],
+				"cells": [
+					{ "cellType": "PageNo", "formula": "1" },
+					{ "cellType": "PageTitle", "formula": "=concat('Page',${pageNo})" }
+				]
+			}
+		],
+		"cells": [		
+		]
+	}
+}

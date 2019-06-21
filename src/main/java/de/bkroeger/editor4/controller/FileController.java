@@ -1,24 +1,31 @@
 package de.bkroeger.editor4.controller;
 
+import java.io.FileReader;
+import java.io.IOException;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Optional;
-import java.util.SortedSet;
-import java.util.TreeSet;
+import java.util.UUID;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.json.simple.JSONArray;
+import org.json.simple.JSONObject;
+import org.json.simple.parser.JSONParser;
+import org.json.simple.parser.ParseException;
 import org.springframework.beans.factory.config.ConfigurableBeanFactory;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
 
+import de.bkroeger.editor4.exceptions.TechnicalException;
 import de.bkroeger.editor4.model.FileModel;
+import de.bkroeger.editor4.model.SectionModel;
+import de.bkroeger.editor4.model.SectionModelType;
 import de.bkroeger.editor4.model.PageModel;
 import de.bkroeger.editor4.view.NewPageDialog;
-import de.bkroeger.editor4.view.TabView;
+import de.bkroeger.editor4.view.TabPaneView;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
-import javafx.scene.Node;
 import javafx.scene.control.Dialog;
 import javafx.scene.control.SingleSelectionModel;
 import javafx.scene.control.Tab;
@@ -48,48 +55,68 @@ import lombok.Setter;
 @Setter
 @Component
 @Scope(ConfigurableBeanFactory.SCOPE_PROTOTYPE)
-public class FileController extends BaseController {
+public class FileController implements IController  {
 
     private static final Logger logger = LogManager.getLogger(FileController.class.getName());
 
     private PageController currentPage;
     private Tab currentTab;
-
-    private SortedSet<PageController> pageControllers = new TreeSet<>(new PageComparator());
+    
+    private FileModel fileModel;
+    
+    private TabPaneView view;
+    
+    private int panelWidth;
+    private int panelHeight;
 
     /**
      * Controller
      * 
-     * @param model       the {@link FileModel}
+     * @param fileModel       the {@link FileModel}
      * @param panelWidth  width of the page panel
      * @param panelHeight height of the page panel
+     * @param fileModel 
      */
-    public FileController(FileModel model, int panelWidth, int panelHeight) {
+    public FileController(int panelWidth, int panelHeight, FileModel fileModel) {
+    	
+        this.panelWidth = panelWidth;
+        this.panelHeight = panelHeight;
+        this.fileModel = fileModel;
+    }
 
-        this.model = model;
+	/**
+     * Berechnet die Querbeziehungen
+     */
+    public void calculate() {
+    	
+    	this.fileModel.calculate();
+    }
+    
+    /**
+     * Erstellt die View
+     */
+    public ControllerResult buildView() {
 
         logger.debug("Creating FileController...");
 
+        ControllerResult result = new ControllerResult();
+        result.setController(this);
+        
         // create a tab view
-        TabView tabView = new TabView(panelWidth, panelHeight);
+        TabPaneView tabView = new TabPaneView(panelWidth, panelHeight);
         this.view = tabView;
+        result.setView(this.view);
 
-        for (PageModel pageModel : model.getPages()) {
+    	for (SectionModel pageModel : fileModel.selectSections(SectionModelType.Page)) {
+        	
+        	ControllerResult pageResult = pageModel.buildView(result, panelWidth, panelHeight);
 
-            // create a page controller for each defined page
-            PageController pageCtrl = new PageController(pageModel, panelWidth, panelHeight);
-            pageControllers.add(pageCtrl);
-
-            Tab tab = new Tab(
-                    pageModel.getPageTitle() != null ? pageModel.getPageTitle() : "Page " + pageModel.getPageNo());
-            tab.setUserData(pageCtrl); // store a reference to the page controller in the userData field
-            tab.setContent((Node) pageCtrl.getView());
-            ((TabPane) tabView).getTabs().add(tab);
+        	((TabPane) tabView).getTabs().add((Tab) pageResult.getView());
 
             if (currentPage == null) {
                 // save this as the current page controller
-                currentPage = pageCtrl;
-                currentTab = tab;
+                currentPage = (PageController) pageResult.getController();
+                currentTab = (Tab) pageResult.getView();
             }
         }
 
@@ -119,7 +146,7 @@ public class FileController extends BaseController {
                         // this is the dummy page; show the "New page dialog"
 
                         NewPageDialogController newPageController = new NewPageDialogController(
-                                getHighestPageNo(model.getPages()));
+                                getHighestPageNo());
                         NewPageDialog newPageDialog = (NewPageDialog) newPageController.getView();
                         Optional<PageModel> result = ((Dialog<PageModel>) newPageDialog).showAndWait();
                         result.ifPresent(pageModel -> {
@@ -163,20 +190,22 @@ public class FileController extends BaseController {
         });
 
         logger.debug("FileController created.");
+        
+        return result;
     }
 
     public String getTitle() {
-        return model.getTitle();
+        return fileModel.getInFile().getAbsolutePath();
     }
 
-    private int getHighestPageNo(List<PageModel> pages) {
+    private int getHighestPageNo() {
 
         int maxNo = 0;
-        for (PageModel page : pages) {
-            if (page.getPageNo() > maxNo) {
-                maxNo = page.getPageNo();
-            }
-        }
+//        for (PageModel page : pages) {
+//            if (page.getPageNo() > maxNo) {
+//                maxNo = page.getPageNo();
+//            }
+//        }
         return maxNo;
     }
 

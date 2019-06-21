@@ -1,28 +1,30 @@
 package de.bkroeger.editor4.model;
 
-import java.util.ArrayList;
-import java.util.List;
 import java.util.UUID;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.json.simple.JSONObject;
 
-import de.bkroeger.editor4.controller.ControllerResult;
-import de.bkroeger.editor4.controller.IShapeController;
+import de.bkroeger.editor4.exceptions.CellCalculationException;
 import de.bkroeger.editor4.exceptions.InputFileException;
 import de.bkroeger.editor4.exceptions.TechnicalException;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
 
+/**
+ * <p>Dies ist die Basis-Datenstruktur für alle 2D-Shapes.</p>
+ *
+ * @author berthold.kroeger@gmx.de
+ */
 @Getter
 @Setter
-@ToString
-public class PageModel extends SectionModel {
+@ToString(callSuper=true)
+public class ShapeModel extends SectionModel {
 
     @SuppressWarnings("unused")
-	private static final Logger logger = LogManager.getLogger(FileModel.class.getName());
+	private static final Logger logger = LogManager.getLogger(ShapeModel.class.getName());
 
     private static final String CELLS_KEY = "cells";
 	private static final String SECTIONS_KEY = "sections";
@@ -31,38 +33,46 @@ public class PageModel extends SectionModel {
 	private static final String NAME_KEY = "name";
 	private static final String ID_KEY = "id";
     private static final String SECTION_TYPE_KEY = "sectionType";
-
-    /**
-     * UUID of the section
-     */
-	private UUID id;
 	
-	protected List<IShapeController> shapeControllers;
-
-	private int pageNo;
-
-	private String pageTitle;
+	public void addSection(SectionModel section) {
+		sections.put(section.getSectionType(), section);
+	}
 	
-	private IModel parentModel;
+	public void removeSection(SectionModel section) {
+		sections.remove(section.getSectionType());
+	}
 	
-	private ControllerResult parentResult;
-
-	private List<IArrowModel> arrowModels = new ArrayList<>();
-
-	public void addArrowModel(IArrowModel model) {
-		this.arrowModels.add(model);
+	public SectionModel getSection(SectionModelType st) throws CellCalculationException {
+		if (sections.containsKey(st)) {
+			return sections.get(st);
+		} else {
+			throw new CellCalculationException("Shape "+this.id.toString()+" does not contain section "+st.toString());
+		}
 	}
 
 	/**
-	 * Constructor
+	 * Backreferenz auf die Seite
 	 */
-	public PageModel() {
-		super(SectionModelType.Page);
-		
-		addCell(new CellModel(CellModelType.PageNo, "1"));
-		addCell(new CellModel(CellModelType.PageTitle, "Page 1"));
+	protected PageModel page;
+	
+	/**
+	 * Art dieses Shapes
+	 */
+	protected ShapeType shapeType;
+	
+	// Constructors
+	
+	public ShapeModel() {
+		super(SectionModelType.Shape);
+		this.id = UUID.randomUUID();
 	}
 	
+	public ShapeModel(ShapeType shapeType) {
+		super(SectionModelType.Shape);
+		this.id = UUID.randomUUID();
+		this.shapeType = shapeType;
+	}
+
 	/**
 	 * Load the section data from JSON
 	 * @throws TechnicalException 
@@ -70,14 +80,14 @@ public class PageModel extends SectionModel {
 	 */
 	public SectionModel loadModel(JSONObject jsonSection) 
 			throws TechnicalException, InputFileException {
-    	  	
-    	for (Object key : jsonSection.keySet()) {
-    		String k = key.toString();
-    		switch (k) {
-    		case ID_KEY:
-    			String uuid = (String) jsonSection.get(ID_KEY);
-    			this.setId(uuid != null ? UUID.fromString(uuid) : UUID.randomUUID());
-    			break;
+		  	
+		for (Object key : jsonSection.keySet()) {
+			String k = key.toString();
+			switch (k) {
+			case ID_KEY:
+				String uuid = (String) jsonSection.get(ID_KEY);
+				this.setId(uuid != null ? UUID.fromString(uuid) : UUID.randomUUID());
+				break;
 		    	
     		case NAME_KEY:
 	    		this.name = (String) jsonSection.get(NAME_KEY);
@@ -90,20 +100,20 @@ public class PageModel extends SectionModel {
     		case DESCRIPTION_KEY:
 	    		this.description = (String) jsonSection.get(DESCRIPTION_KEY);
 	    		break;
-		    	
+	    		
     		case SECTION_TYPE_KEY:
-    		case SECTIONS_KEY:	    
-    		case CELLS_KEY:
+			case SECTIONS_KEY:	    
+			case CELLS_KEY:
 		    	// skip
 		    	break;
-    			
-    		default:
-    			throw new InputFileException("Invalid item in page "+this.nameU+" section: "+k);
-    		}
-    	}
-    	
-    	super.loadModel(jsonSection, this);
-    	
+				
+			default:
+				throw new InputFileException("Invalid item in "+nameU+" section: "+k);
+			}
+		}
+	
+		super.loadModel(jsonSection, this);
+		
 		return this;
 	}
 	
@@ -120,9 +130,4 @@ public class PageModel extends SectionModel {
     	}
     	return this;
     }
-	
-	public ControllerResult buildView(ControllerResult parentResult,
-			int panelWidth, int panelHeight) {
-				return parentResult;		
-	}
 }

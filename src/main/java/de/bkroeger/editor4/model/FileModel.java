@@ -1,10 +1,27 @@
 package de.bkroeger.editor4.model;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.io.File;
+import java.io.FileReader;
+import java.io.IOException;
+import java.util.Locale;
+import java.util.SortedSet;
+import java.util.TreeSet;
+import java.util.UUID;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+import org.json.simple.JSONObject;
+import org.json.simple.parser.JSONParser;
+import org.json.simple.parser.ParseException;
+
+import de.bkroeger.editor4.controller.FileController.PageComparator;
+import de.bkroeger.editor4.controller.PageController;
+import de.bkroeger.editor4.exceptions.CellCalculationException;
+import de.bkroeger.editor4.exceptions.InputFileException;
+import de.bkroeger.editor4.exceptions.TechnicalException;
 import lombok.Getter;
 import lombok.Setter;
+import lombok.ToString;
 
 /**
  * <p>
@@ -13,27 +30,147 @@ import lombok.Setter;
  */
 @Getter
 @Setter
-public class FileModel extends BaseModel {
+@ToString(callSuper=true)
+public class FileModel extends SectionModel implements IModel {
 
-    private String path;
+	private static final Logger logger = LogManager.getLogger(FileModel.class.getName());
 
-    private String filename;
+    private static final String CELLS_KEY = "cells";
+	private static final String SECTIONS_KEY = "sections";
+	private static final String DESCRIPTION_KEY = "description";
+	private static final String UNIVERSAL_NAME_KEY = "nameU";
+	private static final String NAME_KEY = "name";
+	private static final String LOCALE_KEY = "locale";
+	private static final String ID_KEY = "id";
 
-    private List<PageModel> pages = new ArrayList<>();
-    public List<PageModel> getPages() { return this.pages; }
+	/**
+	 * Input File
+	 */
+    private File inFile;
+    
+    /**
+     * Sprach-Locale
+     */
+    private Locale locale = new Locale("en-us");
+    
+    /**
+     * Liste der Seiten-Controller
+     */
+    private SortedSet<PageController> pageControllers = new TreeSet<>(new PageComparator());
 
+    /**
+     * Default constructor
+     */
     public FileModel() {
-
-        PageModel pageModel = new PageModel();
-        pages.add(pageModel);
-
-        IShapeModel rectModel = new RectangleShapeModel(100.0, 100.0, 100.0, 100.0);
-        pageModel.addShapeModel(rectModel);
-
-        StraightArrowModel arrowModel = new StraightArrowModel(250.0, 100.0, 350.0, 50.0, -15.0);
-        arrowModel.strokeWidthProperty().set(2.0);
-        arrowModel.lineStartTypeProperty().set(LineEndingType.OpenArrow);
-        arrowModel.lineEndTypeProperty().set(LineEndingType.OpenArrow);
-        pageModel.addArrowModel(arrowModel);
+    	super(SectionModelType.File);
+    }
+    
+    /**
+     * Constructor with file path
+     * @param inFilePath
+     * @throws InputFileException 
+     */
+    public FileModel(String inFilePath) throws InputFileException {
+    	super(SectionModelType.File);
+    	File file = new File(inFilePath);
+    	if (!file.exists()) {
+    		throw new InputFileException("File does not exist: "+inFilePath);
+    	}
+    	this.inFile = file;
+    }
+    
+    /**
+     * Lädt das Datenmodell aus einer Json-Datei oder bildet ein Default-Datenmodell
+     * @throws TechnicalException 
+     * @throws InputFileException 
+     * @throws CellCalculationException 
+     */
+    public FileModel loadModel() 
+    		throws TechnicalException, InputFileException {
+    	
+    	try {
+    		
+    		if (inFile != null) {
+    			
+	    		// Erstelle das File-Datenmodell aus der angegebenen Json-Datei
+		    	JSONParser parser = new JSONParser();
+		    	JSONObject jsonObject = (JSONObject) parser.parse(new FileReader(inFile.getAbsolutePath()));
+		    	
+		    	// JSON-Objekt "file"
+		    	JSONObject jsonFile = null;
+		    	if (jsonObject.containsKey("file")) {
+		    		jsonFile = (JSONObject) jsonObject.get("file");
+		    	} else {
+		    		throw new InputFileException("Invalid json file: file object missing");
+		    	}
+		    	
+		    	for (Object key : jsonFile.keySet()) {
+		    		String k = key.toString();
+		    		switch (k) {
+		    		case ID_KEY:
+		    			String uuid = (String) jsonFile.get(ID_KEY);
+		    			this.setId(uuid != null ? UUID.fromString(uuid) : UUID.randomUUID());
+		    			break;
+		    			
+		    		case LOCALE_KEY:
+			    		this.locale = Locale.forLanguageTag((String)jsonFile.get(LOCALE_KEY));
+			    		break;
+			    	
+		    		case NAME_KEY:
+			    		this.name = (String) jsonFile.get(NAME_KEY);
+			    		break;
+			    	
+		    		case UNIVERSAL_NAME_KEY:
+			    		this.nameU = (String) jsonFile.get(UNIVERSAL_NAME_KEY);
+			    		break;
+			    	
+		    		case DESCRIPTION_KEY:
+			    		this.description = (String) jsonFile.get(DESCRIPTION_KEY);
+			    		break;
+			    		
+		    		case SECTIONS_KEY:	    
+		    		case CELLS_KEY:
+				    	// skip
+				    	break;
+		    			
+		    		default:
+		    			throw new InputFileException("Invalid item in file section: "+k);
+		    		}
+		    	}
+		    	
+		    	super.loadModel(jsonFile, this);
+		    
+    		} else {
+    			
+    			// bildet das File-Datenmodell
+    			buildInitialFileModel();
+    		}
+    		
+    		return this;
+	    	
+    	} catch(IOException e) {
+    		logger.error(e.getMessage(), e);
+    		throw new InputFileException("IO-Error parsing Json file="+inFile.getAbsolutePath());
+    		
+    	} catch(ParseException e) {
+    		logger.error(e.getMessage(), e);
+    		throw new InputFileException("Parse-Error parsing Json file="+inFile.getAbsolutePath());
+    	}
+    }
+    
+    private FileModel buildInitialFileModel() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+    
+    public SectionModel calculate() {
+    	
+    	for (SectionModel sectionModel : this.selectSections(SectionModelType.Page)) {
+    		if (sectionModel instanceof PageModel) {
+    			PageModel pageModel = (PageModel)sectionModel;
+        		pageModel.calculate();
+    		}
+    	}
+    	return this;
     }
 }

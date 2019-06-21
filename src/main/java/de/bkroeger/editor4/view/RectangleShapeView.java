@@ -4,6 +4,7 @@ import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
 
+import de.bkroeger.editor4.model.RectangleShapeModel;
 import javafx.beans.binding.Bindings;
 import javafx.beans.property.DoubleProperty;
 import javafx.scene.Node;
@@ -11,6 +12,9 @@ import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.Pane;
 import javafx.scene.paint.Color;
+import javafx.scene.shape.LineTo;
+import javafx.scene.shape.MoveTo;
+import javafx.scene.shape.Path;
 import javafx.scene.shape.Rectangle;
 
 /**
@@ -99,6 +103,32 @@ public class RectangleShapeView extends BaseShapeView {
         resizeIcons.add(buildTopResizeIcon(widthProperty, heightProperty));
         resizeIcons.add(buildBottomResizeIcon(widthProperty, heightProperty));
 		this.getChildren().addAll(resizeIcons);
+	}
+	
+	/**
+	 * <p>Zeichnet ein Rechteck als geschlossenen Pfad aus 4 Linien,</p>
+	 * <p>Der Positionspunkt befindet sich nicht links oben, sondern
+	 * %LocalWidth von Links und %LocalHeight von oben.</p>
+	 * @param model das Model für das Rechteck
+	 * @return das @link Path}-Objekt
+	 */
+	public static ViewNodes draw(RectangleShapeModel model) {
+		
+		ViewNodes nodes = new ViewNodes();
+		
+		Path path = new Path();
+		
+		MoveTo move1 = new MoveTo(x1 - localWidth, y1);
+		LineTo line1 = new LineTo(x1 + width, y1);
+		LineTo line2 = new LineTo(x1 + width, y1 + height);
+		LineTo line3 = new LineTo(x1, y1 + height);
+		LineTo line4 = new LineTo(x1, y1);
+		
+		path.getElements().addAll(move1, line1, line2, line3, line4);
+		
+		nodes.setPrimaryNode(path);
+		
+		return nodes;
 	}
 	
 	private Node buildRightResizeIcon(DoubleProperty widthProperty, DoubleProperty heightProperty) {

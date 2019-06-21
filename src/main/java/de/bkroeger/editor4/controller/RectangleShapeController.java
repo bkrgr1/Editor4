@@ -9,12 +9,18 @@ import org.apache.logging.log4j.Logger;
 import de.bkroeger.editor4.Handler.ShapeMouseDraggedEventHandler;
 import de.bkroeger.editor4.Handler.ShapeMousePressedEventHandler;
 import de.bkroeger.editor4.Handler.ShapeMouseReleasedEventHandler;
+import de.bkroeger.editor4.exceptions.TechnicalException;
 import de.bkroeger.editor4.model.DefaultConnectorModel;
+import de.bkroeger.editor4.model.IModel;
 import de.bkroeger.editor4.model.IShapeModel;
 import de.bkroeger.editor4.model.RectangleShapeModel;
 import de.bkroeger.editor4.model.ShapeEventData;
+import de.bkroeger.editor4.view.IView;
 import de.bkroeger.editor4.view.RectangleShapeView;
+import de.bkroeger.editor4.view.ViewNodes;
 import javafx.beans.binding.Bindings;
+import javafx.scene.Node;
+import javafx.scene.image.ImageView;
 
 /**
  * <p>This controller manages the behaviour of a Rectangle shape.</p>
@@ -28,61 +34,33 @@ import javafx.beans.binding.Bindings;
  * </ul>
  * @author berthold.kroeger@gmx.de
  */
-public class RectangleShapeController extends BaseShapeController {
+public class RectangleShapeController extends BaseShapeController implements IShapeController {
 
 	private static final Logger logger = LogManager.getLogger(RectangleShapeController.class.getName());
-
-	private double additionalWidth = 15.0;
-	private double additionalHeight = 15.0;
 
 	private List<IConnectorController> connectorControllers = new ArrayList<>();
 
 	/**
-	 * <p>Constructor with model and parent controller.</p>
+	 * <p>Dies erzeugt einen Controller für ein RectangleShape.</p>
+	 * <p>Als erstes wird das Shape von der View-Klasse gezeichnet,
+	 * dann die Mouse-Handler definiert.</p>
 	 * 
 	 * @param model the model for this controller
 	 * @param parentController parent controller or null
+	 * @throws TechnicalException 
 	 */
-	public RectangleShapeController(IShapeModel model, PageController parentController) {
+	public RectangleShapeController(IShapeModel model, PageController parentController) 
+			throws TechnicalException {
 		super(model, parentController);
 
 		logger.debug("Creating shape controller...");
 
+		if (!(model instanceof RectangleShapeModel)) {
+			throw new TechnicalException("Model is invalid for RectangleShape");
+		}
 		RectangleShapeModel rectModel = (RectangleShapeModel) model;
-		view = new RectangleShapeView(rectModel.xProperty(), rectModel.yProperty(), rectModel.getWidthProperty(),
-				rectModel.getHeightProperty());
 
-		// die Konnectoren als Kreise zeichnen
-		IConnectorController connectorController = null;
-		DefaultConnectorModel connectorModel = null;
-
-		// Konnektor-1: Mitte rechte Seite
-		connectorModel = new DefaultConnectorModel(
-				Bindings.add(rectModel.getWidthProperty(), additionalWidth),
-				Bindings.add(Bindings.divide(rectModel.getHeightProperty(), 2.0), additionalHeight));
-		connectorController = (IConnectorController) new ShapeConnectorController(connectorModel, this);
-		connectorControllers.add(connectorController);
-
-		// Konnektor-2: Mitte unten
-		connectorModel = new DefaultConnectorModel(
-			Bindings.add(Bindings.divide(rectModel.getWidthProperty(), 2.0), additionalWidth),
-			Bindings.add(rectModel.getHeightProperty(), additionalHeight));
-		connectorController = (IConnectorController) new ShapeConnectorController(connectorModel, this);
-		connectorControllers.add(connectorController);
-	
-		// Konnektor-3: Mitte linke Seite
-		connectorModel = new DefaultConnectorModel(
-			Bindings.add(Bindings.multiply(rectModel.xProperty(), 0.0), additionalWidth),
-			Bindings.add(Bindings.divide(rectModel.getHeightProperty(), 2.0), additionalHeight));
-		connectorController = (IConnectorController) new ShapeConnectorController(connectorModel, this);
-		connectorControllers.add(connectorController);
-
-		// Konnektor-4: Mitte oben
-		connectorModel = new DefaultConnectorModel(
-			Bindings.add(Bindings.divide(rectModel.getWidthProperty(), 2.0), additionalWidth),
-			Bindings.add(Bindings.multiply(rectModel.getHeightProperty(), 0.0), additionalHeight));
-		connectorController = (IConnectorController) new ShapeConnectorController(connectorModel, this);
-		connectorControllers.add(connectorController);
+		ViewNodes viewNodes = RectangleShapeView.draw(rectModel);
 
 		// EventHandler zuordnen
 		super.setMouseHandler();
@@ -97,4 +75,20 @@ public class RectangleShapeController extends BaseShapeController {
 		view.setOnMouseDragged(new ShapeMouseDraggedEventHandler(view, eventData));
 		view.setOnMouseReleased(new ShapeMouseReleasedEventHandler(view, eventData));
 	}
+
+    @Override
+    public IView getView() {
+        return view;
+    }
+
+    @Override
+    public IModel getModel() {
+        return model;
+    }
+
+    @Override
+    public List<ImageView> getConnectors() {
+        return view.getConnectors();
+    }
+
 }
