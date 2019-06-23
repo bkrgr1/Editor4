@@ -32,7 +32,7 @@ public class StyleModel extends SectionModel {
 		super(SectionModelType.Path);
 	}
 	
-	public SectionModel loadModel(JSONObject jsonSection) 
+	public SectionModel loadModel(JSONObject jsonSection, IModel parentModel) 
 			throws TechnicalException, InputFileException {
 	  	
 		for (Object key : jsonSection.keySet()) {

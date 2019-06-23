@@ -27,32 +27,32 @@
 										"sectionType": "MoveTo",
 										"nameU": "MoveTo 1",
 										"cells": [
-											{ "cellType": "X", "formula": "5.0" },
-											{ "cellType": "Y", "formula": "5.0" }
+											{ "nameU": "X", "formula": "5.0" },
+											{ "nameU": "Y", "formula": "5.0" }
 										]
 									},
 									{
 										"sectionType": "LineTo",
 										"nameU": "LineTo 1",
 										"cells": [
-											{ "cellType": "X", "formula": "95.0" },
-											{ "cellType": "Y", "formula": "5.0" }
+											{ "nameU": "X", "formula": "95.0" },
+											{ "nameU": "Y", "formula": "5.0" }
 										]
 									},
 									{
 										"sectionType": "LineTo",
 										"nameU": "LineTo 2",
 										"cells": [
-											{ "cellType": "X", "formula": "95.0" },
-											{ "cellType": "Y", "formula": "95.0" }
+											{ "nameU": "X", "formula": "95.0" },
+											{ "nameU": "Y", "formula": "95.0" }
 										]
 									},
 									{
 										"sectionType": "LineTo",
 										"nameU": "LineTo 3",
 										"cells": [
-											{ "cellType": "X", "formula": "5.0" },
-											{ "cellType": "Y", "formula": "95.0" }
+											{ "nameU": "X", "formula": "5.0" },
+											{ "nameU": "Y", "formula": "95.0" }
 										]
 									},
 									{
@@ -66,40 +66,42 @@
 								"sectionType": "Location",
 								"nameU": "Location",
 								"cells": [
-									{ "cellType": "X", "formula": "200.0" },
-									{ "cellType": "Y", "formula": "50.0" },
-									{ "cellType": "Width", "formula": "100.0" },
-									{ "cellType": "Height", "formula": "100.0" },
-									{ "cellType": "Rotate", "formula": "45.0" },
-									{ "cellType": "Scale", "formula": "1.5" }
+									{ "nameU": "X", "formula": "200.0" },
+									{ "nameU": "Y", "formula": "50.0" },
+									{ "nameU": "Width", "formula": "100.0" },
+									{ "nameU": "Height", "formula": "100.0" },
+									{ "nameU": "Rotate", "formula": "45.0" },
+									{ "nameU": "Scale", "formula": "1.5" }
 								]
 							},
 							{
 								"sectionType": "CenterPoint",
 								"nameU": "CenterPoint 1",
 								"cells": [
-									{ "cellType": "X", "formula": "50.0" },
-									{ "cellType": "Y", "formula": "50.0" }
+									{ "nameU": "X", "formula": "50.0" },
+									{ "nameU": "Y", "formula": "50.0" }
 								]
 							},
 							{
 								"sectionType": "Style",
 								"nameU": "Style 1",
 								"cells": [
-									{ "cellType": "StrokeWidth", "formula": "0.75" },
-									{ "cellType": "FillColor", "formula": "YELLOW" },
-									{ "cellType": "Transparency", "formula": "75.0" }
+									{ "nameU": "StrokeWidth", "formula": "0.75" },
+									{ "nameU": "FillColor", "formula": "YELLOW" },
+									{ "nameU": "Transparency", "formula": "75.0" }
 								]
 							}
 						],
 						"cells": [
-							{ "cellType": "ShapeDimension", "formula": "2" }
+							{ "nameU": "ShapeDimension", "formula": "2" }
 						]
 					}
 				],
 				"cells": [
-					{ "cellType": "PageNo", "formula": "1" },
-					{ "cellType": "PageTitle", "formula": "=concat('Page',${pageNo})" }
+					{ "nameU": "PageNo", "formula": "1.0" },
+					{ "nameU": "PageTitle", 
+					  "formula": "concat('Page ',text(int(${PageNo})))",
+					  "dataType": "string" }
 				]
 			}
 		],

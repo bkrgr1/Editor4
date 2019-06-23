@@ -1,18 +1,11 @@
 package de.bkroeger.editor4.controller;
 
-import de.bkroeger.editor4.model.IShapeModel;
+import de.bkroeger.editor4.model.SectionModel;
 
 public class ShapeControllerFactory {
 
-	public static IShapeController getController(IShapeModel shapeModel, PageController parentCtrl) {
-
-		switch (shapeModel.getShapeType()) {
-		case Rectangle:
-			IShapeController ctrl = (IShapeController) new RectangleShapeController(shapeModel, parentCtrl);
-			return ctrl;
-
-		default:
-			return null;
-		}
+	public static ShapeController getShapeController(SectionModel shapeModel) {
+		
+		return null;
 	}
 }

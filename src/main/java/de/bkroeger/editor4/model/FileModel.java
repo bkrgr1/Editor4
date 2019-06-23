@@ -85,7 +85,8 @@ public class FileModel extends SectionModel implements IModel {
      * @throws InputFileException 
      * @throws CellCalculationException 
      */
-    public FileModel loadModel() 
+    @Override
+    public FileModel loadModel(JSONObject jsonSection, IModel parentSection) 
     		throws TechnicalException, InputFileException {
     	
     	try {
@@ -104,6 +105,7 @@ public class FileModel extends SectionModel implements IModel {
 		    		throw new InputFileException("Invalid json file: file object missing");
 		    	}
 		    	
+		    	// alle untergeordneten JSON Elemente einlesen
 		    	for (Object key : jsonFile.keySet()) {
 		    		String k = key.toString();
 		    		switch (k) {
@@ -138,11 +140,12 @@ public class FileModel extends SectionModel implements IModel {
 		    		}
 		    	}
 		    	
+		    	// die Standard-Elemente laden
 		    	super.loadModel(jsonFile, this);
 		    
     		} else {
     			
-    			// bildet das File-Datenmodell
+    			// ein leeres File-Datenmodell erstellen
     			buildInitialFileModel();
     		}
     		
@@ -158,19 +161,12 @@ public class FileModel extends SectionModel implements IModel {
     	}
     }
     
+    /**
+     * Ein leeres File-Datenmodell erstellen
+     * @return
+     */
     private FileModel buildInitialFileModel() {
 		// TODO Auto-generated method stub
 		return null;
 	}
-    
-    public SectionModel calculate() {
-    	
-    	for (SectionModel sectionModel : this.selectSections(SectionModelType.Page)) {
-    		if (sectionModel instanceof PageModel) {
-    			PageModel pageModel = (PageModel)sectionModel;
-        		pageModel.calculate();
-    		}
-    	}
-    	return this;
-    }
 }

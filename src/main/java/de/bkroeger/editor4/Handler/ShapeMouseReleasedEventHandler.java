@@ -34,8 +34,8 @@ public class ShapeMouseReleasedEventHandler implements EventHandler<MouseEvent> 
             eventData.setMouseX(eventData.getMouseX() + deltaX);
             eventData.setMouseY(eventData.getMouseY() + deltaY);
 
-            eventData.getModel().xProperty().set(eventData.getModel().xProperty().get() + deltaX);
-            eventData.getModel().yProperty().set(eventData.getModel().yProperty().get() + deltaY);
+//            eventData.getModel().xProperty().set(eventData.getModel().xProperty().get() + deltaX);
+//            eventData.getModel().yProperty().set(eventData.getModel().yProperty().get() + deltaY);
 
             eventData.setMouseX(null);
             eventData.setMouseY(null);

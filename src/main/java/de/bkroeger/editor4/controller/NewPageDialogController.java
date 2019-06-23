@@ -4,23 +4,17 @@ import de.bkroeger.editor4.model.IModel;
 import de.bkroeger.editor4.model.PageModel;
 import de.bkroeger.editor4.view.IView;
 import de.bkroeger.editor4.view.NewPageDialog;
+import javafx.scene.Node;
 import javafx.scene.control.ButtonBar.ButtonData;
 import javafx.scene.control.Dialog;
 
 public class NewPageDialogController implements IController {
 
     private PageModel pageModel;
-
-    @Override
-    public IModel getModel() {
-        return pageModel;
-    }
-
+    
     private NewPageDialog newPageDialog;
-
-    @Override
-    public IView getView() {
-        return newPageDialog;
+    public NewPageDialog getView() {
+    	return newPageDialog;
     }
 
     /**

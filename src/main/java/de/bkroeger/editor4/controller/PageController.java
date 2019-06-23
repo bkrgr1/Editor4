@@ -1,17 +1,14 @@
 package de.bkroeger.editor4.controller;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-import de.bkroeger.editor4.model.IArrowModel;
-import de.bkroeger.editor4.model.IShapeModel;
+import de.bkroeger.editor4.exceptions.TechnicalException;
+import de.bkroeger.editor4.model.CellModel;
 import de.bkroeger.editor4.model.PageModel;
+import de.bkroeger.editor4.model.SectionModel;
+import de.bkroeger.editor4.model.SectionModelType;
 import de.bkroeger.editor4.view.PageView;
-import javafx.scene.Node;
-import javafx.scene.layout.Pane;
 
 /**
  * <p>
@@ -22,22 +19,8 @@ import javafx.scene.layout.Pane;
  */
 public class PageController extends BaseController {
 
-    private static final Logger logger = LogManager.getLogger(PageController.class.getName());
-
-    private List<IShapeController> shapeControllers = new ArrayList<>();
-
-    private List<IArrowController> arrowControllers = new ArrayList<>();
-
-    /**
-     * <p>
-     * Constructor with page number.
-     * </p>
-     * 
-     * @param pageNo page number
-     */
-    public PageController(int pageNo) {
-        super();
-    }
+    @SuppressWarnings("unused")
+	private static final Logger logger = LogManager.getLogger(PageController.class.getName());
 
     /**
      * <p>
@@ -47,35 +30,43 @@ public class PageController extends BaseController {
      * @param pageModel   a {@link PageModel}
      * @param panelWidth  width of the page panel
      * @param panelHeight height of the page panel
+     * @throws TechnicalException 
      */
-    public PageController(PageModel pageModel, int panelWidth, int panelHeight) {
+    public PageController(PageModel pageModel) throws TechnicalException {
         super();
-        this.model = pageModel;
+        this.model = pageModel; 
+        if (pageModel == null) throw new TechnicalException("Page model is NULL");
+    }
+    
+    /**
+     * Bildet die View: Tab mit Content-Pane
+     * @param parentController
+     * @return
+     */
+    public ControllerResult buildView(ControllerResult parentController) {
+    	
+    	ControllerResult controllerResult = new ControllerResult();
+    	controllerResult.setController(this);
 
-        logger.debug("Creating PageController...");
-
-        // create a drawing canvas
-        PageView pageView = new PageView(panelWidth, panelHeight);
+        // für diese Seite einen Tab und darin ein Pane generieren
+        PageView pageView = new PageView(this);
         this.view = pageView;
+        controllerResult.setView(this.view);
 
-        // alle Shapes zeichnen
-        for (IShapeModel editorShapeModel : pageModel.getShapeModels()) {
+        // alle Shapes dieser Seite auf dem Pane zeichnen
+        for (SectionModel shapeModel : ((PageModel)this.model).selectSections(SectionModelType.Shape)) {
 
-            // einen ShapeController für jedes einzelne Shape erzeugen
-            IShapeController shapeCtrl = ShapeControllerFactory.getController(editorShapeModel, this);
-            shapeControllers.add(shapeCtrl);
-            ((Pane) this.view).getChildren().add((Node) shapeCtrl.getView());
+        	@SuppressWarnings("unused")
+			ShapeController shapeController = ShapeControllerFactory.getShapeController(shapeModel);
+//        	shapeController.buildView(controllerResult);
         }
-
-        // alle Verbinder zeichnen
-        for (IArrowModel editorArrowModel : pageModel.getArrowModels()) {
-
-            // einen ArrowController für jeden einzelnen Pfeil erzeugen
-            IArrowController arrowCtrl = ArrowControllerFactory.getController(editorArrowModel, this, shapeControllers);
-            arrowControllers.add(arrowCtrl);
-            ((Pane) this.view).getChildren().add((Node) arrowCtrl.getView());
-        }
-
-        logger.debug("Page controller created for page=" + pageModel.getPageNo());
+        
+        return controllerResult;
+    }
+    
+    public CellModel getCell(String cellName) {
+    	
+    	CellModel cell = this.model.getCell(cellName);
+    	return cell;
     }
 }

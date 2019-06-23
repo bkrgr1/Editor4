@@ -39,7 +39,8 @@ public class PathModel extends SectionModel implements IModel {
 		this.pathType = pt;
 	}
 	
-	public SectionModel loadModel(JSONObject jsonSection) 
+	@Override
+	public SectionModel loadModel(JSONObject jsonSection, IModel parentSection) 
 			throws TechnicalException, InputFileException {
 	  	
 		for (Object key : jsonSection.keySet()) {

@@ -36,8 +36,8 @@ public class ShapeMouseDraggedEventHandler implements EventHandler<MouseEvent> {
             eventData.setMouseY(eventData.getMouseY() + deltaY);
 
             // Shape verschieben
-            eventData.getModel().xProperty().set(eventData.getModel().xProperty().get() + deltaX);
-            eventData.getModel().yProperty().set(eventData.getModel().yProperty().get() + deltaY);
+//            eventData.getModel().xProperty().set(eventData.getModel().xProperty().get() + deltaX);
+//            eventData.getModel().yProperty().set(eventData.getModel().yProperty().get() + deltaY);
         }
 
         event.consume();

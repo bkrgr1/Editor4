@@ -1,27 +1,21 @@
 package de.bkroeger.editor4.controller;
 
-import java.io.FileReader;
-import java.io.IOException;
 import java.util.Comparator;
-import java.util.List;
 import java.util.Optional;
-import java.util.UUID;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.json.simple.JSONArray;
-import org.json.simple.JSONObject;
-import org.json.simple.parser.JSONParser;
-import org.json.simple.parser.ParseException;
 import org.springframework.beans.factory.config.ConfigurableBeanFactory;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
 
+import de.bkroeger.editor4.exceptions.CellCalculationException;
+import de.bkroeger.editor4.exceptions.InputFileException;
 import de.bkroeger.editor4.exceptions.TechnicalException;
 import de.bkroeger.editor4.model.FileModel;
+import de.bkroeger.editor4.model.PageModel;
 import de.bkroeger.editor4.model.SectionModel;
 import de.bkroeger.editor4.model.SectionModelType;
-import de.bkroeger.editor4.model.PageModel;
 import de.bkroeger.editor4.view.NewPageDialog;
 import de.bkroeger.editor4.view.TabPaneView;
 import javafx.beans.value.ChangeListener;
@@ -76,40 +70,52 @@ public class FileController implements IController  {
      * @param panelWidth  width of the page panel
      * @param panelHeight height of the page panel
      * @param fileModel 
+     * @throws InputFileException 
+     * @throws TechnicalException 
      */
-    public FileController(int panelWidth, int panelHeight, FileModel fileModel) {
+    public FileController(int panelWidth, int panelHeight, String inFilePath) throws InputFileException, TechnicalException {
     	
         this.panelWidth = panelWidth;
         this.panelHeight = panelHeight;
-        this.fileModel = fileModel;
+        
+	    
+	    this.fileModel = new FileModel(inFilePath);
+		
+	    // Datenmodell aus Datei laden oder initialisieren
+		fileModel.loadModel(null, null);
+
     }
 
 	/**
      * Berechnet die Querbeziehungen
+	 * @throws CellCalculationException 
      */
-    public void calculate() {
+    public void calculate() throws CellCalculationException {
     	
     	this.fileModel.calculate();
     }
     
     /**
-     * Erstellt die View
+     * Erstellt die View: ein TabView mit Tabs pro Seite
+     * @throws TechnicalException 
      */
-    public ControllerResult buildView() {
+    public ControllerResult buildView() throws TechnicalException {
 
-        logger.debug("Creating FileController...");
+        logger.debug("Creating file view...");
 
-        ControllerResult result = new ControllerResult();
-        result.setController(this);
+        ControllerResult controllerResult = new ControllerResult();
+        controllerResult.setController(this);
         
         // create a tab view
         TabPaneView tabView = new TabPaneView(panelWidth, panelHeight);
         this.view = tabView;
-        result.setView(this.view);
+        controllerResult.setView(this.view);
 
+        // für jede Seite...
     	for (SectionModel pageModel : fileModel.selectSections(SectionModelType.Page)) {
         	
-        	ControllerResult pageResult = pageModel.buildView(result, panelWidth, panelHeight);
+    		PageController pageController = new PageController((PageModel)pageModel);
+        	ControllerResult pageResult = pageController.buildView(controllerResult);
 
         	((TabPane) tabView).getTabs().add((Tab) pageResult.getView());
 
@@ -129,69 +135,69 @@ public class FileController implements IController  {
         // select the first page
         selectionModel.select(currentTab);
 
-        // add actions for TabPane
-        // -----------------------
-        // select a tab and page
-        selectionModel.selectedItemProperty().addListener(new ChangeListener<Tab>() {
-
-            @Override
-            public void changed(ObservableValue<? extends Tab> ov, Tab oldTab, Tab newTab) {
-
-                if (newTab != null) {
-                    // an existing tab has been selected
-
-                    PageController pageController = (PageController) newTab.getUserData();
-                    if (pageController == null) {
-
-                        // this is the dummy page; show the "New page dialog"
-
-                        NewPageDialogController newPageController = new NewPageDialogController(
-                                getHighestPageNo());
-                        NewPageDialog newPageDialog = (NewPageDialog) newPageController.getView();
-                        Optional<PageModel> result = ((Dialog<PageModel>) newPageDialog).showAndWait();
-                        result.ifPresent(pageModel -> {
-
-                            logger.debug("create new page");
-
-                            currentTab = newTab;
-
-                            currentTab.setText(pageModel.getPageTitle() != null ? pageModel.getPageTitle()
-                                    : "Page " + pageModel.getPageNo());
-                            PageController pageCtrl = new PageController(pageModel, panelWidth, panelHeight);
-                            currentTab.setUserData(pageCtrl);
-
-                            // add a dummy page at the end marked with "+"
-                            Tab dummyTab = new Tab("+");
-                            ((TabPane) tabView).getTabs().add(dummyTab);
-
-                            SingleSelectionModel<Tab> selectionModel = ((TabPane) tabView).getSelectionModel();
-
-                            // select the first page
-                            selectionModel.select(currentTab);
-                        });
-
-                    } else {
-                        // this is an existing page
-                        currentTab = newTab;
-                        PageModel pageModel = null;
-                        if (pageController != null) {
-                            pageModel = (PageModel) pageController.getModel();
-                            currentPage = pageController;
-                        }
-                        logger.debug("Tab Selection changed. New tab = " + (pageModel != null
-                                ? (pageModel.getPageTitle() != null ? pageModel.getPageTitle() : pageModel.getPageNo())
-                                : "??"));
-                    }
-                } else {
-                    // there is no new tab
-                    logger.debug("Tab deleted");
-                }
-            }
-        });
+//        // add actions for TabPane
+//        // -----------------------
+//        // select a tab and page
+//        selectionModel.selectedItemProperty().addListener(new ChangeListener<Tab>() {
+//
+//            @Override
+//            public void changed(ObservableValue<? extends Tab> ov, Tab oldTab, Tab newTab) {
+//
+//                if (newTab != null) {
+//                    // an existing tab has been selected
+//
+//                    PageController pageController = (PageController) newTab.getUserData();
+//                    if (pageController == null) {
+//
+//                        // this is the dummy page; show the "New page dialog"
+//
+//                        NewPageDialogController newPageController = new NewPageDialogController(
+//                                getHighestPageNo());
+//                        NewPageDialog newPageDialog = (NewPageDialog) newPageController.getView();
+//                        Optional<PageModel> result = ((Dialog<PageModel>) newPageDialog).showAndWait();
+//                        result.ifPresent(pageModel -> {
+//
+//                            logger.debug("create new page");
+//
+//                            currentTab = newTab;
+//
+//                            currentTab.setText(pageModel.getPageTitle() != null ? pageModel.getPageTitle()
+//                                    : "Page " + pageModel.getPageNo());
+//                            PageController pageCtrl = new PageController(pageModel);
+//                            currentTab.setUserData(pageCtrl);
+//
+//                            // add a dummy page at the end marked with "+"
+//                            Tab dummyTab = new Tab("+");
+//                            ((TabPane) tabView).getTabs().add(dummyTab);
+//
+//                            SingleSelectionModel<Tab> selectionModel = ((TabPane) tabView).getSelectionModel();
+//
+//                            // select the first page
+//                            selectionModel.select(currentTab);
+//                        });
+//
+//                    } else {
+//                        // this is an existing page
+//                        currentTab = newTab;
+//                        PageModel pageModel = null;
+//                        if (pageController != null) {
+//                            pageModel = (PageModel) pageController.getModel();
+//                            currentPage = pageController;
+//                        }
+//                        logger.debug("Tab Selection changed. New tab = " + (pageModel != null
+//                                ? (pageModel.getPageTitle() != null ? pageModel.getPageTitle() : pageModel.getPageNo())
+//                                : "??"));
+//                    }
+//                } else {
+//                    // there is no new tab
+//                    logger.debug("Tab deleted");
+//                }
+//            }
+//        });
 
         logger.debug("FileController created.");
         
-        return result;
+        return controllerResult;
     }
 
     public String getTitle() {

@@ -59,8 +59,6 @@ public class PageModel extends SectionModel {
 	public PageModel() {
 		super(SectionModelType.Page);
 		
-		addCell(new CellModel(CellModelType.PageNo, "1"));
-		addCell(new CellModel(CellModelType.PageTitle, "Page 1"));
 	}
 	
 	/**
@@ -68,7 +66,7 @@ public class PageModel extends SectionModel {
 	 * @throws TechnicalException 
 	 * @throws InputFileException 
 	 */
-	public SectionModel loadModel(JSONObject jsonSection) 
+	public SectionModel loadModel(JSONObject jsonSection, IModel parentModel) 
 			throws TechnicalException, InputFileException {
     	  	
     	for (Object key : jsonSection.keySet()) {
@@ -106,20 +104,6 @@ public class PageModel extends SectionModel {
     	
 		return this;
 	}
-	
-	/**
-	 * Calculate cell values
-	 */   
-    public SectionModel calculate() {
-    	
-    	for (SectionModel sectionModel : this.selectSections(SectionModelType.Shape)) {
-    		if (sectionModel instanceof ShapeModel) {
-    			ShapeModel shapeModel = (ShapeModel)sectionModel;
-        		shapeModel.calculate();
-    		}
-    	}
-    	return this;
-    }
 	
 	public ControllerResult buildView(ControllerResult parentResult,
 			int panelWidth, int panelHeight) {

@@ -78,7 +78,7 @@ public class ShapeModel extends SectionModel {
 	 * @throws TechnicalException 
 	 * @throws InputFileException 
 	 */
-	public SectionModel loadModel(JSONObject jsonSection) 
+	public SectionModel loadModel(JSONObject jsonSection, IModel parentModel) 
 			throws TechnicalException, InputFileException {
 		  	
 		for (Object key : jsonSection.keySet()) {

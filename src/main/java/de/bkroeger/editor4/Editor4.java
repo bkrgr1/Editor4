@@ -11,7 +11,6 @@ import org.springframework.context.ConfigurableApplicationContext;
 import de.bkroeger.editor4.controller.FileController;
 import de.bkroeger.editor4.exceptions.InputFileException;
 import de.bkroeger.editor4.exceptions.TechnicalException;
-import de.bkroeger.editor4.model.FileModel;
 import javafx.application.Application;
 import javafx.scene.Node;
 import javafx.scene.Scene;
@@ -79,14 +78,9 @@ public class Editor4 extends Application {
 		        	throw new InputFileException("File '"+inFilePath+"' does not exist!");
 		        }
 		    }
-		    
-		    FileModel fileModel = new FileModel(inFilePath);
-			
-		    // Datenmodell aus Datei laden oder initialisieren
-			fileModel.loadModel();
 			
 			// create a {@link FileController} for the file model
-			FileController fileController = new FileController(PANEL_WIDTH, PANEL_HEIGHT, fileModel);
+			FileController fileController = new FileController(PANEL_WIDTH, PANEL_HEIGHT, inFilePath);
 			
 			fileController.calculate(); // Querreferenzen berechnen
 			
