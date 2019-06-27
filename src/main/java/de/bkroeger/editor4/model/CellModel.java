@@ -5,6 +5,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.json.simple.JSONObject;
 
 import de.bkroeger.editor4.Utils;
@@ -19,7 +21,6 @@ import javafx.beans.property.SimpleDoubleProperty;
 import javafx.beans.property.SimpleObjectProperty;
 import lombok.Getter;
 import lombok.Setter;
-import lombok.ToString;
 
 /**
  * <p>Dies ist die Basis-Datenstruktur für eine Shape-Zelle.</p>
@@ -28,8 +29,9 @@ import lombok.ToString;
  */
 @Getter
 @Setter
-@ToString
 public class CellModel implements CellValueListener {
+
+	private static final Logger logger = LogManager.getLogger(CellModel.class.getName());
 	
 	private static final String VARIABLE_PREFIX = "${";
 	private static final String VARIABLE_SUFFIX = "}";
@@ -79,6 +81,8 @@ public class CellModel implements CellValueListener {
 		// registrierte Listener über Änderung informieren
 		notifyListener();
 	}
+	
+	private boolean calculated = false;
 
 	private void notifyListener() {
 		for (CellValueListener listener : this.cellListeners) {
@@ -100,19 +104,24 @@ public class CellModel implements CellValueListener {
 		switch (this.cellValueType) {
 		case number:
 			// numerischen Wert berechnen
-			this.setDoubleValue(calcDouble());
+			this.setDoubleValue(calcDouble());			
+			logger.debug("Calculate cell="+this.nameU+" value="+this.getDoubleValue());
 			break;
 		case bool:
 			// Bolean-Wert berechnen
 			this.setBooleanValue(calcBoolean());
+			logger.debug("Calculate cell="+this.nameU+" value="+this.getBooleanValue());
 			break;
 		case string:
 			// String Wert berechnen
 			this.setStringValue(calcString());
+			logger.debug("Calculate cell="+this.nameU+" value="+this.getStringValue());
 			break;
 		default:
 			throw new CellCalculationException("Invalid cell value type");
 		}
+		
+		this.calculated = true;
 	}
 
 	/**
@@ -158,6 +167,13 @@ public class CellModel implements CellValueListener {
 	 */
 	private DoubleProperty doubleProperty = new SimpleDoubleProperty();
 	
+	public DoubleProperty getDoubleProperty() throws CellCalculationException {
+		if (!this.calculated) {
+			this.calculate();
+		}
+		return this.doubleProperty;
+	}
+	
 	public void setDoubleValue(Double value) {
 		this.doubleProperty.set(value);
 	}
@@ -168,6 +184,13 @@ public class CellModel implements CellValueListener {
 	
 	private ObjectProperty<String> stringProperty = new SimpleObjectProperty<>();
 	
+	public ObjectProperty<String> getStringProperty() throws CellCalculationException {
+		if (!this.calculated) {
+			this.calculate();
+		}
+		return this.stringProperty;
+	}
+
 	public void setStringValue(String value) {
 		this.stringProperty.set(value);
 	}
@@ -177,6 +200,13 @@ public class CellModel implements CellValueListener {
 	}
 	
 	private ObjectProperty<Boolean> booleanProperty = new SimpleObjectProperty<>();
+	
+	public ObjectProperty<Boolean> getBooleanProperty() throws CellCalculationException {
+		if (!this.calculated) {
+			this.calculate();
+		}
+		return this.booleanProperty;
+	}
 	
 	public void setBooleanValue(Boolean value) {
 		this.booleanProperty.set(value);

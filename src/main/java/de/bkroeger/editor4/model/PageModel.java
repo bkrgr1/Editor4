@@ -102,6 +102,9 @@ public class PageModel extends SectionModel {
     	
     	super.loadModel(jsonSection, this);
     	
+    	logger.debug(String.format("Page model has %d cells and %d sections",
+    			this.cells.size(), this.sections.size()));
+    	
 		return this;
 	}
 	

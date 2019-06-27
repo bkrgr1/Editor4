@@ -29,7 +29,7 @@ public class StyleModel extends SectionModel {
     private static final String SECTION_TYPE_KEY = "sectionType";
 	
 	public StyleModel() {
-		super(SectionModelType.Path);
+		super(SectionModelType.Style);
 	}
 	
 	public SectionModel loadModel(JSONObject jsonSection, IModel parentModel) 

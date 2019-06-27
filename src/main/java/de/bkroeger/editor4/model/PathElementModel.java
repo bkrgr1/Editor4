@@ -6,8 +6,10 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.json.simple.JSONObject;
 
+import de.bkroeger.editor4.exceptions.CellCalculationException;
 import de.bkroeger.editor4.exceptions.InputFileException;
 import de.bkroeger.editor4.exceptions.TechnicalException;
+import javafx.beans.property.DoubleProperty;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
@@ -28,8 +30,15 @@ public class PathElementModel extends SectionModel {
 	private static final String ID_KEY = "id";
     private static final String SECTION_TYPE_KEY = "sectionType";
 
+    /**
+     * Art des PathElement
+     */
 	private PathElementType elemType;
 	
+	/**
+	 * Constructor
+	 * @param pt
+	 */
 	public PathElementModel(PathElementType pt) {
 		super(SectionModelType.PathElement);
 		this.elemType = pt;
@@ -76,6 +85,29 @@ public class PathElementModel extends SectionModel {
     
     	super.loadModel(jsonSection, this);
     	
+    	logger.debug(String.format("PathElement model has %d cells and %d sections",
+    			this.cells.size(), this.sections.size()));
+    	
 		return this;
+	}
+	
+	public DoubleProperty getXProperty() throws TechnicalException, CellCalculationException {
+		
+		CellModel cell = this.cells.get("X");
+		if (cell != null) {
+			return cell.getDoubleProperty();
+		} else {
+			throw new TechnicalException("Cell with type 'X' not found");
+		}
+	}
+	
+	public DoubleProperty getYProperty() throws TechnicalException, CellCalculationException {
+		
+		CellModel cell = this.cells.get("Y");
+		if (cell != null) {
+			return cell.getDoubleProperty();
+		} else {
+			throw new TechnicalException("Cell with type 'Y' not found");
+		}
 	}
 }

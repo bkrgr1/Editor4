@@ -18,6 +18,7 @@
 						"id": "9805ca70-1673-4a5a-80bf-a071f7ba6746",
 						"description": "Ein Rechteck",
 						"nameU": "Shape 1",
+						"shapeDimension": "2D",
 						"sections": [
 							{
 								"sectionType": "Path",
@@ -66,8 +67,8 @@
 								"sectionType": "Location",
 								"nameU": "Location",
 								"cells": [
-									{ "nameU": "X", "formula": "200.0" },
-									{ "nameU": "Y", "formula": "50.0" },
+									{ "nameU": "LayoutX", "formula": "200.0" },
+									{ "nameU": "LayoutY", "formula": "50.0" },
 									{ "nameU": "Width", "formula": "100.0" },
 									{ "nameU": "Height", "formula": "100.0" },
 									{ "nameU": "Rotate", "formula": "45.0" },
@@ -87,13 +88,11 @@
 								"nameU": "Style 1",
 								"cells": [
 									{ "nameU": "StrokeWidth", "formula": "0.75" },
-									{ "nameU": "FillColor", "formula": "YELLOW" },
 									{ "nameU": "Transparency", "formula": "75.0" }
 								]
 							}
 						],
 						"cells": [
-							{ "nameU": "ShapeDimension", "formula": "2" }
 						]
 					}
 				],

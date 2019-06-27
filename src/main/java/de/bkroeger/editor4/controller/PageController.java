@@ -3,12 +3,16 @@ package de.bkroeger.editor4.controller;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
+import de.bkroeger.editor4.exceptions.CellCalculationException;
+import de.bkroeger.editor4.exceptions.InputFileException;
 import de.bkroeger.editor4.exceptions.TechnicalException;
 import de.bkroeger.editor4.model.CellModel;
 import de.bkroeger.editor4.model.PageModel;
 import de.bkroeger.editor4.model.SectionModel;
 import de.bkroeger.editor4.model.SectionModelType;
 import de.bkroeger.editor4.view.PageView;
+import javafx.scene.Node;
+import javafx.scene.layout.Pane;
 
 /**
  * <p>
@@ -42,8 +46,12 @@ public class PageController extends BaseController {
      * Bildet die View: Tab mit Content-Pane
      * @param parentController
      * @return
+     * @throws TechnicalException 
+     * @throws InputFileException 
+     * @throws CellCalculationException 
      */
-    public ControllerResult buildView(ControllerResult parentController) {
+    public ControllerResult buildView(ControllerResult parentController) 
+    		throws TechnicalException, InputFileException, CellCalculationException {
     	
     	ControllerResult controllerResult = new ControllerResult();
     	controllerResult.setController(this);
@@ -56,16 +64,23 @@ public class PageController extends BaseController {
         // alle Shapes dieser Seite auf dem Pane zeichnen
         for (SectionModel shapeModel : ((PageModel)this.model).selectSections(SectionModelType.Shape)) {
 
-        	@SuppressWarnings("unused")
 			ShapeController shapeController = ShapeControllerFactory.getShapeController(shapeModel);
-//        	shapeController.buildView(controllerResult);
+        	ControllerResult result = shapeController.buildView(controllerResult);
+        	
+        	Pane pane = (Pane) pageView.getContent();
+        	pane.getChildren().add((Node) result.getView());
         }
         
         return controllerResult;
     }
     
+    /**
+     * Ermittelt die Zelle mit dem gegebenen Namen.
+     * @param cellName
+     * @return
+     */
     public CellModel getCell(String cellName) {
-    	
+    	// leitet die Anfrage weiter zum Datenmodell
     	CellModel cell = this.model.getCell(cellName);
     	return cell;
     }

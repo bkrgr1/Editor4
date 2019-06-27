@@ -1,7 +1,6 @@
 package de.bkroeger.editor4.controller;
 
 import java.util.Comparator;
-import java.util.Optional;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -16,11 +15,7 @@ import de.bkroeger.editor4.model.FileModel;
 import de.bkroeger.editor4.model.PageModel;
 import de.bkroeger.editor4.model.SectionModel;
 import de.bkroeger.editor4.model.SectionModelType;
-import de.bkroeger.editor4.view.NewPageDialog;
 import de.bkroeger.editor4.view.TabPaneView;
-import javafx.beans.value.ChangeListener;
-import javafx.beans.value.ObservableValue;
-import javafx.scene.control.Dialog;
 import javafx.scene.control.SingleSelectionModel;
 import javafx.scene.control.Tab;
 import javafx.scene.control.TabPane;
@@ -98,15 +93,17 @@ public class FileController implements IController  {
     /**
      * Erstellt die View: ein TabView mit Tabs pro Seite
      * @throws TechnicalException 
+     * @throws CellCalculationException 
+     * @throws InputFileException 
      */
-    public ControllerResult buildView() throws TechnicalException {
+    public ControllerResult buildView() throws TechnicalException, InputFileException, CellCalculationException {
 
         logger.debug("Creating file view...");
 
         ControllerResult controllerResult = new ControllerResult();
         controllerResult.setController(this);
         
-        // create a tab view
+        // erzeugt die Tabview für die Seiten-Tabs
         TabPaneView tabView = new TabPaneView(panelWidth, panelHeight);
         this.view = tabView;
         controllerResult.setView(this.view);
@@ -114,24 +111,25 @@ public class FileController implements IController  {
         // für jede Seite...
     	for (SectionModel pageModel : fileModel.selectSections(SectionModelType.Page)) {
         	
+    		// einen PageController erstellen
     		PageController pageController = new PageController((PageModel)pageModel);
+    		// und den Tab-Eintrag eintrag generieren
         	ControllerResult pageResult = pageController.buildView(controllerResult);
-
+        	// den Tab-Eintrag zu der Tabview hinzufügen
         	((TabPane) tabView).getTabs().add((Tab) pageResult.getView());
 
+        	// die erste Seite wird zur aktuellen Seite
             if (currentPage == null) {
-                // save this as the current page controller
                 currentPage = (PageController) pageResult.getController();
                 currentTab = (Tab) pageResult.getView();
             }
         }
 
-        // add a dummy page at the end marked with "+"
+        // fügt einen Tab mit Text "+" am Ende der Tabs hinzu
         Tab dummyTab = new Tab("+");
         ((TabPane) tabView).getTabs().add(dummyTab);
 
         SingleSelectionModel<Tab> selectionModel = ((TabPane) tabView).getSelectionModel();
-
         // select the first page
         selectionModel.select(currentTab);
 
@@ -204,7 +202,8 @@ public class FileController implements IController  {
         return fileModel.getInFile().getAbsolutePath();
     }
 
-    private int getHighestPageNo() {
+    @SuppressWarnings("unused")
+	private int getHighestPageNo() {
 
         int maxNo = 0;
 //        for (PageModel page : pages) {

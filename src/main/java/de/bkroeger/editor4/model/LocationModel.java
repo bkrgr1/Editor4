@@ -6,8 +6,10 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.json.simple.JSONObject;
 
+import de.bkroeger.editor4.exceptions.CellCalculationException;
 import de.bkroeger.editor4.exceptions.InputFileException;
 import de.bkroeger.editor4.exceptions.TechnicalException;
+import javafx.beans.property.DoubleProperty;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
@@ -15,10 +17,10 @@ import lombok.ToString;
 @Getter
 @Setter
 @ToString(callSuper=true)
-public class PathModel extends SectionModel implements IModel {
+public class LocationModel extends SectionModel {
 
     @SuppressWarnings("unused")
-	private static final Logger logger = LogManager.getLogger(PathModel.class.getName());
+	private static final Logger logger = LogManager.getLogger(LocationModel.class.getName());
 
     private static final String CELLS_KEY = "cells";
 	private static final String SECTIONS_KEY = "sections";
@@ -28,19 +30,19 @@ public class PathModel extends SectionModel implements IModel {
 	private static final String ID_KEY = "id";
     private static final String SECTION_TYPE_KEY = "sectionType";
 	
-	public PathModel() {
-		super(SectionModelType.Path);
+	/**
+	 * Constructor
+	 */
+	public LocationModel() {
+		super(SectionModelType.Location);
 	}
-	
-	private PathType pathType;
-	
-	public PathModel(PathType pt) {
-		super(SectionModelType.Path);
-		this.pathType = pt;
-	}
-	
-	@Override
-	public SectionModel loadModel(JSONObject jsonSection, IModel parentSection) 
+
+	/**
+	 * Load the section data from JSON
+	 * @throws TechnicalException 
+	 * @throws InputFileException 
+	 */
+	public SectionModel loadModel(JSONObject jsonSection, IModel parentModel) 
 			throws TechnicalException, InputFileException {
 	  	
 		for (Object key : jsonSection.keySet()) {
@@ -70,15 +72,32 @@ public class PathModel extends SectionModel implements IModel {
 		    	break;
 				
 			default:
-				throw new InputFileException("Invalid item in path "+nameU+" section: "+k);
+				throw new InputFileException("Invalid item in path element "+nameU+" section: "+k);
 			}
 		}
     
     	super.loadModel(jsonSection, this);
     	
-    	logger.debug(String.format("Pathmodel has %d cells and %d sections",
-    			this.cells.size(), this.sections.size()));
-    	
 		return this;
+	}
+	
+	public DoubleProperty getLayoutXProperty() throws TechnicalException, CellCalculationException {
+		
+		CellModel cell = this.cells.get("LayoutX");
+		if (cell != null) {
+			return cell.getDoubleProperty();
+		} else {
+			throw new TechnicalException("Cell with type 'LayoutX' not found");
+		}
+	}
+	
+	public DoubleProperty getLayoutYProperty() throws TechnicalException, CellCalculationException {
+		
+		CellModel cell = this.cells.get("LayoutY");
+		if (cell != null) {
+			return cell.getDoubleProperty();
+		} else {
+			throw new TechnicalException("Cell with type 'LayoutY' not found");
+		}
 	}
 }

@@ -6,7 +6,6 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.json.simple.JSONObject;
 
-import de.bkroeger.editor4.exceptions.CellCalculationException;
 import de.bkroeger.editor4.exceptions.InputFileException;
 import de.bkroeger.editor4.exceptions.TechnicalException;
 import lombok.Getter;
@@ -33,22 +32,9 @@ public class ShapeModel extends SectionModel {
 	private static final String NAME_KEY = "name";
 	private static final String ID_KEY = "id";
     private static final String SECTION_TYPE_KEY = "sectionType";
-	
-	public void addSection(SectionModel section) {
-		sections.put(section.getSectionType(), section);
-	}
-	
-	public void removeSection(SectionModel section) {
-		sections.remove(section.getSectionType());
-	}
-	
-	public SectionModel getSection(SectionModelType st) throws CellCalculationException {
-		if (sections.containsKey(st)) {
-			return sections.get(st);
-		} else {
-			throw new CellCalculationException("Shape "+this.id.toString()+" does not contain section "+st.toString());
-		}
-	}
+    private static final String DIMENSION_KEY = "shapeDimension";
+    
+    private String shapeDimension;
 
 	/**
 	 * Backreferenz auf die Seite
@@ -101,6 +87,10 @@ public class ShapeModel extends SectionModel {
 	    		this.description = (String) jsonSection.get(DESCRIPTION_KEY);
 	    		break;
 	    		
+    		case DIMENSION_KEY:
+    			this.shapeDimension = (String) jsonSection.get(DIMENSION_KEY);
+    			break;
+	    		
     		case SECTION_TYPE_KEY:
 			case SECTIONS_KEY:	    
 			case CELLS_KEY:
@@ -113,21 +103,10 @@ public class ShapeModel extends SectionModel {
 		}
 	
 		super.loadModel(jsonSection, this);
+    	
+    	logger.debug(String.format("Shape model has %d cells and %d sections",
+    			this.cells.size(), this.sections.size()));
 		
 		return this;
 	}
-	
-	/**
-	 * Calculate cell values
-	 */   
-    public SectionModel calculate() {
-    	
-    	for (SectionModel sectionModel : this.selectSections(SectionModelType.Shape)) {
-    		if (sectionModel instanceof ShapeModel) {
-    			ShapeModel shapeModel = (ShapeModel)sectionModel;
-        		shapeModel.calculate();
-    		}
-    	}
-    	return this;
-    }
 }

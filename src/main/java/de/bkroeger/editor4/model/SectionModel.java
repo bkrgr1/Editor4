@@ -1,12 +1,14 @@
 package de.bkroeger.editor4.model;
 
+import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 
@@ -26,6 +28,8 @@ import lombok.ToString;
 @Setter
 @ToString
 public class SectionModel implements IModel {
+
+	private static final Logger logger = LogManager.getLogger(SectionModel.class.getName());
 	
 	/**
 	 * Art der Section
@@ -60,7 +64,7 @@ public class SectionModel implements IModel {
 	/**
 	 * Map der Sections
 	 */
-	protected Map<SectionModelType, SectionModel> sections = new LinkedHashMap<>();
+	protected List<SectionModel> sections = new ArrayList<>();
 	
 	protected String getKey() {
 		return "";
@@ -68,13 +72,22 @@ public class SectionModel implements IModel {
     
     public List<SectionModel> selectSections(SectionModelType type) {
 
-    	return sections.values().stream()
+    	return sections.stream()
     		.filter(s -> (s.getSectionType() == type))
     		.collect(Collectors.toList());
     }
     
+    public SectionModel getSection(SectionModelType type) 
+    		throws InputFileException, CellCalculationException {
+    	
+    	List<SectionModel> sections = selectSections(type);
+    	if (sections.size() == 1) return sections.get(0);
+    	else if (sections.size() == 0) throw new InputFileException("Section with type '"+type.toString()+"' not found");
+    	else throw new InputFileException("Only one location section allowed per shape");
+    }
+    
     public void addSection(SectionModel section) {
-    	this.sections.put(section.getSectionType(), section);
+    	this.sections.add(section);
     }
 
     
@@ -116,10 +129,10 @@ public class SectionModel implements IModel {
      * Alle Formeln analysieren
      * @throws CellCalculationException 
      */
-    public SectionModel calculate() throws CellCalculationException {
+    public IModel calculate() throws CellCalculationException {
     	
-    	@SuppressWarnings("unused")
 		String sectionName = this.sectionType.toString();
+    	logger.debug("Calculate section: "+sectionName);
     	
     	// alle Cells berechnen
     	for (CellModel cell : this.cells.values()) {
@@ -127,7 +140,7 @@ public class SectionModel implements IModel {
     	}
     	
     	// alle Sections berechnen
-    	for (SectionModel model : this.sections.values()) {
+    	for (IModel model : this.sections) {
     		
     		model.calculate();
     	}
@@ -161,9 +174,9 @@ public class SectionModel implements IModel {
 			pathModel.loadModel(jsonSection, parentModel);
 			return pathModel;
 		case "Location":
-			PathModel pathModel2 = new PathModel(PathType.Location);
-			pathModel2.loadModel(jsonSection, parentModel);
-			return pathModel2;
+			LocationModel locationModel = new LocationModel();
+			locationModel.loadModel(jsonSection, parentModel);
+			return locationModel;
 		case "CenterPoint":
 			PathModel pathModel3 = new PathModel(PathType.Center);
 			pathModel3.loadModel(jsonSection, parentModel);
@@ -249,9 +262,10 @@ public class SectionModel implements IModel {
 			} catch(Exception e) {
 				throw new CellCalculationException("Invalid section type: "+name);
 			}
-			if (this.sections.containsKey(sectionKey)) {
+			List<SectionModel> selected = selectSections(sectionKey);
+			if (selected.size() > 0) {
 				
-				return this.sections.get(sectionKey);
+				return this.sections.get(0);
 			} else {
 				
 				throw new CellCalculationException("Section not found: "+name);
