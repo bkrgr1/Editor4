@@ -1,9 +1,8 @@
 package de.bkroeger.editor4.Handler;
 
-import de.bkroeger.editor4.model.CellModelType;
-
 public class CellValueEvent {
 	
+	@SuppressWarnings("unused")
 	private String cellKey;
 
 	public CellValueEvent(String key) {

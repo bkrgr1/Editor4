@@ -6,7 +6,6 @@ import java.io.IOException;
 import java.util.Locale;
 import java.util.SortedSet;
 import java.util.TreeSet;
-import java.util.UUID;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -34,14 +33,8 @@ import lombok.ToString;
 public class FileModel extends SectionModel implements IModel {
 
 	private static final Logger logger = LogManager.getLogger(FileModel.class.getName());
-
-    private static final String CELLS_KEY = "cells";
-	private static final String SECTIONS_KEY = "sections";
-	private static final String DESCRIPTION_KEY = "description";
-	private static final String UNIVERSAL_NAME_KEY = "nameU";
-	private static final String NAME_KEY = "name";
+	
 	private static final String LOCALE_KEY = "locale";
-	private static final String ID_KEY = "id";
 
 	/**
 	 * Input File
@@ -105,40 +98,17 @@ public class FileModel extends SectionModel implements IModel {
 		    		throw new InputFileException("Invalid json file: file object missing");
 		    	}
 		    	
-		    	// alle untergeordneten JSON Elemente einlesen
 		    	for (Object key : jsonFile.keySet()) {
 		    		String k = key.toString();
-		    		switch (k) {
-		    		case ID_KEY:
-		    			String uuid = (String) jsonFile.get(ID_KEY);
-		    			this.setId(uuid != null ? UUID.fromString(uuid) : UUID.randomUUID());
-		    			break;
-		    			
+		    		switch (k) {   			
 		    		case LOCALE_KEY:
 			    		this.locale = Locale.forLanguageTag((String)jsonFile.get(LOCALE_KEY));
 			    		break;
-			    	
-		    		case NAME_KEY:
-			    		this.name = (String) jsonFile.get(NAME_KEY);
-			    		break;
-			    	
-		    		case UNIVERSAL_NAME_KEY:
-			    		this.nameU = (String) jsonFile.get(UNIVERSAL_NAME_KEY);
-			    		break;
-			    	
-		    		case DESCRIPTION_KEY:
-			    		this.description = (String) jsonFile.get(DESCRIPTION_KEY);
-			    		break;
-			    		
-		    		case SECTIONS_KEY:	    
-		    		case CELLS_KEY:
-				    	// skip
-				    	break;
-		    			
 		    		default:
-		    			throw new InputFileException("Invalid item in file section: "+k);
+		    			// skip
 		    		}
 		    	}
+
 		    	
 		    	// die Standard-Elemente laden
 		    	super.loadModel(jsonFile, this);

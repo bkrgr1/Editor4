@@ -1,5 +1,6 @@
 package de.bkroeger.editor4.model;
 
+import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -19,6 +20,7 @@ import javafx.beans.property.DoubleProperty;
 import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.SimpleDoubleProperty;
 import javafx.beans.property.SimpleObjectProperty;
+import javafx.scene.paint.Color;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -116,6 +118,11 @@ public class CellModel implements CellValueListener {
 			// String Wert berechnen
 			this.setStringValue(calcString());
 			logger.debug("Calculate cell="+this.nameU+" value="+this.getStringValue());
+			break;
+		case object:
+			// Object Wert berechnen
+			this.setObjectValue(calcObject());
+			logger.debug("Calculate cell="+this.nameU+" value="+this.getObjectValue().toString());
 			break;
 		default:
 			throw new CellCalculationException("Invalid cell value type");
@@ -216,6 +223,23 @@ public class CellModel implements CellValueListener {
 		return this.booleanProperty.get();
 	}
 	
+	private ObjectProperty<Object> objectProperty = new SimpleObjectProperty<>();
+	
+	public ObjectProperty<Object> getObjectProperty() throws CellCalculationException {
+		if (!this.calculated) {
+			this.calculate();
+		}
+		return this.objectProperty;
+	}
+
+	public void setObjectValue(Object value) {
+		this.objectProperty.set(value);
+	}
+	
+	public Object getObjectValue() {
+		return this.objectProperty.get();
+	}
+	
 	// Constructors
 	
 	public CellModel(String nameU) {
@@ -223,6 +247,11 @@ public class CellModel implements CellValueListener {
 	}
 	
 	// Methoden
+	
+	private Object calcObject() throws CellCalculationException {
+		Object result = calculateValue(this.formula);
+		return result;
+	}
 	
 	private String calcString() throws CellCalculationException {
 		Object result = calculateValue(this.formula);
@@ -292,6 +321,8 @@ public class CellModel implements CellValueListener {
 					return cell.getBooleanValue();
 				case number:
 					return cell.getDoubleValue();
+				case object:
+					return cell.getObjectValue();
 				}
 			} else {
 				throw new CellCalculationException("Cell '"+variableName+"' not found");
@@ -347,12 +378,29 @@ public class CellModel implements CellValueListener {
 			result = calculate_int(expression);
 			break;
 			
+		case "color":
+			result = calculate_color(expression);
+			break;
+			
 		default:
 			throw new CellCalculationException("Invalid function name: "+functionName);
 		}
 		return result;
 	}
 	
+	private Object calculate_color(String expression) {
+		Color color = null;
+		try {
+			@SuppressWarnings("unused")
+			Field[] fields = Class.forName("javafx.scene.paint.Color").getDeclaredFields();
+		    Field field = Class.forName("javafx.scene.paint.Color").getDeclaredField(expression);
+		    color = (Color)field.get(null);
+		} catch (Exception e) {
+		    color = null; // Not defined
+		}
+		return color;
+	}
+
 	/**
 	 * Setzt mehrere Strings zusammen
 	 * @param expression

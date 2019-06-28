@@ -30,6 +30,13 @@ import lombok.ToString;
 public class SectionModel implements IModel {
 
 	private static final Logger logger = LogManager.getLogger(SectionModel.class.getName());
+
+    private static final String CELLS_KEY = "cells";
+	private static final String SECTIONS_KEY = "sections";
+	private static final String DESCRIPTION_KEY = "description";
+	private static final String UNIVERSAL_NAME_KEY = "nameU";
+	private static final String NAME_KEY = "name";
+	private static final String ID_KEY = "id";
 	
 	/**
 	 * Art der Section
@@ -177,10 +184,10 @@ public class SectionModel implements IModel {
 			LocationModel locationModel = new LocationModel();
 			locationModel.loadModel(jsonSection, parentModel);
 			return locationModel;
-		case "CenterPoint":
-			PathModel pathModel3 = new PathModel(PathType.Center);
-			pathModel3.loadModel(jsonSection, parentModel);
-			return pathModel3;
+		case "Center":
+			CenterModel centerModel = new CenterModel();
+			centerModel.loadModel(jsonSection, parentModel);
+			return centerModel;
 		case "MoveTo":
 			PathElementModel elemModel1 = new PathElementModel(PathElementType.MoveTo);
 			elemModel1.loadModel(jsonSection, parentModel);
@@ -214,6 +221,38 @@ public class SectionModel implements IModel {
 			throws TechnicalException, InputFileException {
 		
 		this.parentModel = parentSection;
+		
+		// Standardfields
+    	for (Object key : jsonSection.keySet()) {
+    		String k = key.toString();
+    		switch (k) {
+    		case ID_KEY:
+    			String uuid = (String) jsonSection.get(ID_KEY);
+    			this.setId(uuid != null ? UUID.fromString(uuid) : UUID.randomUUID());
+    			break;
+	    	
+    		case NAME_KEY:
+	    		this.name = (String) jsonSection.get(NAME_KEY);
+	    		break;
+	    	
+    		case UNIVERSAL_NAME_KEY:
+	    		this.nameU = (String) jsonSection.get(UNIVERSAL_NAME_KEY);
+	    		break;
+	    	
+    		case DESCRIPTION_KEY:
+	    		this.description = (String) jsonSection.get(DESCRIPTION_KEY);
+	    		break;
+	    		
+    		case SECTIONS_KEY:	    
+    		case CELLS_KEY:
+		    	// skip
+		    	break;
+    			
+    		default:
+    			// ignore section specific entries
+    		}
+    	}
+
 		
 		// Liste der Sections
 		if (jsonSection.containsKey("sections")) {

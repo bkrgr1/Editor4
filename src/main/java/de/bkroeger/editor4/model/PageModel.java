@@ -21,16 +21,7 @@ import lombok.ToString;
 @ToString
 public class PageModel extends SectionModel {
 
-    @SuppressWarnings("unused")
 	private static final Logger logger = LogManager.getLogger(FileModel.class.getName());
-
-    private static final String CELLS_KEY = "cells";
-	private static final String SECTIONS_KEY = "sections";
-	private static final String DESCRIPTION_KEY = "description";
-	private static final String UNIVERSAL_NAME_KEY = "nameU";
-	private static final String NAME_KEY = "name";
-	private static final String ID_KEY = "id";
-    private static final String SECTION_TYPE_KEY = "sectionType";
 
     /**
      * UUID of the section
@@ -68,37 +59,6 @@ public class PageModel extends SectionModel {
 	 */
 	public SectionModel loadModel(JSONObject jsonSection, IModel parentModel) 
 			throws TechnicalException, InputFileException {
-    	  	
-    	for (Object key : jsonSection.keySet()) {
-    		String k = key.toString();
-    		switch (k) {
-    		case ID_KEY:
-    			String uuid = (String) jsonSection.get(ID_KEY);
-    			this.setId(uuid != null ? UUID.fromString(uuid) : UUID.randomUUID());
-    			break;
-		    	
-    		case NAME_KEY:
-	    		this.name = (String) jsonSection.get(NAME_KEY);
-	    		break;
-	    	
-    		case UNIVERSAL_NAME_KEY:
-	    		this.nameU = (String) jsonSection.get(UNIVERSAL_NAME_KEY);
-	    		break;
-	    	
-    		case DESCRIPTION_KEY:
-	    		this.description = (String) jsonSection.get(DESCRIPTION_KEY);
-	    		break;
-		    	
-    		case SECTION_TYPE_KEY:
-    		case SECTIONS_KEY:	    
-    		case CELLS_KEY:
-		    	// skip
-		    	break;
-    			
-    		default:
-    			throw new InputFileException("Invalid item in page "+this.nameU+" section: "+k);
-    		}
-    	}
     	
     	super.loadModel(jsonSection, this);
     	

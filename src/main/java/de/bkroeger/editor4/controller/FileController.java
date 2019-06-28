@@ -113,8 +113,10 @@ public class FileController implements IController  {
         	
     		// einen PageController erstellen
     		PageController pageController = new PageController((PageModel)pageModel);
+    		
     		// und den Tab-Eintrag eintrag generieren
         	ControllerResult pageResult = pageController.buildView(controllerResult);
+        	
         	// den Tab-Eintrag zu der Tabview hinzufügen
         	((TabPane) tabView).getTabs().add((Tab) pageResult.getView());
 

@@ -59,6 +59,15 @@
 									{
 										"sectionType": "ClosePath",
 										"nameU": "ClosePath 1"
+									},
+									{
+										"sectionType": "Style",
+										"nameU": "Path style",
+										"cells": [
+											{ "nameU": "StrokeWidth", "formula": "1.5" },
+											{ "nameU": "FillColor", "formula": "color(RED)", "dataType": "object" },
+											{ "nameU": "Transparency", "formula": "75.0" }
+										]
 									}
 								],
 								"cells": []
@@ -76,19 +85,11 @@
 								]
 							},
 							{
-								"sectionType": "CenterPoint",
+								"sectionType": "Center",
 								"nameU": "CenterPoint 1",
 								"cells": [
 									{ "nameU": "X", "formula": "50.0" },
 									{ "nameU": "Y", "formula": "50.0" }
-								]
-							},
-							{
-								"sectionType": "Style",
-								"nameU": "Style 1",
-								"cells": [
-									{ "nameU": "StrokeWidth", "formula": "0.75" },
-									{ "nameU": "Transparency", "formula": "75.0" }
 								]
 							}
 						],

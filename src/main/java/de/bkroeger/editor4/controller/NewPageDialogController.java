@@ -1,10 +1,7 @@
 package de.bkroeger.editor4.controller;
 
-import de.bkroeger.editor4.model.IModel;
 import de.bkroeger.editor4.model.PageModel;
-import de.bkroeger.editor4.view.IView;
 import de.bkroeger.editor4.view.NewPageDialog;
-import javafx.scene.Node;
 import javafx.scene.control.ButtonBar.ButtonData;
 import javafx.scene.control.Dialog;
 

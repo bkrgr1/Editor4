@@ -64,9 +64,11 @@ public class PageController extends BaseController {
         // alle Shapes dieser Seite auf dem Pane zeichnen
         for (SectionModel shapeModel : ((PageModel)this.model).selectSections(SectionModelType.Shape)) {
 
+        	// ein Shape zeichnen
 			ShapeController shapeController = ShapeControllerFactory.getShapeController(shapeModel);
         	ControllerResult result = shapeController.buildView(controllerResult);
         	
+        	// und zur Seite hinzufügen
         	Pane pane = (Pane) pageView.getContent();
         	pane.getChildren().add((Node) result.getView());
         }

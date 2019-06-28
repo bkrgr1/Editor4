@@ -10,5 +10,5 @@ public enum SectionModelType {
 	PathElement,	// Pfadelement
 	Master,	// ein Shape-Master
 	Location,	// Position des Shapes; Parent-Koordinaten
-	CenterPoint	// Position des CenterPoint innerhalb des Shapes; lokale Koordinaten
+	Center	// Position des CenterPoint innerhalb des Shapes; lokale Koordinaten
 	}

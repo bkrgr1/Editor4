@@ -6,14 +6,11 @@ import de.bkroeger.editor4.exceptions.CellCalculationException;
 import de.bkroeger.editor4.exceptions.InputFileException;
 import de.bkroeger.editor4.exceptions.TechnicalException;
 import de.bkroeger.editor4.model.LocationModel;
-import de.bkroeger.editor4.model.PathElementModel;
 import de.bkroeger.editor4.model.PathModel;
 import de.bkroeger.editor4.model.SectionModel;
 import de.bkroeger.editor4.model.SectionModelType;
 import de.bkroeger.editor4.view.GroupView;
-import de.bkroeger.editor4.view.PathElementFactory;
-import javafx.scene.shape.Path;
-import javafx.scene.shape.PathElement;
+import javafx.scene.Node;
 
 /**
  * <p>Dies ist der Controller für 2-dimensionale Shapes.</p>
@@ -54,29 +51,21 @@ public class Shape2DController extends ShapeController {
 		// alle Path-Sections ermitteln und die Pfade zeichnen
 		List<SectionModel> pathSections = model.selectSections(SectionModelType.Path);
 		for (SectionModel pathSection : pathSections) {
-			
-			// Pfad zeichnen
+
+        	// Path zeichnen
 			PathModel pathModel = (PathModel) pathSection;
-			Path path = drawPath(pathModel);
-			result.getNodes().add(path);
-			shapeGroup.getChildren().add(path);
+			PathController pathController = new PathController(pathModel);
+        	ControllerResult pathResult = pathController.buildView(result);
+        	
+        	// und zur Gruppe hinzufügen
+        	shapeGroup.getChildren().add((Node) pathResult.getView());
 		}
+		
+		// rotate
+		
+		// scale
+		
+		
     	return result;
     }
-	
-	private Path drawPath(PathModel model) 
-			throws TechnicalException, CellCalculationException {
-		
-		Path path = new Path();
-		
-		List<SectionModel> elemSections = model.selectSections(SectionModelType.PathElement);
-		for (SectionModel elemSection : elemSections) {
-			
-			PathElementModel elemModel = (PathElementModel) elemSection;
-			PathElement elem = PathElementFactory.buildPathElement(elemModel);
-			path.getElements().add(elem);
-		}
-		
-		return path;
-	}
 }
