@@ -69,7 +69,7 @@ public class PathController extends BaseController {
 			// transparency
 			CellModel transparencyCell = styleModel.getCell("Transparency");
 			if (transparencyCell != null) {				
-				
+				path.opacityProperty().bind(transparencyCell.getDoubleProperty());
 			}
 		}
 		

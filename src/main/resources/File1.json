@@ -66,7 +66,7 @@
 										"cells": [
 											{ "nameU": "StrokeWidth", "formula": "1.5" },
 											{ "nameU": "FillColor", "formula": "color(RED)", "dataType": "object" },
-											{ "nameU": "Transparency", "formula": "75.0" }
+											{ "nameU": "Transparency", "formula": "0.33" }
 										]
 									}
 								],

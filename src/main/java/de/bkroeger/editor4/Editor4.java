@@ -1,14 +1,13 @@
 package de.bkroeger.editor4;
 
-import java.io.File;
-
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.builder.SpringApplicationBuilder;
 import org.springframework.context.ConfigurableApplicationContext;
 
-import de.bkroeger.editor4.controller.FileController;
+import de.bkroeger.editor4.controller.ControllerResult;
+import de.bkroeger.editor4.controller.EditorController;
 import de.bkroeger.editor4.exceptions.InputFileException;
 import de.bkroeger.editor4.exceptions.TechnicalException;
 import javafx.application.Application;
@@ -69,31 +68,18 @@ public class Editor4 extends Application {
 		logger.debug("JavaFX start:");
 		try {
 			
-			// wurde eine Eingabedatei angegeben?
-		    String inFilePath = null;
-		    if (cmd.hasOption("-f")) {
-		    	// Pfad zur Eingabedatei
-		        inFilePath = cmd.valueOf("-f");
-		        if (!new File(inFilePath).exists()) {
-		        	throw new InputFileException("File '"+inFilePath+"' does not exist!");
-		        }
-		    }
+			EditorController editorController = new EditorController(cmd, PANEL_WIDTH, PANEL_HEIGHT);
 			
-			// create a {@link FileController} for the file model
-			FileController fileController = new FileController(PANEL_WIDTH, PANEL_HEIGHT, inFilePath);
-			
-			fileController.calculate(); // Querreferenzen berechnen
-			
-			fileController.buildView(); // View aufbauen
+			ControllerResult result = editorController.buildView();
 	
 			// add the view of the first/only page as pane to the root layout
 			StackPane root = new StackPane();
-			root.getChildren().add((Node) fileController.getView());
+			root.getChildren().add((Node) result.getView());
 	
 			// create a scene
 			Scene scene = new Scene(root, PANEL_WIDTH, PANEL_HEIGHT);
 			// and show it on the stage
-			primaryStage.setTitle(fileController.getTitle());
+			primaryStage.setTitle(editorController.getTitle());
 			primaryStage.setScene(scene);
 			primaryStage.centerOnScreen();
 			primaryStage.show();

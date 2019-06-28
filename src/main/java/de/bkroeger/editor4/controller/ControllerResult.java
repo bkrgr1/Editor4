@@ -9,14 +9,28 @@ import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
 
+/**
+ * <p>Datenstruktur für die Ergebnisse eines Controllers.</p>
+ *
+ * @author berthold.kroeger@gmx.de
+ */
 @Getter
 @Setter
 @ToString
 public class ControllerResult {
 
+	/**
+	 * Der verantwortliche Controller
+	 */
 	private IController controller;
 	
+	/**
+	 * Die generierte View
+	 */
 	private IView view;
 	
+	/**
+	 * Eine Liste weiterer Nodes
+	 */
 	private List<Node> nodes = new ArrayList<>();
 }

@@ -44,7 +44,7 @@ import lombok.Setter;
 @Setter
 @Component
 @Scope(ConfigurableBeanFactory.SCOPE_PROTOTYPE)
-public class FileController implements IController  {
+public class FileController extends BaseController implements IController  {
 
     private static final Logger logger = LogManager.getLogger(FileController.class.getName());
 
@@ -96,7 +96,8 @@ public class FileController implements IController  {
      * @throws CellCalculationException 
      * @throws InputFileException 
      */
-    public ControllerResult buildView() throws TechnicalException, InputFileException, CellCalculationException {
+    public ControllerResult buildView(ControllerResult editorControllerResult) 
+    		throws TechnicalException, InputFileException, CellCalculationException {
 
         logger.debug("Creating file view...");
 
@@ -200,20 +201,12 @@ public class FileController implements IController  {
         return controllerResult;
     }
 
+    /**
+     * Liefert den Titel der Datei aus dem Modell
+     * @return
+     */
     public String getTitle() {
         return fileModel.getInFile().getAbsolutePath();
-    }
-
-    @SuppressWarnings("unused")
-	private int getHighestPageNo() {
-
-        int maxNo = 0;
-//        for (PageModel page : pages) {
-//            if (page.getPageNo() > maxNo) {
-//                maxNo = page.getPageNo();
-//            }
-//        }
-        return maxNo;
     }
 
     // =========================================================================
