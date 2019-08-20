@@ -1,78 +1,103 @@
 package de.bkroeger.editor4.controller;
 
-import java.util.List;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
+import de.bkroeger.editor4.Handler.MouseMovedCommand;
+import de.bkroeger.editor4.Handler.MousePressedCommand;
+import de.bkroeger.editor4.Handler.MouseReleasedCommand;
 import de.bkroeger.editor4.exceptions.CellCalculationException;
 import de.bkroeger.editor4.exceptions.InputFileException;
 import de.bkroeger.editor4.exceptions.TechnicalException;
-import de.bkroeger.editor4.model.CellModel;
-import de.bkroeger.editor4.model.PathElementModel;
 import de.bkroeger.editor4.model.PathModel;
-import de.bkroeger.editor4.model.SectionModel;
-import de.bkroeger.editor4.model.SectionModelType;
-import de.bkroeger.editor4.model.StyleModel;
-import de.bkroeger.editor4.view.PathElementFactory;
 import de.bkroeger.editor4.view.PathView;
-import javafx.scene.paint.Paint;
-import javafx.scene.shape.PathElement;
 
-public class PathController extends BaseController {
+/**
+ * <p>Dieser Controller steuert einen Path.</p>
+ * 
+ * @author berthold.kroeger@gmx.de
+ */
+public class PathController extends BaseController implements IMouseHandlerData {
+
+	private static final Logger logger = LogManager.getLogger(PathController.class.getName());
 	
+	/**========================================================================
+	 * Fields
+	 *=======================================================================*/
+	
+	private double mouseX;
+	public double getMouseX() { return mouseX; }
+	public void setMouseX(double value) { this.mouseX = value; }
+	private double mouseY;
+	public double getMouseY() { return mouseY; }
+	public void setMouseY(double value) { this.mouseY = value; }
+	
+	private MousePressedCommand mousePressedCommand;
+	private MouseMovedCommand mouseMovedCommand;
+	private MouseReleasedCommand mouseReleasedCommand;
+
+	/**========================================================================
+	 * Constructors
+	 *=======================================================================*/
+	
+	/**
+	 * Constructor
+	 * @param pathModel das {@link PathModel}
+	 * @throws TechnicalException
+	 */
     public PathController(PathModel pathModel) throws TechnicalException {
         super();
         this.model = pathModel; 
         if (pathModel == null) throw new TechnicalException("Path model is NULL");
-    }
 
+		mousePressedCommand = new MousePressedCommand(this);
+		mouseMovedCommand = new MouseMovedCommand(this, pathModel);
+		mouseReleasedCommand = new MouseReleasedCommand(this, pathModel);
+    }
+	
+	/**========================================================================
+	 * Public methods
+	 *=======================================================================*/
+
+    /**
+     * <p>Erstellt einen {@link PathView Grafik-Pfad} aus den Daten des {@link PathModel}.</p>
+     * @param shapeResult ein {@link ControllerResult} mit den Details des Parent-Views
+     * @return ein {@link ControllerResult} mit den Details des Path-Views
+     * @throws TechnicalException
+     * @throws CellCalculationException
+     * @throws InputFileException
+     */
 	public ControllerResult buildView(ControllerResult shapeResult) 
 			throws TechnicalException, CellCalculationException, InputFileException {
 		
-		ControllerResult result = new ControllerResult();
-    	result.setController(this);
+		ControllerResult result = new ControllerResult(this);
 		
 		// Pfad zeichnen
-		PathView pathView = drawPath((PathModel)this.model);
-		result.setView(pathView);
+		PathView pathView = new PathView(this).draw();
+		pathView.layoutXProperty().bind(((PathModel)model).getXProperty());
+		pathView.layoutYProperty().bind(((PathModel)model).getYProperty());
+    	result.setView(pathView);
 			
+    	// when user clicks on PathView
+    	pathView.setOnMouseClicked(event -> {
+    		logger.trace("Clicked on path view");
+    	});
+    	
+    	// when user presses a mouse key over the PathView
+    	pathView.setOnMousePressed(event -> {
+    		mousePressedCommand.execute(event);
+    	});
+    	
+    	// when user moves the PathView with key pressed
+    	pathView.setOnMouseMoved(event -> {
+    		mouseMovedCommand.execute(event);
+    	});
+    	
+    	// when user releases the mouse key
+    	pathView.setOnMouseReleased(event -> {
+    		mouseReleasedCommand.execute(event);
+    	});
+    	
 		return result;
-	}
-	
-	private PathView drawPath(PathModel model) 
-			throws TechnicalException, CellCalculationException, InputFileException {
-		
-		PathView path = new PathView();
-		
-		List<SectionModel> elemSections = model.selectSections(SectionModelType.PathElement);
-		for (SectionModel elemSection : elemSections) {
-			
-			PathElementModel elemModel = (PathElementModel) elemSection;
-			PathElement elem = PathElementFactory.buildPathElement(elemModel);
-			path.getElements().add(elem);
-		}
-		
-		StyleModel styleModel = (StyleModel) model.getSection(SectionModelType.Style);
-		if (styleModel != null) {
-			
-			// fill color
-			CellModel colorCell = styleModel.getCell("FillColor");
-			if (colorCell != null) {				
-				Paint paint = (Paint) colorCell.getObjectValue();
-				path.setFill(paint);
-			}
-			
-			// stroke width
-			CellModel strokeWidthCell = styleModel.getCell("StrokeWidth");
-			if (strokeWidthCell != null) {				
-				path.strokeWidthProperty().bind(strokeWidthCell.getDoubleProperty());
-			}
-			
-			// transparency
-			CellModel transparencyCell = styleModel.getCell("Transparency");
-			if (transparencyCell != null) {				
-				path.opacityProperty().bind(transparencyCell.getDoubleProperty());
-			}
-		}
-		
-		return path;
 	}
 }

@@ -18,6 +18,10 @@ import lombok.ToString;
 @Setter
 @ToString
 public class ControllerResult {
+	
+	/**========================================================================
+	 * Fields
+	 *=======================================================================*/
 
 	/**
 	 * Der verantwortliche Controller
@@ -33,4 +37,14 @@ public class ControllerResult {
 	 * Eine Liste weiterer Nodes
 	 */
 	private List<Node> nodes = new ArrayList<>();
+		
+	/**========================================================================
+	 * Constructors
+	 *=======================================================================*/
+
+	public ControllerResult() { }
+	
+	public ControllerResult(IController controller) {
+    	this.controller = controller;
+	}
 }

@@ -11,14 +11,22 @@
 				"id": "cccf302b-fa4d-4eeb-8ed6-f03bc1a1980a",
 				"description": "Eine Bildschirmseite",
 				"name": "Seite 1",
-				"nameU": "Page 1",
+				"nameU": "Page_1",
 				"sections": [
 					{
 						"sectionType": "Shape",
 						"id": "9805ca70-1673-4a5a-80bf-a071f7ba6746",
 						"description": "Ein Rechteck",
-						"nameU": "Shape 1",
+						"nameU": "Shape_1",
 						"shapeDimension": "2D",
+						"cells": [
+							{ "nameU": "LayoutX", "formula": "200.0" },
+							{ "nameU": "LayoutY", "formula": "50.0" },
+							{ "nameU": "Width", "formula": "100.0" },
+							{ "nameU": "Height", "formula": "100.0" },
+							{ "nameU": "Rotate", "formula": "45.0" },
+							{ "nameU": "Scale", "formula": "1.5" }
+						],
 						"sections": [
 							{
 								"sectionType": "Path",
@@ -26,7 +34,7 @@
 								"sections": [
 									{
 										"sectionType": "MoveTo",
-										"nameU": "MoveTo 1",
+										"nameU": "MoveTo_1",
 										"cells": [
 											{ "nameU": "X", "formula": "5.0" },
 											{ "nameU": "Y", "formula": "5.0" }
@@ -34,7 +42,7 @@
 									},
 									{
 										"sectionType": "LineTo",
-										"nameU": "LineTo 1",
+										"nameU": "LineTo_1",
 										"cells": [
 											{ "nameU": "X", "formula": "95.0" },
 											{ "nameU": "Y", "formula": "5.0" }
@@ -42,7 +50,7 @@
 									},
 									{
 										"sectionType": "LineTo",
-										"nameU": "LineTo 2",
+										"nameU": "LineTo_2",
 										"cells": [
 											{ "nameU": "X", "formula": "95.0" },
 											{ "nameU": "Y", "formula": "95.0" }
@@ -50,7 +58,7 @@
 									},
 									{
 										"sectionType": "LineTo",
-										"nameU": "LineTo 3",
+										"nameU": "LineTo_3",
 										"cells": [
 											{ "nameU": "X", "formula": "5.0" },
 											{ "nameU": "Y", "formula": "95.0" }
@@ -58,17 +66,78 @@
 									},
 									{
 										"sectionType": "ClosePath",
-										"nameU": "ClosePath 1"
+										"nameU": "ClosePath_1"
 									},
 									{
 										"sectionType": "Style",
-										"nameU": "Path style",
+										"nameU": "Path_style",
 										"cells": [
 											{ "nameU": "StrokeWidth", "formula": "1.5" },
+											{ "nameU": "StrokeColor", "formula": "color(BLACK)", "dataType": "object" },
+											{ "nameU": "FillColor", "formula": "${Shape_1.PathStyle.FillColor}", "dataType": "object" },
+											{ "nameU": "Transparency", "formula": "0.33" }
+										]									}
+								],
+								"cells": []
+							},
+							{
+								"sectionType": "Center",
+								"nameU": "CenterPoint_1",
+								"cells": [
+									{ "nameU": "X", "formula": "50.0" },
+									{ "nameU": "Y", "formula": "50.0" }
+								]
+							},
+							{
+								"sectionType": "Style",
+								"nameU": "PathStyle",
+								"cells": [
+									{ "nameU": "StrokeWidth", "formula": "1.5" },
+									{ "nameU": "FillColor", "formula": "color(BLUE)", "dataType": "object" }
+								]
+							}
+						]
+					},
+					{
+						"sectionType": "Shape",
+						"id": "e6621d13-cc75-4bc8-8d19-c590ef44b606",
+						"description": "Ein Kreis",
+						"nameU": "Shape_2",
+						"shapeDimension": "2D",
+						"sections": [
+							{
+								"sectionType": "Path",
+								"nameU": "Path 2-1",
+								"sections": [
+									{
+										"sectionType": "MoveTo",
+										"nameU": "MoveTo_1",
+										"cells": [
+											{ "nameU": "X", "formula": "10.0" },
+											{ "nameU": "Y", "formula": "25.0" }
+										]
+									},
+									{
+										"sectionType": "ArcTo",
+										"nameU": "ArcTo_1",
+										"cells": [
+											{ "nameU": "X", "formula": "30.0" },
+											{ "nameU": "Y", "formula": "25.0" },
+											{ "nameU": "radiusX", "formula": "15.0" },
+											{ "nameU": "radiusY", "formula": "30.0" },
+											{ "nameU": "largeArcFlag", "formula": "true", "dataType": "bool" },
+											{ "nameU": "sweepFlag", "formula": "true", "dataType": "bool" }
+										]
+									},
+									{
+										"sectionType": "Style",
+										"nameU": "Path_style",
+										"cells": [
+											{ "nameU": "StrokeWidth", "formula": "1.5" },
+											{ "nameU": "StrokeColor", "formula": "color(BLACK)", "dataType": "object" },
 											{ "nameU": "FillColor", "formula": "color(RED)", "dataType": "object" },
 											{ "nameU": "Transparency", "formula": "0.33" }
-										]
-									}
+										]									}
 								],
 								"cells": []
 							},
@@ -86,10 +155,18 @@
 							},
 							{
 								"sectionType": "Center",
-								"nameU": "CenterPoint 1",
+								"nameU": "CenterPoint_1",
 								"cells": [
 									{ "nameU": "X", "formula": "50.0" },
 									{ "nameU": "Y", "formula": "50.0" }
+								]
+							},
+							{
+								"sectionType": "Style",
+								"nameU": "PathStyle",
+								"cells": [
+									{ "nameU": "StrokeWidth", "formula": "1.5" },
+									{ "nameU": "FillColor", "formula": "color(BLUE)", "dataType": "object" }
 								]
 							}
 						],

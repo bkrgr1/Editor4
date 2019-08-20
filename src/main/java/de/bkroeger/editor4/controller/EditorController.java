@@ -78,7 +78,7 @@ public class EditorController extends BaseController implements IController {
 	
 	/**
 	 * Liefert den Titel für die Editor-Ansicht
-	 * @return
+	 * @return der Titel des Editors
 	 */
 	public String getTitle() {
 		

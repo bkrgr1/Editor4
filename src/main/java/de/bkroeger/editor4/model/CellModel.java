@@ -16,8 +16,10 @@ import de.bkroeger.editor4.Handler.CellValueListener;
 import de.bkroeger.editor4.exceptions.CellCalculationException;
 import de.bkroeger.editor4.exceptions.InputFileException;
 import de.bkroeger.editor4.exceptions.TechnicalException;
+import javafx.beans.property.BooleanProperty;
 import javafx.beans.property.DoubleProperty;
 import javafx.beans.property.ObjectProperty;
+import javafx.beans.property.SimpleBooleanProperty;
 import javafx.beans.property.SimpleDoubleProperty;
 import javafx.beans.property.SimpleObjectProperty;
 import javafx.scene.paint.Color;
@@ -32,6 +34,8 @@ import lombok.Setter;
 @Getter
 @Setter
 public class CellModel implements CellValueListener {
+
+	private static final String COLOR_CLASS_NAME = "javafx.scene.paint.Color";
 
 	private static final Logger logger = LogManager.getLogger(CellModel.class.getName());
 	
@@ -78,7 +82,7 @@ public class CellModel implements CellValueListener {
 		
 		this.formula = value;
 		
-		this.calculate();
+		this.calculate(false);
 		
 		// registrierte Listener über Änderung informieren
 		notifyListener();
@@ -97,7 +101,7 @@ public class CellModel implements CellValueListener {
 	 * Berechnet die Cell-Formeln und erstellt CellValueListener.
 	 * @throws CellCalculationException
 	 */
-	public void calculate() throws CellCalculationException {
+	public void calculate(boolean firstRound) throws CellCalculationException {
 		
 		// bisher registrierte Listener löschen
 		clearReferencedCells();
@@ -106,23 +110,24 @@ public class CellModel implements CellValueListener {
 		switch (this.cellValueType) {
 		case number:
 			// numerischen Wert berechnen
-			this.setDoubleValue(calcDouble());			
+			this.setDoubleValue(calcDouble(firstRound));			
 			logger.debug("Calculate cell="+this.nameU+" value="+this.getDoubleValue());
 			break;
 		case bool:
 			// Bolean-Wert berechnen
-			this.setBooleanValue(calcBoolean());
+			this.setBooleanValue(calcBoolean(firstRound));
 			logger.debug("Calculate cell="+this.nameU+" value="+this.getBooleanValue());
 			break;
 		case string:
 			// String Wert berechnen
-			this.setStringValue(calcString());
+			this.setStringValue(calcString(firstRound));
 			logger.debug("Calculate cell="+this.nameU+" value="+this.getStringValue());
 			break;
 		case object:
 			// Object Wert berechnen
-			this.setObjectValue(calcObject());
-			logger.debug("Calculate cell="+this.nameU+" value="+this.getObjectValue().toString());
+			this.setObjectValue(calcObject(firstRound));
+			logger.debug("Calculate cell="+this.nameU+" value="+
+				(this.getObjectValue() != null ? this.getObjectValue().toString() : "null"));
 			break;
 		default:
 			throw new CellCalculationException("Invalid cell value type");
@@ -176,7 +181,7 @@ public class CellModel implements CellValueListener {
 	
 	public DoubleProperty getDoubleProperty() throws CellCalculationException {
 		if (!this.calculated) {
-			this.calculate();
+			this.calculate(false);
 		}
 		return this.doubleProperty;
 	}
@@ -193,7 +198,7 @@ public class CellModel implements CellValueListener {
 	
 	public ObjectProperty<String> getStringProperty() throws CellCalculationException {
 		if (!this.calculated) {
-			this.calculate();
+			this.calculate(false);
 		}
 		return this.stringProperty;
 	}
@@ -206,11 +211,11 @@ public class CellModel implements CellValueListener {
 		return this.stringProperty.get();
 	}
 	
-	private ObjectProperty<Boolean> booleanProperty = new SimpleObjectProperty<>();
+	private BooleanProperty booleanProperty = new SimpleBooleanProperty();
 	
-	public ObjectProperty<Boolean> getBooleanProperty() throws CellCalculationException {
+	public BooleanProperty getBooleanProperty() throws CellCalculationException {
 		if (!this.calculated) {
-			this.calculate();
+			this.calculate(false);
 		}
 		return this.booleanProperty;
 	}
@@ -227,7 +232,7 @@ public class CellModel implements CellValueListener {
 	
 	public ObjectProperty<Object> getObjectProperty() throws CellCalculationException {
 		if (!this.calculated) {
-			this.calculate();
+			this.calculate(false);
 		}
 		return this.objectProperty;
 	}
@@ -248,25 +253,25 @@ public class CellModel implements CellValueListener {
 	
 	// Methoden
 	
-	private Object calcObject() throws CellCalculationException {
-		Object result = calculateValue(this.formula);
+	private Object calcObject(boolean firstRound) throws CellCalculationException {
+		Object result = calculateValue(this.formula, firstRound);
 		return result;
 	}
 	
-	private String calcString() throws CellCalculationException {
-		Object result = calculateValue(this.formula);
+	private String calcString(boolean firstRound) throws CellCalculationException {
+		Object result = calculateValue(this.formula, firstRound);
 		if (result instanceof String) return (String) result;
 		throw new CellCalculationException("Invalid result type");
 	}
 	
-	private Boolean calcBoolean() throws CellCalculationException {
-		Object result = calculateValue(this.formula);
+	private Boolean calcBoolean(boolean firstRound) throws CellCalculationException {
+		Object result = calculateValue(this.formula, firstRound);
 		if (result instanceof Boolean) return (Boolean) result;
 		throw new CellCalculationException("Invalid result type");
 	}
 	
-	private Double calcDouble() throws CellCalculationException {
-		Object result = calculateValue(this.formula);
+	private Double calcDouble(boolean firstRound) throws CellCalculationException {
+		Object result = calculateValue(this.formula, firstRound);
 		if (result instanceof Double) return (Double) result;
 		throw new CellCalculationException("Invalid result type");
 	}
@@ -276,7 +281,7 @@ public class CellModel implements CellValueListener {
 	 * @return
 	 * @throws CellCalculationException
 	 */
-	private Object calculateValue(String expression) throws CellCalculationException {
+	private Object calculateValue(String expression, boolean firstRound) throws CellCalculationException {
 		
 		@SuppressWarnings("unused")
 		String cellName = this.nameU;
@@ -291,21 +296,28 @@ public class CellModel implements CellValueListener {
 		} else if (formPart.startsWith(APOSTROPHE) && formPart.endsWith(APOSTROPHE)) {
 			
 			return formPart.substring(1, formPart.length()-1);
+			
+		} else if (formPart.toLowerCase().equals("true") || formPart.toLowerCase().equals("false")) {
+			result = Boolean.parseBoolean(formPart.toLowerCase());
+			return result;
+			
+		} else if (formPart.startsWith(VARIABLE_PREFIX)) {
+			
+			if (!firstRound) {
+				return calculateVariableValue(formPart, firstRound);
+			} else return null;
+			
 		} else {
 			
-			// ist dies eine Variable?
-			if (formPart.startsWith(VARIABLE_PREFIX)) {
-				return calculateVariableValue(formPart);
-			} else {
+			// ist dies eine Funktion?
+			return calculateFunction(formPart, firstRound);
 			
-				// ist dies eine Funktion?
-				return calculateFunction(formPart);
-			}
 		}
 		return result;
 	}
 	
-	private Object calculateVariableValue(String formPart) throws CellCalculationException {
+	private Object calculateVariableValue(String formPart, boolean firstRound) throws CellCalculationException {
+		
 		Object result = null;
 		if (formPart.endsWith(VARIABLE_SUFFIX)) {
 			
@@ -334,30 +346,81 @@ public class CellModel implements CellValueListener {
 		return result;
 	}
 	
+	/**
+	 * <p>Sucht nach einer Variablen.</p>
+	 * @param name
+	 * @return
+	 * @throws CellCalculationException
+	 */
 	private CellModel searchForVariable(String name) throws CellCalculationException {
 		
 		CellModel cell = null;
-		if (!name.contains(".")) {
-			
-			String cellName = name;
-			cell = this.section.getCell(cellName);
+		if (name.contains(".")) {
+						
+			cell = scanUp(name, cell);
 			
 		} else {
 			
-			int p = name.lastIndexOf(".");
-			String sectionName = name.substring(0, p);
-			String cellName = name.substring(p+1);
-			
-			SectionModel section = this.section.searchForSection(sectionName);
-			
-			cell = section.getCell(cellName);
+			cell = this.section.getCellByName(name);
 		}
 		
-		if (cell != null) return cell;
-		throw new CellCalculationException("Cell not found: "+name);
+		if (cell != null) {
+			return cell;
+		} else {
+			throw new CellCalculationException("Cell not found: "+name);
+		}
+	}
+
+	private CellModel scanUp(String name, CellModel cell) throws CellCalculationException {
+		
+		// obersten Begriff ermitteln
+		int p = name.indexOf(".");
+		String sectionName = name.substring(0, p);
+		String subName = name.substring(p+1);
+		
+		// alle übergeordneten Sections danach durchsuchen
+		IModel model = this.section;
+		do {				
+			// gibt es diese Section dort?
+			List<SectionModel> sects = model.searchSections(sectionName);
+			if (sects != null && sects.size() == 1) {
+				
+				cell = scanDown(subName, sects.get(0));
+			} else {
+				
+				model = model.getParentModel();
+			}
+		} while (cell == null && model != null);
+		return cell;
 	}
 	
-	private Object calculateFunction(String formPart) throws CellCalculationException {
+	private CellModel scanDown(String name, SectionModel model) throws CellCalculationException {
+		
+		CellModel cell = null;
+		if (name.contains(".")) {
+			
+			// obersten Begriff ermitteln
+			int p = name.indexOf(".");
+			String sectionName = name.substring(0, p);
+			String subName = name.substring(p+1);
+
+			List<SectionModel> sects = model.searchSections(sectionName);
+			if (sects.size() == 1) {
+				
+				cell = scanDown(subName, sects.get(0));
+			} else if (sects.size() == 0) {
+				// Fehler: Section nicht gefunden
+				throw new CellCalculationException("Section not found: "+sectionName);
+			}
+		} else {
+			
+			String cellName = name;
+			cell = model.getCellByName(cellName);
+		}
+		return cell;
+	}
+	
+	private Object calculateFunction(String formPart, boolean firstRound) throws CellCalculationException {
 		Object result = null;
 		
 		int p = formPart.indexOf("(");
@@ -367,19 +430,19 @@ public class CellModel implements CellValueListener {
 		
 		switch (functionName) {
 		case "concat":
-			result = calculate_concat(expression);
+			result = calculate_concat(expression, firstRound);
 			break;
 			
 		case "text":
-			result = calculate_text(expression);
+			result = calculate_text(expression, firstRound);
 			break;
 			
 		case "int":
-			result = calculate_int(expression);
+			result = calculate_int(expression, firstRound);
 			break;
 			
 		case "color":
-			result = calculate_color(expression);
+			result = calculate_color(expression, firstRound);
 			break;
 			
 		default:
@@ -388,12 +451,20 @@ public class CellModel implements CellValueListener {
 		return result;
 	}
 	
-	private Object calculate_color(String expression) {
+	/**
+	 * <p>Calculate a color object.</p>
+	 * <p>Die Klasse {@link javafx.scene.paint.Color} enthält static fields benannt
+	 * nach den Farbnamen. Die Namen sind in Grossbuchstaben.</p>
+	 * @param expression
+	 * @param firstRound
+	 * @return
+	 */
+	private Object calculate_color(String expression, boolean firstRound) {
 		Color color = null;
 		try {
-			@SuppressWarnings("unused")
-			Field[] fields = Class.forName("javafx.scene.paint.Color").getDeclaredFields();
-		    Field field = Class.forName("javafx.scene.paint.Color").getDeclaredField(expression);
+			// das Feld anhand des Namens aus der Klasse laden
+		    Field field = Class.forName(COLOR_CLASS_NAME).getDeclaredField(expression.toUpperCase());
+		    // den Wert des statischen Feldes ermitteln (keine Objekt-Instanz)
 		    color = (Color)field.get(null);
 		} catch (Exception e) {
 		    color = null; // Not defined
@@ -407,12 +478,12 @@ public class CellModel implements CellValueListener {
 	 * @return
 	 * @throws CellCalculationException
 	 */
-	private Object calculate_concat(String expression) throws CellCalculationException {
+	private Object calculate_concat(String expression, boolean firstRound) throws CellCalculationException {
 		String result = "";
 		String[] parts = expression.split(",");	
 		for (int i=0; i<parts.length; ++i) {
-			Object r = calculateValue(parts[i]);
-			result += r.toString();
+			Object r = calculateValue(parts[i], firstRound);
+			result += (r != null ? r.toString() : "");
 		}
 		return result;
 	}
@@ -423,13 +494,13 @@ public class CellModel implements CellValueListener {
 	 * @return
 	 * @throws CellCalculationException
 	 */
-	private Object calculate_text(String expression) throws CellCalculationException {
-		Object result = calculateValue(expression);
-		return result.toString();
+	private Object calculate_text(String expression, boolean firstRound) throws CellCalculationException {
+		Object result = calculateValue(expression, firstRound);
+		return (result != null ? result.toString() : null);
 	}
 	
-	private Object calculate_int(String expression) throws CellCalculationException {
-		Object r = calculateValue(expression);
+	private Object calculate_int(String expression, boolean firstRound) throws CellCalculationException {
+		Object r = calculateValue(expression, firstRound);
 		if (r instanceof Double) {
 			return ((Double)r).intValue();
 		} else if (r instanceof Integer) {
@@ -437,7 +508,9 @@ public class CellModel implements CellValueListener {
 		} else if (r instanceof Boolean) {
 			if ((Boolean)r) return new Integer(1); else return new Integer(0);
 		} else {
-			throw new CellCalculationException("Cannot convert expression to integer: "+expression);
+			if (!firstRound) {
+				throw new CellCalculationException("Cannot convert expression to integer: "+expression);
+			} else return null;
 		}
 	}
 
@@ -457,7 +530,7 @@ public class CellModel implements CellValueListener {
 	 * @param nameU
 	 * @param cellFormula
 	 * @param section
-	 * @return
+	 * @return ein {@link CellModel}
 	 * @throws TechnicalException
 	 * @throws InputFileException
 	 */

@@ -6,8 +6,10 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.json.simple.JSONObject;
 
+import de.bkroeger.editor4.exceptions.CellCalculationException;
 import de.bkroeger.editor4.exceptions.InputFileException;
 import de.bkroeger.editor4.exceptions.TechnicalException;
+import javafx.beans.property.DoubleProperty;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
@@ -76,5 +78,25 @@ public class ShapeModel extends SectionModel {
     			this.cells.size(), this.sections.size()));
 		
 		return this;
+	}
+	
+	public DoubleProperty getLayoutXProperty() throws TechnicalException, CellCalculationException {
+		
+		CellModel cell = this.cells.get("LayoutX".toLowerCase());
+		if (cell != null) {
+			return cell.getDoubleProperty();
+		} else {
+			throw new TechnicalException("Cell with type 'LayoutX' not found");
+		}
+	}
+	
+	public DoubleProperty getLayoutYProperty() throws TechnicalException, CellCalculationException {
+		
+		CellModel cell = this.cells.get("LayoutY".toLowerCase());
+		if (cell != null) {
+			return cell.getDoubleProperty();
+		} else {
+			throw new TechnicalException("Cell with type 'LayoutY' not found");
+		}
 	}
 }

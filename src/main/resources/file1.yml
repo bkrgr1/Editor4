@@ -1,0 +1,162 @@
+file:
+  id: "74d1f547-5d9f-4f76-b962-0a75a5b45a43"
+  description: "Eine Test-Datei"
+  name: "Datei"
+  nameU: "File"
+  locale: "de-DE"
+  pages:
+    - page_1:
+      sectionType: "Page"
+      id: "cccf302b-fa4d-4eeb-8ed6-f03bc1a1980a"
+      description: "Eine Bildschirmseite"
+      name: "Seite 1"
+      cells:
+        - PageNo:
+          formula: "1.0"
+        - PageTitle:
+          formula: "concat('Page ',text(int(${PageNo})))"
+          dataType: "string" 
+      shapes:
+        - shape_1:
+          sectionType: "Shape"
+          id: "9805ca70-1673-4a5a-80bf-a071f7ba6746"
+          description: "Ein Rechteck"
+          shapeDimension: "2D"
+          paths: 
+            - Path1_1:
+              sectionType: "Path"
+              elements: 
+                - MoveTo_1:
+                  sectionTyp: "MoveTo"
+                  cells: 
+                    - X:
+                      formula: "5.0"
+                    - Y:
+                      formula: "5.0"
+                - LineTo_1:
+                  sectionType: "LineTo"
+                  cells: 
+                    - X:
+                      formula: "95.0"
+                    - Y:
+                      formula: "5.0"
+                - LineTo_2:
+                  sectionType: "LineTo"
+                  cells: 
+                    - X:
+                      formula: "95.0"
+                    - Y:
+                      formula: "95.0"
+                - LineTo_3:
+                  sectionType: "LineTo"
+                  cells:
+                    - X:
+                      formula: "5.0"
+                    - Y:
+                      formula: "95.0"
+                - ClosePath_1:
+                  sectionType: "ClosePath"
+          pathStyle:
+            cells:
+              - StrokeWidth:
+                formula: "1.5"
+              - StrokeColor:
+                formula: "color(BLACK)"
+                dataType: "object"
+              - FillColor:
+                formula: "${Shape_1.PathStyle.FillColor}"
+                dataType: "object"
+              - Transparency:
+                formula: "0.33"
+          location:
+            cells:
+              - LayoutX:
+                formula: "200.0"
+              - LayoutY:
+                formula: "50.0"
+              - Width:
+                formula: "100.0"
+              - Height:
+                formula: "100.0"
+              - Rotate:
+                formula: "45.0"
+              - Scale:
+                formula: "1.5"
+            center:
+               cells: 
+                - X:
+                  formula: "50.0"
+                - Y:
+                  formula: "50.0"
+        - shape_2:
+          sectionType: "Shape"
+          id: "e6621d13-cc75-4bc8-8d19-c590ef44b606"
+          description: "Ein Kreis"
+          shapeDimension: "2D"
+          pathes:
+            - Path2_1:
+              sectionType: "Path"
+              elements:
+                - MoveTo_1:
+                  sectionType: "MoveTo"
+                  cells:
+                    - X:
+                      formula: "10.0"
+                    - Y:
+                      formula: "25.0"
+                - ArcTo_1:
+                  sectionType: "ArcTo"
+                  cells:
+                    - X:
+                      formula: "30.0"
+                    - Y:
+                      formula: "25.0"
+                    - radiusX:
+                      formula: "15.0"
+                    - radiusY:
+                      formula: "30.0"
+                    - largeArcFlag:
+                      formula: "true"
+                      dataType: "bool"
+                    - sweepFlag:
+                      formula: "true"
+                      dataType: "bool"
+              pathStyle:
+                cells:
+                  - StrokeWidth:
+                    formula: "1.5"
+                  - StrokeColor:
+                    formula: "color(BLACK)"
+                    dataType: "object"
+                  - FillColor:
+                    formula: "color(RED)"
+                    dataType: "object"
+                  - Transparency:
+                    formula: "0.33"
+          location:
+            cells:
+              - layoutX:
+                formula: "200.0"
+              - layoutY:
+                formula: "50.0"
+              - Width:
+                formula: "100.0"
+              - Height:
+                formula: "100.0"
+              - Rotate:
+                formula: "45.0"
+              - Scale:
+                formula: "1.5" 
+          center:
+            cells: 
+              - X:
+                formula: "50.0"
+              - Y:
+                formula: "50.0"
+          shapeStyle:
+            cells:
+              - StrokeWidth:
+                formula: "1.5"
+              - FillColor:
+                formula: "color(BLUE)"
+                dataType: "object"

@@ -87,7 +87,11 @@ public class FileController extends BaseController implements IController  {
      */
     public void calculate() throws CellCalculationException {
     	
-    	this.fileModel.calculate();
+    	// erste Runde ohne Variablen
+    	this.fileModel.calculate(true);
+    	
+    	// zweite Runde mit Variablen
+    	this.fileModel.calculate(false);
     }
     
     /**
@@ -203,7 +207,7 @@ public class FileController extends BaseController implements IController  {
 
     /**
      * Liefert den Titel der Datei aus dem Modell
-     * @return
+     * @return der Titel der Datei als String
      */
     public String getTitle() {
         return fileModel.getInFile().getAbsolutePath();

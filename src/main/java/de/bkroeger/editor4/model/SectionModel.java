@@ -38,6 +38,10 @@ public class SectionModel implements IModel {
 	private static final String NAME_KEY = "name";
 	private static final String ID_KEY = "id";
 	
+	/**========================================================================
+	 * Fields
+	 *=======================================================================*/
+	
 	/**
 	 * Art der Section
 	 */
@@ -77,10 +81,27 @@ public class SectionModel implements IModel {
 		return "";
 	}
     
+	/**
+	 * Sucht nach Sections mit dem angegebenen {@link SectionModelType}.
+     * @param type a {@link SectionModelType}
+     * @return a list of {@link SectionModel}
+	 */
     public List<SectionModel> selectSections(SectionModelType type) {
 
     	return sections.stream()
     		.filter(s -> (s.getSectionType() == type))
+    		.collect(Collectors.toList());
+    }
+    
+    /**
+     * <p>Sucht nach Sections mit dem Universal-Name.</p>
+     * @param aName the universal name of the section
+     * @return a list of {@link SectionModel}
+     */
+    public List<SectionModel> searchSections(String aName) {
+    	
+    	return sections.stream()
+    		.filter(s -> s.getNameU().equals(aName))
     		.collect(Collectors.toList());
     }
     
@@ -97,23 +118,32 @@ public class SectionModel implements IModel {
     	this.sections.add(section);
     }
 
-    
+    /**
+     * Map der Zellen
+     */
     protected Map<String, CellModel> cells = new HashMap<>();
     
+    /**
+     * Fügt eine Zelle hinzu
+     * @param cell
+     */
     public void addCell(CellModel cell) {
-    	this.cells.put(cell.getNameU(), cell);
+    	this.cells.put(cell.getNameU().toLowerCase(), cell);
     }
     
-    public CellModel getCell(String name) {
+    /**
+     * Sucht nach einer Zelle anhand des NameU oder des Name
+     */
+    public CellModel getCellByName(String name) {
     	
     	// Direktzugriff mit nameU
-    	if (this.cells.containsKey(name)) {
-    		return this.cells.get(name);
+    	if (this.cells.containsKey(name.toLowerCase())) {
+    		return this.cells.get(name.toLowerCase());
     	} else {
 	    	
 	    	// Suche nach Name
     		for (CellModel cell : this.cells.values()) {
-    			if (cell.getName() != null && cell.getName().equals(name)) {
+    			if (cell.getName() != null && cell.getName().equalsIgnoreCase(name)) {
     				return cell;
     			}
     		}
@@ -126,82 +156,106 @@ public class SectionModel implements IModel {
 	 */
 	private ShapeModel shape;
 	
-	// Constructors
+	/**========================================================================
+	 * Constructors
+	 *=======================================================================*/
 	
 	public SectionModel(SectionModelType st) {
 		this.sectionType = st;
 	}
+	
+	/**========================================================================
+	 * Public methods
+	 *=======================================================================*/
     
     /**
-     * Alle Formeln analysieren
+     * <p>Alle Formeln berechnen.</p>
+     * <p>Im ersten Durchlauf werden die absoluten Werte berechnet.
+     * Im zweiten Durchlauf auch die Referenzen auf andere Variablen.</p>
+     * @param firstRound True, wenn erster Durchlauf, sonst False
      * @throws CellCalculationException 
      */
-    public IModel calculate() throws CellCalculationException {
+    public IModel calculate(boolean firstRound) throws CellCalculationException {
     	
 		String sectionName = this.sectionType.toString();
     	logger.debug("Calculate section: "+sectionName);
     	
-    	// alle Cells berechnen
+    	// alle Cells berechnen; erste Runde ohne Variablen
     	for (CellModel cell : this.cells.values()) {
-    		cell.calculate();
+    		cell.calculate(firstRound);
     	}
     	
     	// alle Sections berechnen
     	for (IModel model : this.sections) {
     		
-    		model.calculate();
+    		model.calculate(firstRound);
     	}
     	
     	return this;
     }
 	
 	/**
-	 * <p>Lädt eine Section anhand des SectionType.</p>
-	 * @param jsonSection
-	 * @param sectionType
-	 * @return
+	 * <p>Lädt eine Section anhand des SectionType aus dem JSON-Model.</p>
+	 * @param jsonSection JSON-Objekt mit den Daten der Section
+	 * @param sectionType Art der Section
+	 * @return das gefüllte {@link SectionModel}
 	 * @throws TechnicalException
 	 * @throws InputFileException
 	 */
-	public static SectionModel loadSection(JSONObject jsonSection, String sectionType, IModel parentModel) 
+	public static SectionModel loadSection(
+		JSONObject jsonSection, String sectionType, IModel parentModel) 
 			throws TechnicalException, InputFileException {
 		
 		// Section je nach Typ laden
 		switch (sectionType) {
 		case "Page":
 			PageModel pageModel = new PageModel();
+			pageModel.setParentModel(parentModel);
 			pageModel.loadModel(jsonSection, parentModel);
 			return pageModel;
 		case "Shape":
 			ShapeModel shapeModel = new ShapeModel();
+			shapeModel.setParentModel(parentModel);
 			shapeModel.loadModel(jsonSection, parentModel);
 			return shapeModel;
 		case "Path":
 			PathModel pathModel = new PathModel(PathType.DrawingPath);
+			pathModel.setParentModel(parentModel);
 			pathModel.loadModel(jsonSection, parentModel);
 			return pathModel;
 		case "Location":
 			LocationModel locationModel = new LocationModel();
+			locationModel.setParentModel(parentModel);
 			locationModel.loadModel(jsonSection, parentModel);
 			return locationModel;
 		case "Center":
 			CenterModel centerModel = new CenterModel();
+			centerModel.setParentModel(parentModel);
 			centerModel.loadModel(jsonSection, parentModel);
 			return centerModel;
 		case "MoveTo":
 			PathElementModel elemModel1 = new PathElementModel(PathElementType.MoveTo);
+			elemModel1.setParentModel(parentModel);
 			elemModel1.loadModel(jsonSection, parentModel);
 			return elemModel1;
 		case "LineTo":
 			PathElementModel elemModel2 = new PathElementModel(PathElementType.LineTo);
+			elemModel2.setParentModel(parentModel);
 			elemModel2.loadModel(jsonSection, parentModel);
 			return elemModel2;
 		case "ClosePath":
-			PathElementModel elemModel3 = new PathElementModel(PathElementType.Close);
+			PathElementModel elemModel3 = new PathElementModel(PathElementType.ClosePath);
+			elemModel3.setParentModel(parentModel);
 			elemModel3.loadModel(jsonSection, parentModel);
 			return elemModel3;
+		case "ArcTo":
+			PathElementModel elemModel4 = new PathElementModel(PathElementType.ArcTo);
+			elemModel4.setParentModel(parentModel);
+			elemModel4.loadModel(jsonSection, parentModel);
+			return elemModel4;
 		case "Style":
 			StyleModel styleModel = new StyleModel();
+			styleModel.setParentModel(parentModel);
 			styleModel.loadModel(jsonSection, parentModel);
 			return styleModel;
 		default:
@@ -211,16 +265,14 @@ public class SectionModel implements IModel {
 	
 	/**
 	 * <p>Lädt gemeinsame Elemente aller Section.</p>
-	 * @param jsonSection
-	 * @param parentSection
-	 * @return
+	 * @param jsonSection ein JSON-Objekt mit den Daten der Section
+	 * @param parentSection eine Referenz auf das Model der übergeordneten Section
+	 * @return dieses {@link SectionModel}
 	 * @throws TechnicalException
 	 * @throws InputFileException
 	 */
 	public SectionModel loadModel(JSONObject jsonSection, IModel parentSection) 
 			throws TechnicalException, InputFileException {
-		
-		this.parentModel = parentSection;
 		
 		// Standardfields
     	for (Object key : jsonSection.keySet()) {
@@ -254,7 +306,7 @@ public class SectionModel implements IModel {
     	}
 
 		
-		// Liste der Sections
+		// Liste der abhängigen Sections laden
 		if (jsonSection.containsKey("sections")) {
 	    	JSONArray jsonSections = (JSONArray) jsonSection.get("sections");
 	    	for (int i=0; i<jsonSections.size(); i++) {
@@ -263,12 +315,15 @@ public class SectionModel implements IModel {
 	    		JSONObject jsonSection2 = (JSONObject) jsonSections.get(i);
 	    		
 	    		SectionModel sectModel = 
-	    				SectionModel.loadSection(jsonSection2, (String)jsonSection2.get("sectionType"), this);
+    				SectionModel.loadSection(
+						jsonSection2, 
+						(String)jsonSection2.get("sectionType"), 
+						this);
 	    		this.addSection(sectModel);
 	    	}
 		}
 		
-		// Liste der Cells
+		// Liste der Zellen laden
 		if (jsonSection.containsKey("cells")) {
 			JSONArray jsonCells = (JSONArray) jsonSection.get("cells");
 			for (int i=0; i<jsonCells.size(); i++) {
@@ -285,45 +340,46 @@ public class SectionModel implements IModel {
 	}
 
 	/**
-	 * Sucht eine Section in der Liste der Sections in diesem Model
-	 * oder in übergeordneten Modellen.
-	 * @param name
-	 * @return
+	 * <p>Sucht eine Section in der Liste der Sections in diesem Model
+	 * oder in übergeordneten Modellen.</p>
+	 * @param aName
+	 * @return ein {@link SectionModel}
 	 * @throws CellCalculationException
 	 */
-	public SectionModel searchForSection(String name) throws CellCalculationException {
+	public SectionModel traverseSectionsUp(String aName) throws CellCalculationException {
 		
-		if (!name.contains(".")) {
+		if (!aName.contains(".")) {
 			
-			SectionModelType sectionKey = null;
-			try {
-				sectionKey = SectionModelType.valueOf(name);
-			} catch(Exception e) {
-				throw new CellCalculationException("Invalid section type: "+name);
-			}
-			List<SectionModel> selected = selectSections(sectionKey);
+			List<SectionModel> selected = searchSections(aName);
 			if (selected.size() > 0) {
 				
 				return this.sections.get(0);
 			} else {
 				
-				throw new CellCalculationException("Section not found: "+name);
+				throw new CellCalculationException("Section not found: "+aName);
 			}
 			
 		} else {
 			
-			int p = name.lastIndexOf(".");
-			String sectionName = name.substring(0, p);
+			int p = aName.lastIndexOf(".");
+			String parentName = aName.substring(0, p);
+			String sectionName = aName.substring(p+1);
 			
 			if (this.parentModel != null) {
 				
-				SectionModel parentSection = (SectionModel) this.parentModel;
+				SectionModel parentSection = (SectionModel) this.parentModel.traverseSectionsUp(parentName);
 		
-				return parentSection.searchForSection(sectionName);
+				SectionModel section = parentSection.traverseSectionsUp(sectionName);
+				return section;
+				
 			} else {
 				
-				throw new CellCalculationException("No parent found: "+name);				
+				throw new CellCalculationException("No parent found: "+aName);				
 			}
 		}
 	}
+	
+	/**========================================================================
+	 * Private methods
+	 *=======================================================================*/
 }

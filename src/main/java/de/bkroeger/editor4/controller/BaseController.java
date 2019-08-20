@@ -29,13 +29,13 @@ public class BaseController implements IController {
 
     /**
      * Liefert das Datenmodel
-     * @return
+     * @return ein {@link IModel}
      */
     public IModel getModel() { return model; }
 
     /**
      * Liefert die View
-     * @return
+     * @return ein {@link IView}
      */
     public IView getView() { return view; }
 }

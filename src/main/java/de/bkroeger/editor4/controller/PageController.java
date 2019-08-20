@@ -25,6 +25,10 @@ public class PageController extends BaseController {
 
     @SuppressWarnings("unused")
 	private static final Logger logger = LogManager.getLogger(PageController.class.getName());
+	
+	/**========================================================================
+	 * Constructors
+	 *=======================================================================*/
 
     /**
      * <p>
@@ -41,11 +45,15 @@ public class PageController extends BaseController {
         this.model = pageModel; 
         if (pageModel == null) throw new TechnicalException("Page model is NULL");
     }
-    
+ 	
+	/**========================================================================
+	 * Public methods
+	 *=======================================================================*/
+   
     /**
      * Bildet die View: Tab mit Content-Pane
-     * @param parentController
-     * @return
+     * @param parentController der Controller der übergeordneten Node
+     * @return ein {@link ControllerResult}
      * @throws TechnicalException 
      * @throws InputFileException 
      * @throws CellCalculationException 
@@ -58,7 +66,8 @@ public class PageController extends BaseController {
 
         // für diese Seite einen Tab und darin ein Pane generieren
         PageView pageView = new PageView(this);
-        this.view = pageView;
+       
+        this.view = pageView.draw();
         controllerResult.setView(this.view);
 
         // alle Shapes dieser Seite auf dem Pane zeichnen
@@ -78,12 +87,12 @@ public class PageController extends BaseController {
     
     /**
      * Ermittelt die Zelle mit dem gegebenen Namen.
-     * @param cellName
-     * @return
+     * @param cellName Name der gesuchten Zelle
+     * @return ein {@link CellModel}
      */
     public CellModel getCell(String cellName) {
     	// leitet die Anfrage weiter zum Datenmodell
-    	CellModel cell = this.model.getCell(cellName);
+    	CellModel cell = this.model.getCellByName(cellName);
     	return cell;
     }
 }

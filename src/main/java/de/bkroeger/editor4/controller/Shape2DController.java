@@ -5,10 +5,10 @@ import java.util.List;
 import de.bkroeger.editor4.exceptions.CellCalculationException;
 import de.bkroeger.editor4.exceptions.InputFileException;
 import de.bkroeger.editor4.exceptions.TechnicalException;
-import de.bkroeger.editor4.model.LocationModel;
 import de.bkroeger.editor4.model.PathModel;
 import de.bkroeger.editor4.model.SectionModel;
 import de.bkroeger.editor4.model.SectionModelType;
+import de.bkroeger.editor4.model.ShapeModel;
 import de.bkroeger.editor4.view.GroupView;
 import javafx.scene.Node;
 
@@ -43,10 +43,12 @@ public class Shape2DController extends ShapeController {
 		result.setView(shapeGroup);
 		
 		// die Location der Shape-Group festlegen
-		SectionModel locationSection = model.getSection(SectionModelType.Location);
-		LocationModel locationModel = (LocationModel) locationSection;
-		shapeGroup.layoutXProperty().bind(locationModel.getLayoutXProperty());
-		shapeGroup.layoutYProperty().bind(locationModel.getLayoutYProperty());
+//		SectionModel locationSection = model.getSection(SectionModelType.Location);
+//		LocationModel locationModel = (LocationModel) locationSection;
+		// die Properties sind jetzt im Shape-Model
+		ShapeModel model = (ShapeModel) this.getModel();
+		shapeGroup.layoutXProperty().bind(model.getLayoutXProperty());
+		shapeGroup.layoutYProperty().bind(model.getLayoutXProperty());
 		
 		// alle Path-Sections ermitteln und die Pfade zeichnen
 		List<SectionModel> pathSections = model.selectSections(SectionModelType.Path);

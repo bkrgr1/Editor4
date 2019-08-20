@@ -13,12 +13,18 @@ public interface IModel {
 	public SectionModel loadModel(JSONObject jsonSection, IModel parentSection) 
 			throws TechnicalException, InputFileException;
 	
-	public CellModel getCell(String name);
+	public CellModel getCellByName(String name);
 	
 	public List<SectionModel> selectSections(SectionModelType type);
 
 	public SectionModel getSection(SectionModelType location) 
 			throws InputFileException, CellCalculationException;
 
-	public IModel calculate() throws CellCalculationException;
+	public IModel calculate(boolean firstRound) throws CellCalculationException;
+	
+	public SectionModel traverseSectionsUp(String name) throws CellCalculationException;
+
+	public IModel getParentModel();
+
+	public List<SectionModel> searchSections(String sectionName);
 }

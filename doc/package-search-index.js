@@ -1,0 +1,1 @@
+packageSearchIndex = [{"l":"All Packages","url":"allpackages-index.html"},{"l":"de.bkroeger.editor4.exceptions"},{"l":"de.bkroeger.editor4.Handler"},{"l":"de.bkroeger.editor4.model"},{"l":"de.bkroeger.editor4.view"}]

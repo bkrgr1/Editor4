@@ -20,9 +20,15 @@ import javafx.scene.paint.Color;
 public class PageView extends Tab implements IView {
 
 	private static final Color BACKGROUND_COLOR = Color.ALICEBLUE;
+	
+	private PageController controller;
 
 	public PageView(PageController controller) throws CellCalculationException {
 		super();
+		this.controller = controller;
+	} 
+	
+	public PageView draw() throws CellCalculationException {
 		
 		// das Tab-Control
 		CellModel pageTitleCell = controller.getCell("PageTitle");
@@ -37,5 +43,7 @@ public class PageView extends Tab implements IView {
 		
 		// fügt den Content-Pane zum Tab hinzu
 		this.setContent(tabContent);
+		
+		return this;
 	}
 }
