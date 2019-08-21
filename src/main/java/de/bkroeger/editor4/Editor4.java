@@ -5,6 +5,7 @@ import org.apache.logging.log4j.Logger;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.builder.SpringApplicationBuilder;
 import org.springframework.context.ConfigurableApplicationContext;
+import org.springframework.context.annotation.Bean;
 
 import de.bkroeger.editor4.controller.ControllerResult;
 import de.bkroeger.editor4.controller.EditorController;
@@ -57,6 +58,11 @@ public class Editor4 extends Application {
 		context = builder.run(getParameters().getRaw().toArray(new String[0]));
 		logger.debug("JavaFX init():");
 	}
+	
+	@Bean
+	public EditorController editorController() {
+		return new EditorController(cmd, PANEL_WIDTH, PANEL_HEIGHT);
+	}
 
 	/**
 	 * <p>JavaFX start method.</p>
@@ -67,8 +73,7 @@ public class Editor4 extends Application {
 		
 		logger.debug("JavaFX start:");
 		try {
-			
-			EditorController editorController = new EditorController(cmd, PANEL_WIDTH, PANEL_HEIGHT);
+			EditorController editorController = editorController();
 			
 			ControllerResult result = editorController.buildView();
 	

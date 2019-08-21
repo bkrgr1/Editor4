@@ -11,7 +11,6 @@ import de.bkroeger.editor4.model.PathElementModel;
 import de.bkroeger.editor4.model.PathModel;
 import de.bkroeger.editor4.model.SectionModel;
 import de.bkroeger.editor4.model.SectionModelType;
-import de.bkroeger.editor4.model.StyleModel;
 import javafx.scene.paint.Paint;
 import javafx.scene.shape.Path;
 import javafx.scene.shape.PathElement;
@@ -51,38 +50,35 @@ public class PathView extends Path implements IView {
 		}
 		
 		// die Optionen aus der Style-Section verarbeiten
-		StyleModel styleModel = (StyleModel) model.getSection(SectionModelType.Style);
-		if (styleModel != null) {	
 			
-			// fill color
-			CellModel colorCell = styleModel.getCellByName("FillColor");
-			if (colorCell != null) {				
-				Paint paint = (Paint) colorCell.getObjectValue();
-				this.setFill(paint);
-				// TODO: ObjectChangeListener ergänzen
-			}
-			
-			// stroke type
-			this.setStrokeType(StrokeType.INSIDE);
-			
-			// stroke color
-			CellModel colorStroke = styleModel.getCellByName("StrokeColor");
-			if (colorStroke != null) {				
-				Paint paint = (Paint) colorStroke.getObjectValue();
-				this.setStroke(paint);
-			}
-			
-			// stroke width
-			CellModel strokeWidthCell = styleModel.getCellByName("StrokeWidth");
-			if (strokeWidthCell != null) {				
-				this.strokeWidthProperty().bind(strokeWidthCell.getDoubleProperty());
-			}
-			
-			// transparency
-			CellModel transparencyCell = styleModel.getCellByName("Transparency");
-			if (transparencyCell != null) {				
-				this.opacityProperty().bind(transparencyCell.getDoubleProperty());
-			}
+		// fill color
+		CellModel colorCell = model.getCellByName("FillColor");
+		if (colorCell != null) {				
+			Paint paint = (Paint) colorCell.getObjectValue();
+			this.setFill(paint);
+			// TODO: ObjectChangeListener ergänzen
+		}
+		
+		// stroke type
+		this.setStrokeType(StrokeType.INSIDE);
+		
+		// stroke color
+		CellModel colorStroke = model.getCellByName("StrokeColor");
+		if (colorStroke != null) {				
+			Paint paint = (Paint) colorStroke.getObjectValue();
+			this.setStroke(paint);
+		}
+		
+		// stroke width
+		CellModel strokeWidthCell = model.getCellByName("StrokeWidth");
+		if (strokeWidthCell != null) {				
+			this.strokeWidthProperty().bind(strokeWidthCell.getDoubleProperty());
+		}
+		
+		// transparency
+		CellModel transparencyCell = model.getCellByName("Transparency");
+		if (transparencyCell != null) {				
+			this.opacityProperty().bind(transparencyCell.getDoubleProperty());
 		}
 		
 		return this;

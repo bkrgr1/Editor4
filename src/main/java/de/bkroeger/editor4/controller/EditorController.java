@@ -4,6 +4,7 @@ import java.io.File;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.springframework.stereotype.Component;
 
 import de.bkroeger.editor4.CommandOptions;
 import de.bkroeger.editor4.exceptions.CellCalculationException;
@@ -13,6 +14,7 @@ import de.bkroeger.editor4.view.EditorView;
 import javafx.scene.Node;
 import javafx.scene.layout.BorderPane;
 
+@Component
 public class EditorController extends BaseController implements IController {
 
     private static final Logger logger = LogManager.getLogger(EditorController.class.getName());

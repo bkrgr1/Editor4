@@ -74,8 +74,6 @@ public class PathController extends BaseController implements IMouseHandlerData 
 		
 		// Pfad zeichnen
 		PathView pathView = new PathView(this).draw();
-		pathView.layoutXProperty().bind(((PathModel)model).getXProperty());
-		pathView.layoutYProperty().bind(((PathModel)model).getYProperty());
     	result.setView(pathView);
 			
     	// when user clicks on PathView

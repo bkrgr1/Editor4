@@ -99,4 +99,44 @@ public class ShapeModel extends SectionModel {
 			throw new TechnicalException("Cell with type 'LayoutY' not found");
 		}
 	}
+	
+	public DoubleProperty getCenterXProperty() throws TechnicalException, CellCalculationException {
+		
+		CellModel cell = this.cells.get("CenterX".toLowerCase());
+		if (cell != null) {
+			return cell.getDoubleProperty();
+		} else {
+			throw new TechnicalException("Cell with type 'CenterX' not found");
+		}
+	}
+	
+	public DoubleProperty getCenterYProperty() throws TechnicalException, CellCalculationException {
+		
+		CellModel cell = this.cells.get("CenterY".toLowerCase());
+		if (cell != null) {
+			return cell.getDoubleProperty();
+		} else {
+			throw new TechnicalException("Cell with type 'CenterY' not found");
+		}
+	}
+	
+	public DoubleProperty getWidthProperty() throws TechnicalException, CellCalculationException {
+		
+		CellModel cell = this.cells.get("Width".toLowerCase());
+		if (cell != null) {
+			return cell.getDoubleProperty();
+		} else {
+			throw new TechnicalException("Cell with type 'Width' not found");
+		}
+	}
+	
+	public DoubleProperty getHeightProperty() throws TechnicalException, CellCalculationException {
+		
+		CellModel cell = this.cells.get("Height".toLowerCase());
+		if (cell != null) {
+			return cell.getDoubleProperty();
+		} else {
+			throw new TechnicalException("Cell with type 'Height' not found");
+		}
+	}
 }

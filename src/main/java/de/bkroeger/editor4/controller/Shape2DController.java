@@ -10,7 +10,13 @@ import de.bkroeger.editor4.model.SectionModel;
 import de.bkroeger.editor4.model.SectionModelType;
 import de.bkroeger.editor4.model.ShapeModel;
 import de.bkroeger.editor4.view.GroupView;
+import javafx.beans.binding.Bindings;
+import javafx.geometry.Insets;
 import javafx.scene.Node;
+import javafx.scene.layout.Background;
+import javafx.scene.layout.BackgroundFill;
+import javafx.scene.layout.CornerRadii;
+import javafx.scene.paint.Color;
 
 /**
  * <p>Dies ist der Controller für 2-dimensionale Shapes.</p>
@@ -37,18 +43,32 @@ public class Shape2DController extends ShapeController {
     		throws TechnicalException, InputFileException, CellCalculationException {
     	
 		ControllerResult result = new ControllerResult();
-		
+
+		ShapeModel model = (ShapeModel) this.getModel();
+
 		// eine Shape-Group erzeugen
 		GroupView shapeGroup = new GroupView();
+		shapeGroup.prefWidthProperty().bind(model.getWidthProperty());
+		shapeGroup.prefHeightProperty().bind(model.getHeightProperty());
+		
+		// TEST TEST TEST
+		shapeGroup.setBackground(new Background(new BackgroundFill(Color.BEIGE, CornerRadii.EMPTY, Insets.EMPTY)));
+		
 		result.setView(shapeGroup);
 		
+		// TODO: wie berechnet sich die Grösse des Pane?
+		// muss das vor dem Hinzufügen der Pathes erfolgen?
+		
 		// die Location der Shape-Group festlegen
-//		SectionModel locationSection = model.getSection(SectionModelType.Location);
-//		LocationModel locationModel = (LocationModel) locationSection;
-		// die Properties sind jetzt im Shape-Model
-		ShapeModel model = (ShapeModel) this.getModel();
-		shapeGroup.layoutXProperty().bind(model.getLayoutXProperty());
-		shapeGroup.layoutYProperty().bind(model.getLayoutXProperty());
+		
+		// TODO: die Position des Shapes ist an den angegebenen Layout-Properties
+		// aber nicht mit der linken, oberen Ecke, sondern der definierte
+		// Center-Point ist an diesen Koordinaten
+		// z.B. setLayoutX( layoutX - centerX )
+		shapeGroup.layoutXProperty().bind(
+				Bindings.subtract(model.getLayoutXProperty(), model.getCenterXProperty()));
+		shapeGroup.layoutYProperty().bind(
+				Bindings.subtract(model.getLayoutXProperty(), model.getCenterYProperty()));
 		
 		// alle Path-Sections ermitteln und die Pfade zeichnen
 		List<SectionModel> pathSections = model.selectSections(SectionModelType.Path);

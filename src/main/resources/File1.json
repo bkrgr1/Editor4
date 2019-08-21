@@ -12,6 +12,12 @@
 				"description": "Eine Bildschirmseite",
 				"name": "Seite 1",
 				"nameU": "Page_1",
+				"cells": [
+					{ "nameU": "PageNo", "formula": "1.0" },
+					{ "nameU": "PageTitle", 
+					  "formula": "concat('Page ',text(int(${PageNo})))",
+					  "dataType": "string" }
+				],
 				"sections": [
 					{
 						"sectionType": "Shape",
@@ -25,12 +31,22 @@
 							{ "nameU": "Width", "formula": "100.0" },
 							{ "nameU": "Height", "formula": "100.0" },
 							{ "nameU": "Rotate", "formula": "45.0" },
-							{ "nameU": "Scale", "formula": "1.5" }
+							{ "nameU": "Scale", "formula": "1.5" },
+							{ "nameU": "centerX", "formula": "50.0" },
+							{ "nameU": "centerY", "formula": "50.0" },
+							{ "nameU": "StrokeWidth", "formula": "1.5" },
+							{ "nameU": "FillColor", "formula": "color(BLUE)", "dataType": "object" }
 						],
 						"sections": [
 							{
 								"sectionType": "Path",
 								"nameU": "Path 1",
+								"cells": [
+									{ "nameU": "StrokeWidth", "formula": "1.5" },
+									{ "nameU": "StrokeColor", "formula": "color(BLACK)", "dataType": "object" },
+									{ "nameU": "FillColor", "formula": "${Shape_1.FillColor}", "dataType": "object" },
+									{ "nameU": "Transparency", "formula": "0.33" }
+								],								
 								"sections": [
 									{
 										"sectionType": "MoveTo",
@@ -67,33 +83,7 @@
 									{
 										"sectionType": "ClosePath",
 										"nameU": "ClosePath_1"
-									},
-									{
-										"sectionType": "Style",
-										"nameU": "Path_style",
-										"cells": [
-											{ "nameU": "StrokeWidth", "formula": "1.5" },
-											{ "nameU": "StrokeColor", "formula": "color(BLACK)", "dataType": "object" },
-											{ "nameU": "FillColor", "formula": "${Shape_1.PathStyle.FillColor}", "dataType": "object" },
-											{ "nameU": "Transparency", "formula": "0.33" }
-										]									}
-								],
-								"cells": []
-							},
-							{
-								"sectionType": "Center",
-								"nameU": "CenterPoint_1",
-								"cells": [
-									{ "nameU": "X", "formula": "50.0" },
-									{ "nameU": "Y", "formula": "50.0" }
-								]
-							},
-							{
-								"sectionType": "Style",
-								"nameU": "PathStyle",
-								"cells": [
-									{ "nameU": "StrokeWidth", "formula": "1.5" },
-									{ "nameU": "FillColor", "formula": "color(BLUE)", "dataType": "object" }
+									}
 								]
 							}
 						]
@@ -104,10 +94,28 @@
 						"description": "Ein Kreis",
 						"nameU": "Shape_2",
 						"shapeDimension": "2D",
+						"cells": [
+							{ "nameU": "LayoutX", "formula": "200.0" },
+							{ "nameU": "LayoutY", "formula": "50.0" },
+							{ "nameU": "Width", "formula": "100.0" },
+							{ "nameU": "Height", "formula": "100.0" },
+							{ "nameU": "Rotate", "formula": "45.0" },
+							{ "nameU": "Scale", "formula": "1.5" },
+							{ "nameU": "StrokeWidth", "formula": "1.5" },
+							{ "nameU": "FillColor", "formula": "color(BLUE)", "dataType": "object" },
+							{ "nameU": "CenterX", "formula": "50.0" },
+							{ "nameU": "CenterY", "formula": "50.0" }
+						],
 						"sections": [
 							{
 								"sectionType": "Path",
 								"nameU": "Path 2-1",
+								"cells": [
+									{ "nameU": "StrokeWidth", "formula": "1.5" },
+									{ "nameU": "StrokeColor", "formula": "color(BLACK)", "dataType": "object" },
+									{ "nameU": "FillColor", "formula": "color(RED)", "dataType": "object" },
+									{ "nameU": "Transparency", "formula": "0.33" }
+								],
 								"sections": [
 									{
 										"sectionType": "MoveTo",
@@ -128,57 +136,11 @@
 											{ "nameU": "largeArcFlag", "formula": "true", "dataType": "bool" },
 											{ "nameU": "sweepFlag", "formula": "true", "dataType": "bool" }
 										]
-									},
-									{
-										"sectionType": "Style",
-										"nameU": "Path_style",
-										"cells": [
-											{ "nameU": "StrokeWidth", "formula": "1.5" },
-											{ "nameU": "StrokeColor", "formula": "color(BLACK)", "dataType": "object" },
-											{ "nameU": "FillColor", "formula": "color(RED)", "dataType": "object" },
-											{ "nameU": "Transparency", "formula": "0.33" }
-										]									}
-								],
-								"cells": []
-							},
-							{
-								"sectionType": "Location",
-								"nameU": "Location",
-								"cells": [
-									{ "nameU": "LayoutX", "formula": "200.0" },
-									{ "nameU": "LayoutY", "formula": "50.0" },
-									{ "nameU": "Width", "formula": "100.0" },
-									{ "nameU": "Height", "formula": "100.0" },
-									{ "nameU": "Rotate", "formula": "45.0" },
-									{ "nameU": "Scale", "formula": "1.5" }
-								]
-							},
-							{
-								"sectionType": "Center",
-								"nameU": "CenterPoint_1",
-								"cells": [
-									{ "nameU": "X", "formula": "50.0" },
-									{ "nameU": "Y", "formula": "50.0" }
-								]
-							},
-							{
-								"sectionType": "Style",
-								"nameU": "PathStyle",
-								"cells": [
-									{ "nameU": "StrokeWidth", "formula": "1.5" },
-									{ "nameU": "FillColor", "formula": "color(BLUE)", "dataType": "object" }
+									}
 								]
 							}
-						],
-						"cells": [
 						]
 					}
-				],
-				"cells": [
-					{ "nameU": "PageNo", "formula": "1.0" },
-					{ "nameU": "PageTitle", 
-					  "formula": "concat('Page ',text(int(${PageNo})))",
-					  "dataType": "string" }
 				]
 			}
 		],
