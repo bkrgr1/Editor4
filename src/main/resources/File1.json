@@ -26,8 +26,8 @@
 						"nameU": "Shape_1",
 						"shapeDimension": "2D",
 						"cells": [
-							{ "nameU": "LayoutX", "formula": "200.0" },
-							{ "nameU": "LayoutY", "formula": "50.0" },
+							{ "nameU": "LayoutX", "formula": "400.0" },
+							{ "nameU": "LayoutY", "formula": "100.0" },
 							{ "nameU": "Width", "formula": "100.0" },
 							{ "nameU": "Height", "formula": "100.0" },
 							{ "nameU": "Rotate", "formula": "45.0" },
@@ -122,19 +122,31 @@
 										"nameU": "MoveTo_1",
 										"cells": [
 											{ "nameU": "X", "formula": "10.0" },
-											{ "nameU": "Y", "formula": "25.0" }
+											{ "nameU": "Y", "formula": "50.0" }
 										]
 									},
 									{
 										"sectionType": "ArcTo",
 										"nameU": "ArcTo_1",
 										"cells": [
-											{ "nameU": "X", "formula": "30.0" },
-											{ "nameU": "Y", "formula": "25.0" },
-											{ "nameU": "radiusX", "formula": "15.0" },
-											{ "nameU": "radiusY", "formula": "30.0" },
+											{ "nameU": "X", "formula": "90.0" },
+											{ "nameU": "Y", "formula": "50.0" },
+											{ "nameU": "radiusX", "formula": "40.0" },
+											{ "nameU": "radiusY", "formula": "40.0" },
 											{ "nameU": "largeArcFlag", "formula": "true", "dataType": "bool" },
 											{ "nameU": "sweepFlag", "formula": "true", "dataType": "bool" }
+										]
+									},
+									{
+										"sectionType": "ArcTo",
+										"nameU": "ArcTo_1",
+										"cells": [
+											{ "nameU": "X", "formula": "10.0" },
+											{ "nameU": "Y", "formula": "50.0" },
+											{ "nameU": "radiusX", "formula": "40.0" },
+											{ "nameU": "radiusY", "formula": "40.0" },
+											{ "nameU": "largeArcFlag", "formula": "false", "dataType": "bool" },
+											{ "nameU": "sweepFlag", "formula": "false", "dataType": "bool" }
 										]
 									}
 								]
