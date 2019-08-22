@@ -90,6 +90,14 @@ public class ShapeModel extends SectionModel {
 		}
 	}
 	
+	public double getLayoutX() throws TechnicalException, CellCalculationException {
+		return getLayoutXProperty().get();
+	}
+	
+	public void setLayoutX(double value) throws TechnicalException, CellCalculationException {
+		this.getLayoutXProperty().set(value);
+	}
+	
 	public DoubleProperty getLayoutYProperty() throws TechnicalException, CellCalculationException {
 		
 		CellModel cell = this.cells.get("LayoutY".toLowerCase());
@@ -98,6 +106,14 @@ public class ShapeModel extends SectionModel {
 		} else {
 			throw new TechnicalException("Cell with type 'LayoutY' not found");
 		}
+	}
+	
+	public double getLayoutY() throws TechnicalException, CellCalculationException {
+		return getLayoutYProperty().get();
+	}
+	
+	public void setLayoutY(double value) throws TechnicalException, CellCalculationException {
+		this.getLayoutYProperty().set(value);
 	}
 	
 	public DoubleProperty getCenterXProperty() throws TechnicalException, CellCalculationException {

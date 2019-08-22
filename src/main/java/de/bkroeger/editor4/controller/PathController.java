@@ -3,9 +3,6 @@ package de.bkroeger.editor4.controller;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-import de.bkroeger.editor4.Handler.MouseMovedCommand;
-import de.bkroeger.editor4.Handler.MousePressedCommand;
-import de.bkroeger.editor4.Handler.MouseReleasedCommand;
 import de.bkroeger.editor4.exceptions.CellCalculationException;
 import de.bkroeger.editor4.exceptions.InputFileException;
 import de.bkroeger.editor4.exceptions.TechnicalException;
@@ -17,24 +14,13 @@ import de.bkroeger.editor4.view.PathView;
  * 
  * @author berthold.kroeger@gmx.de
  */
-public class PathController extends BaseController implements IMouseHandlerData {
+public class PathController extends BaseController {
 
 	private static final Logger logger = LogManager.getLogger(PathController.class.getName());
 	
 	/**========================================================================
 	 * Fields
 	 *=======================================================================*/
-	
-	private double mouseX;
-	public double getMouseX() { return mouseX; }
-	public void setMouseX(double value) { this.mouseX = value; }
-	private double mouseY;
-	public double getMouseY() { return mouseY; }
-	public void setMouseY(double value) { this.mouseY = value; }
-	
-	private MousePressedCommand mousePressedCommand;
-	private MouseMovedCommand mouseMovedCommand;
-	private MouseReleasedCommand mouseReleasedCommand;
 
 	/**========================================================================
 	 * Constructors
@@ -49,10 +35,6 @@ public class PathController extends BaseController implements IMouseHandlerData 
         super();
         this.model = pathModel; 
         if (pathModel == null) throw new TechnicalException("Path model is NULL");
-
-		mousePressedCommand = new MousePressedCommand(this);
-		mouseMovedCommand = new MouseMovedCommand(this, pathModel);
-		mouseReleasedCommand = new MouseReleasedCommand(this, pathModel);
     }
 	
 	/**========================================================================
@@ -79,21 +61,6 @@ public class PathController extends BaseController implements IMouseHandlerData 
     	// when user clicks on PathView
     	pathView.setOnMouseClicked(event -> {
     		logger.trace("Clicked on path view");
-    	});
-    	
-    	// when user presses a mouse key over the PathView
-    	pathView.setOnMousePressed(event -> {
-    		mousePressedCommand.execute(event);
-    	});
-    	
-    	// when user moves the PathView with key pressed
-    	pathView.setOnMouseMoved(event -> {
-    		mouseMovedCommand.execute(event);
-    	});
-    	
-    	// when user releases the mouse key
-    	pathView.setOnMouseReleased(event -> {
-    		mouseReleasedCommand.execute(event);
     	});
     	
 		return result;

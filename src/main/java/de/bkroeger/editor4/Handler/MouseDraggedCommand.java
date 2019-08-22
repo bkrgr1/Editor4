@@ -8,13 +8,13 @@ import de.bkroeger.editor4.exceptions.CellCalculationException;
 import de.bkroeger.editor4.exceptions.TechnicalException;
 import javafx.scene.input.MouseEvent;
 
-public class MouseReleasedCommand implements IMouseCommand {
+public class MouseDraggedCommand implements IMouseCommand {
 
-	private static final Logger logger = LogManager.getLogger(MouseReleasedCommand.class.getName());
+	private static final Logger logger = LogManager.getLogger(MouseDraggedCommand.class.getName());
 	
 	private IMouseHandlerData data;
 	
-	public MouseReleasedCommand(IMouseHandlerData data) {
+	public MouseDraggedCommand(IMouseHandlerData data) {
 		this.data = data;
 	}
 
@@ -25,8 +25,8 @@ public class MouseReleasedCommand implements IMouseCommand {
 		double deltaY = event.getScreenY() - data.getMouseY();
 		logger.debug(String.format("%f = %f - %f", deltaY, event.getScreenY(), data.getMouseY()));
 		
-		data.setMouseX(0.0);
-		data.setMouseY(0.0);
+		data.setMouseX(event.getScreenX());
+		data.setMouseY(event.getScreenY());
 		
 		data.setDeltaX(deltaX);
 		data.setDeltaY(deltaY);
