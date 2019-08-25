@@ -10,6 +10,7 @@ import org.json.simple.JSONObject;
 
 import de.bkroeger.editor4.controller.ControllerResult;
 import de.bkroeger.editor4.controller.IShapeController;
+import de.bkroeger.editor4.exceptions.CellCalculationException;
 import de.bkroeger.editor4.exceptions.InputFileException;
 import de.bkroeger.editor4.exceptions.TechnicalException;
 import lombok.Getter;
@@ -23,17 +24,53 @@ public class PageModel extends SectionModel {
 
 	private static final Logger logger = LogManager.getLogger(FileModel.class.getName());
 
+	private static final String PAGE_TITLE_CELL = "PageTitle";
+	private static final String PAGE_NO_CELL = "PageNo";
+	
+	/**========================================================================
+	 * Fields
+	 *=======================================================================*/
+
     /**
      * UUID of the section
      */
 	private UUID id;
 	
-	protected List<IShapeController> shapeControllers;
+	protected List<IShapeController> shapeControllers = new ArrayList<>();
 
-	private int pageNo;
-
-	private String pageTitle;
+	public String getPageNo() {
+		CellModel cell = this.getCellByName(PAGE_NO_CELL);
+		if (cell != null) {
+			double d = cell.getDoubleValue();
+			return ""+(int)d;
+		} else {
+			return "";
+		}
+	}
 	
+	public void setPageNo(String value) throws CellCalculationException {
+		CellModel cell = this.getCellByName(PAGE_NO_CELL);
+		if (cell != null) {
+			cell.getStringProperty().set(value);
+		}
+	}
+
+	public String getPageTitle() {
+		CellModel cell = this.getCellByName(PAGE_TITLE_CELL);
+		if (cell != null) {
+			return cell.getStringValue();
+		} else {
+			return "";
+		}
+	}
+	
+	public void setPageTitle(String value) throws CellCalculationException {
+		CellModel cell = this.getCellByName(PAGE_TITLE_CELL);
+		if (cell != null) {
+			cell.getStringProperty().set(value);
+		}
+	}
+
 	private IModel parentModel;
 	
 	private ControllerResult parentResult;
@@ -43,6 +80,10 @@ public class PageModel extends SectionModel {
 	public void addArrowModel(IArrowModel model) {
 		this.arrowModels.add(model);
 	}
+	
+	/**========================================================================
+	 * Constructors
+	 *=======================================================================*/
 
 	/**
 	 * Constructor
@@ -71,5 +112,18 @@ public class PageModel extends SectionModel {
 	public ControllerResult buildView(ControllerResult parentResult,
 			int panelWidth, int panelHeight) {
 				return parentResult;		
+	}
+
+	/**
+	 * Übernimmt die geänderten Daten aus dem {@link PageDialogModel} in diese {@link PageModel}.
+	 * @param newModel das geänderte {@link PageDialogModel}
+	 * @throws CellCalculationException 
+	 */
+	public void acceptChanges(PageDialogModel dialog) throws CellCalculationException {
+		
+		// copy changed attributes to PageModel
+		this.id = UUID.fromString(dialog.getPageIdProperty().get());
+		this.setPageNo(dialog.getPageNoProperty().get());
+		this.setPageTitle(dialog.getPageTitleProperty().get());
 	}
 }

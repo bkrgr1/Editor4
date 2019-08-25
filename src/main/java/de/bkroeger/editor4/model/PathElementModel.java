@@ -87,7 +87,12 @@ public class PathElementModel extends SectionModel {
 		super(SectionModelType.PathElement);
 		this.elemType = pt;
 	}
-	
+
+	public PathElementModel(PathElementModel model) {
+		super(SectionModelType.PathElement);
+		this.elemType = model.elemType;
+	}
+
 	/**========================================================================
 	 * Public methods
 	 *=======================================================================*/

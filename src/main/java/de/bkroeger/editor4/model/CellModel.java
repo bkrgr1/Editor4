@@ -524,6 +524,36 @@ public class CellModel implements CellValueListener {
 		this.formula = formula;
 	}
 	
+	@SuppressWarnings({ "rawtypes", "unchecked" })
+	public CellModel(CellModel model) throws CellCalculationException {
+		this.booleanProperty = (model.getBooleanProperty() != null ? 
+				new SimpleBooleanProperty(model.getBooleanProperty().get()) : null);
+		this.calculated = model.calculated;
+		this.cellListeners = cloneCellListeners(model.getCellListeners());
+		this.cellValueType = model.cellValueType;
+		this.doubleProperty = (model.getDoubleProperty() != null ?
+				new SimpleDoubleProperty(model.getDoubleProperty().get()) : null);
+		this.formula = (model.formula != null ? new String(model.formula) : null);
+		this.name = (model.name != null ? new String(model.name) : null);
+		this.nameU = new String(model.nameU);
+		this.objectProperty =(model.getObjectProperty() != null ?
+				new SimpleObjectProperty(model.getObjectProperty().get()) : null);
+		this.referencedCells = cloneCells(model.referencedCells);
+		this.section = model.section;
+		this.stringProperty = (model.getStringProperty() != null ?
+				new SimpleObjectProperty<String>(model.getStringProperty().get()) : null);
+	}
+	
+	private Map<String, CellModel> cloneCells(Map<String, CellModel> referencedCells2) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	private List<CellValueListener> cloneCellListeners(List<CellValueListener> cellListeners2) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
 	/**
 	 * Erstellt aus dem JSON-Element ein CellModel-Object.
 	 * @param jsonCell

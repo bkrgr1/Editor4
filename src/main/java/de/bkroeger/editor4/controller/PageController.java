@@ -3,6 +3,7 @@ package de.bkroeger.editor4.controller;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
+import de.bkroeger.editor4.Handler.PageDialogCommand;
 import de.bkroeger.editor4.exceptions.CellCalculationException;
 import de.bkroeger.editor4.exceptions.InputFileException;
 import de.bkroeger.editor4.exceptions.TechnicalException;
@@ -12,6 +13,7 @@ import de.bkroeger.editor4.model.SectionModel;
 import de.bkroeger.editor4.model.SectionModelType;
 import de.bkroeger.editor4.view.PageView;
 import javafx.scene.Node;
+import javafx.scene.input.MouseButton;
 import javafx.scene.layout.Pane;
 
 /**
@@ -25,6 +27,8 @@ public class PageController extends BaseController {
 
     @SuppressWarnings("unused")
 	private static final Logger logger = LogManager.getLogger(PageController.class.getName());
+    
+    private PageDialogCommand pageDialogCommand;
 	
 	/**========================================================================
 	 * Constructors
@@ -44,6 +48,8 @@ public class PageController extends BaseController {
         super();
         this.model = pageModel; 
         if (pageModel == null) throw new TechnicalException("Page model is NULL");
+		
+		pageDialogCommand = new PageDialogCommand((PageModel)model);
     }
  	
 	/**========================================================================
@@ -81,6 +87,22 @@ public class PageController extends BaseController {
         	Pane pane = (Pane) pageView.getContent();
         	pane.getChildren().add((Node) result.getView());
         }
+		
+    	// when user clicks on PathView
+    	pageView.getContent().setOnMouseClicked(event -> {
+    		logger.debug("Clicked on shape group");
+    		if (event.getButton() == MouseButton.PRIMARY) {
+    			// ???
+    		} else if (event.getButton() == MouseButton.SECONDARY) {
+    			// Shape-Dialog anzeigen
+    			try {
+					pageDialogCommand.execute(event);
+				} catch (CellCalculationException | TechnicalException e) {
+					logger.error(e.getMessage(), e);
+				}
+    		}
+    		event.consume();
+    	});
         
         return controllerResult;
     }

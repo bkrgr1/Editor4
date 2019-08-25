@@ -8,16 +8,30 @@ import de.bkroeger.editor4.exceptions.CellCalculationException;
 import de.bkroeger.editor4.exceptions.TechnicalException;
 import javafx.scene.input.MouseEvent;
 
+/**
+ * Dieser Command wird aufgerufen, wenn die Mouse released wird.
+ * Es wird das Delta zwischen der vorherigen Position und der aktuellen Mouse-Position berechnet
+ * und an den Command-Receiver gemeldet.
+ *
+ * @author berthold.kroeger@gmx.de
+ */
 public class MouseReleasedCommand implements IMouseCommand {
 
 	private static final Logger logger = LogManager.getLogger(MouseReleasedCommand.class.getName());
 	
 	private IMouseHandlerData data;
 	
+	/**
+	 * Constructor
+	 * @param data die {@link IMouseHandlerData Mouse-Daten}
+	 */
 	public MouseReleasedCommand(IMouseHandlerData data) {
 		this.data = data;
 	}
 
+	/**
+	 * Event ausführen
+	 */
 	public void execute(MouseEvent event) throws TechnicalException, CellCalculationException {
 		
 		double deltaX = event.getScreenX() - data.getMouseX();

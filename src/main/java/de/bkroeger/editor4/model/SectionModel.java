@@ -2,8 +2,10 @@ package de.bkroeger.editor4.model;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
@@ -379,7 +381,65 @@ public class SectionModel implements IModel {
 		}
 	}
 	
+	public static SectionModel cloneSection(SectionModel model) 
+			throws CellCalculationException, TechnicalException {
+		
+		SectionModel sm = null;
+		switch (model.getSectionType()) {
+//		case Page:
+//			sm = new PageModel((PageModel)model);
+//			break;
+		case Shape:
+			sm = new ShapeModel((ShapeModel)model);
+			break;
+		case Path:
+			sm = new PathModel((PathModel)model);
+			break;
+		case PathElement:
+			sm = new PathElementModel((PathElementModel)model);
+			break;
+		default:
+			throw new TechnicalException("Invalid section type : "+model.getSectionType().toString());
+		}
+		
+		sm.cells = cloneCells(model.cells);
+		sm.description = (model.description != null ? new String(model.description) : null);
+		sm.id = model.id;
+		sm.name = (model.name != null ? new String(model.name) : null);
+		sm.nameU = new String(model.nameU);
+		sm.parentModel = model.parentModel;
+		sm.sections = cloneSections(model.sections);
+		sm.sectionType = model.sectionType;
+		return sm;
+	}
+	
 	/**========================================================================
 	 * Private methods
-	 *=======================================================================*/
+	 *=======================================================================
+
+	/**
+	 * @throws CellCalculationException 
+	 */
+	private static Map<String, CellModel> cloneCells(Map<String, CellModel> cells) 
+			throws CellCalculationException {
+		
+		Map<String, CellModel> map = new HashMap<>();
+		Iterator<Entry<String, CellModel>> iter = cells.entrySet().iterator();
+		while (iter.hasNext()) {
+			Entry<String, CellModel> entry = iter.next();
+			map.put(new String(entry.getKey()), new CellModel(entry.getValue()));
+		}
+		return map;
+	}
+	
+	private static List<SectionModel> cloneSections(List<SectionModel> sections) 
+			throws CellCalculationException, TechnicalException {
+		
+		List<SectionModel> list = new ArrayList<>();
+		Iterator<SectionModel> iter = sections.iterator();
+		while (iter.hasNext()) {
+			list.add(cloneSection(iter.next()));
+		}
+		return list;
+	}
 }

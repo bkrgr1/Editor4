@@ -27,6 +27,10 @@ public class ShapeModel extends SectionModel {
 	private static final Logger logger = LogManager.getLogger(ShapeModel.class.getName());
 	
 	private static final String DIMENSION_KEY = "shapeDimension";
+	
+	/**========================================================================
+	 * Fields
+	 *=======================================================================*/
    
     private String shapeDimension;
 
@@ -40,7 +44,9 @@ public class ShapeModel extends SectionModel {
 	 */
 	protected ShapeType shapeType;
 	
-	// Constructors
+	/**========================================================================
+	 * Constructors
+	 *=======================================================================*/
 	
 	public ShapeModel() {
 		super(SectionModelType.Shape);
@@ -52,6 +58,27 @@ public class ShapeModel extends SectionModel {
 		this.id = UUID.randomUUID();
 		this.shapeType = shapeType;
 	}
+	
+	/**
+	 * Clone-Controller
+	 * @param model ein {@link ShapeModel}
+	 * @throws CellCalculationException 
+	 */
+	public ShapeModel(ShapeModel model) throws CellCalculationException {
+		super(model.getSectionType());
+		
+		this.page = model.page;
+		this.shapeDimension = new String(model.shapeDimension);
+		this.shapeType = model.shapeType;
+		
+		// Sections kopieren
+		
+		// Cells kopieren
+	}
+	
+	/**========================================================================
+	 * Public methods
+	 *=======================================================================*/
 
 	/**
 	 * Load the section data from JSON
@@ -154,5 +181,9 @@ public class ShapeModel extends SectionModel {
 		} else {
 			throw new TechnicalException("Cell with type 'Height' not found");
 		}
+	}
+	
+	public void acceptChanges(ShapeModel model) {
+		// TODO: Änderungen kopieren
 	}
 }

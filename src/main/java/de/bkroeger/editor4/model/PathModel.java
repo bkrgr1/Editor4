@@ -55,6 +55,11 @@ public class PathModel extends SectionModel implements IModel {
 		this.pathType = pt;
 	}
 	
+	public PathModel(PathModel model) {
+		super(SectionModelType.Path);
+		this.pathType = model.pathType;
+	}
+	
 	/**========================================================================
 	 * Public methods
 	 *=======================================================================*/

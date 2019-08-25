@@ -8,6 +8,7 @@ import org.apache.logging.log4j.Logger;
 import de.bkroeger.editor4.Handler.MouseDraggedCommand;
 import de.bkroeger.editor4.Handler.MousePressedCommand;
 import de.bkroeger.editor4.Handler.MouseReleasedCommand;
+import de.bkroeger.editor4.Handler.ShapeDialogCommand;
 import de.bkroeger.editor4.exceptions.CellCalculationException;
 import de.bkroeger.editor4.exceptions.InputFileException;
 import de.bkroeger.editor4.exceptions.TechnicalException;
@@ -19,6 +20,7 @@ import de.bkroeger.editor4.view.GroupView;
 import javafx.beans.binding.Bindings;
 import javafx.geometry.Insets;
 import javafx.scene.Node;
+import javafx.scene.input.MouseButton;
 import javafx.scene.layout.Background;
 import javafx.scene.layout.BackgroundFill;
 import javafx.scene.layout.CornerRadii;
@@ -43,6 +45,7 @@ public class Shape2DController extends ShapeController implements IMouseHandlerD
 	private MousePressedCommand mousePressedCommand;
 	private MouseDraggedCommand mouseMovedCommand;
 	private MouseReleasedCommand mouseReleasedCommand;
+	private ShapeDialogCommand shapeDialogCommand;
 	
 	/**========================================================================
 	 * Methods of IMouseHandlerData interface
@@ -58,6 +61,7 @@ public class Shape2DController extends ShapeController implements IMouseHandlerD
 		double x = shapeModel.getLayoutX();
 		shapeModel.setLayoutX(x + value);
 	}
+	
 	public void setDeltaY(double value) throws TechnicalException, CellCalculationException {
 		// Daten ins Modell übernehmen
 		ShapeModel shapeModel = (ShapeModel) this.getModel();
@@ -80,7 +84,13 @@ public class Shape2DController extends ShapeController implements IMouseHandlerD
 		mousePressedCommand = new MousePressedCommand(this);
 		mouseMovedCommand = new MouseDraggedCommand(this);
 		mouseReleasedCommand = new MouseReleasedCommand(this);
+		
+		shapeDialogCommand = new ShapeDialogCommand((ShapeModel)model);
 	}
+	
+	/**========================================================================
+	 * Public methods
+	 *=======================================================================*/
     
 	/**
 	 * <p>Generiert die Nodes für die Darstellung des Shapes.</p>
@@ -108,9 +118,8 @@ public class Shape2DController extends ShapeController implements IMouseHandlerD
 		// TODO: wie berechnet sich die Grösse des Pane?
 		// muss das vor dem Hinzufügen der Pathes erfolgen?
 		
-		// die Location der Shape-Group festlegen
-		
-		// TODO: die Position des Shapes ist an den angegebenen Layout-Properties
+		// die Location der Shape-Group festlegen		
+		// die Position des Shapes ist an den angegebenen Layout-Properties
 		// aber nicht mit der linken, oberen Ecke, sondern der definierte
 		// Center-Point ist an diesen Koordinaten
 		// z.B. setLayoutX( layoutX - centerX )
@@ -139,6 +148,16 @@ public class Shape2DController extends ShapeController implements IMouseHandlerD
     	// when user clicks on PathView
     	shapeGroup.setOnMouseClicked(event -> {
     		logger.debug("Clicked on shape group");
+    		if (event.getButton() == MouseButton.PRIMARY) {
+    			// ???
+    		} else if (event.getButton() == MouseButton.SECONDARY) {
+    			// Shape-Dialog anzeigen
+    			try {
+					shapeDialogCommand.execute(event);
+				} catch (CellCalculationException | TechnicalException e) {
+					logger.error(e.getMessage(), e);
+				}
+    		}
     		event.consume();
     	});
     	
@@ -172,8 +191,7 @@ public class Shape2DController extends ShapeController implements IMouseHandlerD
 			}
     		event.consume();
     	});
-		
-		
+				
     	return result;
     }
 }
