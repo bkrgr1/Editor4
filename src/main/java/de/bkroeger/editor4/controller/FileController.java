@@ -227,12 +227,7 @@ public class FileController extends BaseController implements IController  {
 
         @Override
         public int compare(PageController o1, PageController o2) {
-            if (((PageModel) o1.getModel()).getPageNo() == ((PageModel) o2.getModel()).getPageNo())
-                return 0;
-            else if (((PageModel) o1.getModel()).getPageNo() < ((PageModel) o2.getModel()).getPageNo())
-                return -1;
-            else
-                return +1;
+        	return ((PageModel)o1.getModel()).getPageNo().compareTo(((PageModel)o2.getModel()).getPageNo());
         }
 
     }

@@ -25,7 +25,6 @@ import javafx.scene.layout.Pane;
  */
 public class PageController extends BaseController {
 
-    @SuppressWarnings("unused")
 	private static final Logger logger = LogManager.getLogger(PageController.class.getName());
     
     private PageDialogCommand pageDialogCommand;

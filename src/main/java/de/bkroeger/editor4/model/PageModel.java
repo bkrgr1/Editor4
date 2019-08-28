@@ -38,20 +38,20 @@ public class PageModel extends SectionModel {
 	
 	protected List<IShapeController> shapeControllers = new ArrayList<>();
 
-	public String getPageNo() {
+	public Integer getPageNo() {
 		CellModel cell = this.getCellByName(PAGE_NO_CELL);
 		if (cell != null) {
 			double d = cell.getDoubleValue();
-			return ""+(int)d;
+			return (int)d;
 		} else {
-			return "";
+			return 0;
 		}
 	}
 	
-	public void setPageNo(String value) throws CellCalculationException {
+	public void setPageNo(int value) throws CellCalculationException {
 		CellModel cell = this.getCellByName(PAGE_NO_CELL);
 		if (cell != null) {
-			cell.getStringProperty().set(value);
+			cell.getDoubleProperty().set(value);
 		}
 	}
 
@@ -116,14 +116,17 @@ public class PageModel extends SectionModel {
 
 	/**
 	 * Übernimmt die geänderten Daten aus dem {@link PageDialogModel} in diese {@link PageModel}.
-	 * @param newModel das geänderte {@link PageDialogModel}
+	 * @param dialog das geänderte {@link PageDialogModel}
 	 * @throws CellCalculationException 
 	 */
 	public void acceptChanges(PageDialogModel dialog) throws CellCalculationException {
 		
 		// copy changed attributes to PageModel
 		this.id = UUID.fromString(dialog.getPageIdProperty().get());
-		this.setPageNo(dialog.getPageNoProperty().get());
-		this.setPageTitle(dialog.getPageTitleProperty().get());
+		this.setPageNo(Integer.parseInt(dialog.getPageNoProperty().get()));
+		
+		CellModel titleCell = this.getCellByName(PAGE_TITLE_CELL);
+		titleCell.setStringValue(dialog.getPageTitleValueProperty().get());
+		titleCell.setFormula(dialog.getPageTitleFormulaProperty().get());
 	}
 }

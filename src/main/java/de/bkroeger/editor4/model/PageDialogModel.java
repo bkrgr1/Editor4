@@ -26,12 +26,15 @@ public class PageDialogModel implements IDialogModel {
 	/**========================================================================
 	 * Fields
 	 *=======================================================================*/
+	
+	private PageModel pageModel;
 
 	private ObjectProperty<String> pageIdProperty = new SimpleObjectProperty<String>(); 
 
 	private ObjectProperty<String> pageNoProperty = new SimpleObjectProperty<String>();
 
-	private ObjectProperty<String> pageTitleProperty = new SimpleObjectProperty<String>();
+	private ObjectProperty<String> pageTitleValueProperty = new SimpleObjectProperty<String>();
+	private ObjectProperty<String> pageTitleFormulaProperty = new SimpleObjectProperty<String>();
 	
 	protected List<ShapeInfo> shapeInfos = new ArrayList<>();
 
@@ -39,12 +42,16 @@ public class PageDialogModel implements IDialogModel {
 	 * Creates the {@link PageDialogModel} from the {@link PageModel}
 	 * @param pageModel a {@link PageModel}
 	 */
-	public PageDialogModel(PageModel page) {
+	public PageDialogModel(PageModel pageModel) {
 		// Daten übernehmen
-		this.pageIdProperty.set(page.getId().toString());
-		this.pageNoProperty.set(""+page.getPageNo());
-		this.pageTitleProperty.set(page.getPageTitle());
-		Iterator<IShapeController> iter = page.getShapeControllers().iterator();
+		this.pageModel = pageModel;
+		this.pageIdProperty.set(pageModel.getId().toString());
+		this.pageNoProperty.set(""+pageModel.getPageNo());
+		CellModel cell = pageModel.getCellByName("PageTitle");
+		this.pageTitleValueProperty.set(cell != null ? cell.getStringValue() : "");
+		this.pageTitleFormulaProperty.set(cell != null ? cell.getFormula() : "");
+		
+		Iterator<IShapeController> iter = pageModel.getShapeControllers().iterator();
 		while (iter.hasNext()) {
 			IShapeController ctrl = iter.next();
 			shapeInfos.add(new ShapeInfo(ctrl.getModel()));

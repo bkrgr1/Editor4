@@ -1,5 +1,6 @@
 package de.bkroeger.editor4.controller;
 
+import de.bkroeger.editor4.exceptions.CellCalculationException;
 import de.bkroeger.editor4.model.PageModel;
 import de.bkroeger.editor4.view.NewPageDialog;
 import javafx.scene.control.ButtonBar.ButtonData;
@@ -20,8 +21,9 @@ public class NewPageDialogController implements IController {
      * </p>
      * 
      * @author berthold
+     * @throws CellCalculationException 
      */
-    public NewPageDialogController(int maxPageNo) {
+    public NewPageDialogController(int maxPageNo) throws CellCalculationException {
 
         this.newPageDialog = new NewPageDialog();
 
