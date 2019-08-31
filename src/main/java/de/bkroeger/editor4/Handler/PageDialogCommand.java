@@ -4,6 +4,11 @@ import java.util.Optional;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.config.ConfigurableBeanFactory;
+import org.springframework.context.ApplicationContext;
+import org.springframework.context.annotation.Scope;
+import org.springframework.stereotype.Component;
 
 import de.bkroeger.editor4.controller.IMouseHandlerData;
 import de.bkroeger.editor4.controller.PageDialogController;
@@ -20,10 +25,14 @@ import javafx.scene.input.MouseEvent;
  *
  * @author berthold.kroeger@gmx.de
  */
+@Component
+@Scope(value = ConfigurableBeanFactory.SCOPE_PROTOTYPE)
 public class PageDialogCommand implements IMouseCommand {
 
-	@SuppressWarnings("unused")
 	private static final Logger logger = LogManager.getLogger(PageDialogCommand.class.getName());
+	
+	@Autowired
+	private ApplicationContext appContext;
 	
 	private PageModel pageModel;
 	
@@ -44,7 +53,9 @@ public class PageDialogCommand implements IMouseCommand {
 			throws CellCalculationException, TechnicalException {
 		
 		PageDialogModel dialogModel = new PageDialogModel(pageModel);
-		PageDialogController dialogController = new PageDialogController(dialogModel);
+		PageDialogController dialogController = 
+				appContext.getBean(PageDialogController.class, dialogModel);
+				//new PageDialogController(dialogModel);
 		PageDialogView dialog = dialogController.buildView();
 		Optional<PageDialogModel> result = dialog.showAndWait();
 		result.ifPresent(resultingModel -> {

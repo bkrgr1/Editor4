@@ -1,12 +1,20 @@
-package de.bkroeger.editor4.controller;
+package de.bkroeger.editor4;
 
 import java.io.File;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.config.ConfigurableBeanFactory;
+import org.springframework.context.ApplicationContext;
+import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
 
-import de.bkroeger.editor4.CommandOptions;
+import de.bkroeger.editor4.controller.BaseController;
+import de.bkroeger.editor4.controller.ControllerResult;
+import de.bkroeger.editor4.controller.FileController;
+import de.bkroeger.editor4.controller.IController;
+import de.bkroeger.editor4.controller.TopController;
 import de.bkroeger.editor4.exceptions.CellCalculationException;
 import de.bkroeger.editor4.exceptions.InputFileException;
 import de.bkroeger.editor4.exceptions.TechnicalException;
@@ -15,9 +23,13 @@ import javafx.scene.Node;
 import javafx.scene.layout.BorderPane;
 
 @Component
+@Scope(value = ConfigurableBeanFactory.SCOPE_PROTOTYPE)
 public class EditorController extends BaseController implements IController {
 
     private static final Logger logger = LogManager.getLogger(EditorController.class.getName());
+    
+    @Autowired
+    private ApplicationContext appContext;
     
     private CommandOptions commandOptions;
     
@@ -27,11 +39,11 @@ public class EditorController extends BaseController implements IController {
     private TopController topController;
     private FileController fileController;
 
-	public EditorController(CommandOptions cmd, int panelWidth, int panelHeight) {
+	public EditorController(CommandOptions cmd) {
 		super();
 		this.commandOptions = cmd;
-		this.panelWidth = panelWidth;
-		this.panelHeight = panelHeight;
+		this.panelWidth = Integer.parseInt(cmd.valueOf("panelWidth"));
+		this.panelHeight = Integer.parseInt(cmd.valueOf("panelHeight"));
 	}
 
 	public ControllerResult buildView() 
@@ -57,7 +69,8 @@ public class EditorController extends BaseController implements IController {
 	    }
 		
 		// create a {@link FileController} for the file model
-		fileController = new FileController(panelWidth, panelHeight, inFilePath);
+		fileController = appContext.getBean(FileController.class, panelWidth, panelHeight, inFilePath);
+				//new FileController(panelWidth, panelHeight, inFilePath);
 		
 		// Variablen berechnen
 		fileController.calculate(); // Querreferenzen berechnen

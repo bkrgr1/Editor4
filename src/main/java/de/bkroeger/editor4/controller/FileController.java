@@ -4,7 +4,9 @@ import java.util.Comparator;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.config.ConfigurableBeanFactory;
+import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
 
@@ -43,10 +45,13 @@ import lombok.Setter;
 @Getter
 @Setter
 @Component
-@Scope(ConfigurableBeanFactory.SCOPE_PROTOTYPE)
+@Scope(value = ConfigurableBeanFactory.SCOPE_PROTOTYPE)
 public class FileController extends BaseController implements IController  {
 
     private static final Logger logger = LogManager.getLogger(FileController.class.getName());
+    
+    @Autowired
+    private ApplicationContext appContext;
 
     private PageController currentPage;
     private Tab currentTab;
@@ -117,7 +122,8 @@ public class FileController extends BaseController implements IController  {
     	for (SectionModel pageModel : fileModel.selectSections(SectionModelType.Page)) {
         	
     		// einen PageController erstellen
-    		PageController pageController = new PageController((PageModel)pageModel);
+    		PageController pageController = 
+    				appContext.getBean(PageController.class, (PageModel)pageModel);
     		
     		// und den Tab-Eintrag eintrag generieren
         	ControllerResult pageResult = pageController.buildView(controllerResult);

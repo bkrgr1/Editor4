@@ -8,7 +8,6 @@ import org.springframework.context.ConfigurableApplicationContext;
 import org.springframework.context.annotation.Bean;
 
 import de.bkroeger.editor4.controller.ControllerResult;
-import de.bkroeger.editor4.controller.EditorController;
 import de.bkroeger.editor4.exceptions.InputFileException;
 import de.bkroeger.editor4.exceptions.TechnicalException;
 import javafx.application.Application;
@@ -32,7 +31,12 @@ public class Editor4 extends Application {
 
 	private ConfigurableApplicationContext context;
 	
-	private static CommandOptions cmd;
+  	private static CommandOptions commandOptions;
+  	
+  	@Bean
+  	public CommandOptions commandOptions() {
+  		return new CommandOptions();
+  	}
 
 	/**
 	 * Starts the application
@@ -41,7 +45,8 @@ public class Editor4 extends Application {
 	 */
 	public static void main(String[] args) {
 
-	    cmd = new CommandOptions(args);
+	    commandOptions = new CommandOptions();
+	    commandOptions.parse(args);
 	    
 		// launch the application with given arguments
 		logger.debug("Starting Java FX application...");
@@ -59,10 +64,11 @@ public class Editor4 extends Application {
 		logger.debug("JavaFX init():");
 	}
 	
-	@Bean
-	public EditorController editorController() {
-		return new EditorController(cmd, PANEL_WIDTH, PANEL_HEIGHT);
-	}
+//	@Bean
+//	public EditorController editorController(@Autowired EditorController controller) {
+//		//return new EditorController(cmd, PANEL_WIDTH, PANEL_HEIGHT);
+//		return controller;
+//	}
 
 	/**
 	 * <p>JavaFX start method.</p>
@@ -72,8 +78,12 @@ public class Editor4 extends Application {
 	public void start(Stage primaryStage) throws TechnicalException {
 		
 		logger.debug("JavaFX start:");
+		
 		try {
-			EditorController editorController = editorController();
+			commandOptions.addOption("panelWidth", ""+PANEL_WIDTH);
+			commandOptions.addOption("panelHeight", ""+PANEL_HEIGHT);
+			EditorController editorController = 
+					(EditorController) context.getBean(EditorController.class, commandOptions);
 			
 			ControllerResult result = editorController.buildView();
 	

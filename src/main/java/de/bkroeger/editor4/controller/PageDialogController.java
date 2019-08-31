@@ -4,6 +4,11 @@ import java.util.Optional;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.config.ConfigurableBeanFactory;
+import org.springframework.context.ApplicationContext;
+import org.springframework.context.annotation.Scope;
+import org.springframework.stereotype.Component;
 
 import de.bkroeger.editor4.model.FormulaDialogModel;
 import de.bkroeger.editor4.model.PageDialogModel;
@@ -21,6 +26,8 @@ import javafx.scene.input.MouseEvent;
  *
  * @author berthold.kroeger@gmx.de
  */
+@Component
+@Scope(value = ConfigurableBeanFactory.SCOPE_PROTOTYPE)
 public class PageDialogController implements IController {
 
 	@SuppressWarnings("unused")
@@ -31,6 +38,9 @@ public class PageDialogController implements IController {
 	 * Fields
 	 * =======================================================================
 	 */
+	
+	@Autowired
+	private ApplicationContext appContext;
 
 	/**
 	 * Das {@link PageDialogModel Datenmodel}
@@ -89,7 +99,8 @@ public class PageDialogController implements IController {
 				FormulaDialogModel formulaModel = new FormulaDialogModel(
 						model.getPageTitleFormulaProperty().get(),
 						model.getPageModel());
-				FormulaDialogController formulaController = new FormulaDialogController(formulaModel);
+				FormulaDialogController formulaController = 
+						appContext.getBean(FormulaDialogController.class, formulaModel); 
 				FormulaDialogView dialog = formulaController.buildView();
 				Optional<String> result = dialog.showAndWait();
 				result.ifPresent(resultingFormel -> {

@@ -4,10 +4,10 @@ package de.bkroeger.editor4.view;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
+import de.bkroeger.editor4.functions.FunctionDef;
+import de.bkroeger.editor4.functions.VariableDef;
 import de.bkroeger.editor4.model.FormulaDialogModel;
-import de.bkroeger.editor4.model.FunctionDef;
 import de.bkroeger.editor4.model.PageDialogModel;
-import de.bkroeger.editor4.model.VariableDef;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
@@ -34,7 +34,11 @@ import javafx.scene.text.TextFlow;
 import javafx.util.StringConverter;
 
 /**
- * Die Dialogbox mit den Details eines Pages
+ * <p>Eine Dialogbox mit den Details einer Formel.</p>
+ * <p>Eine vorhandene Formel kann verändert werden oder eine neue Formel erstellt werden.
+ * Funktionen können aus einer ComboBox ausgewählt werden.
+ * Variablen können dem Context-Modell (dem Model des Objektes mit der Formel und den übergeordneten
+ * Modellen) ausgewählt werden.</p>
  *
  * @author berthold.kroeger@gmx.de
  */
@@ -81,14 +85,17 @@ public class FormulaDialogView extends Dialog<String> {
 		
 		this.model = model;
 		
+		// das Grid für den Editor bilden
 		GridPane grid = buildDialogGrid();
 		
+		// das Grid als Content des Dialoges speichern
 		final DialogPane dialogPane = getDialogPane();
 		dialogPane.setContent(grid);
 		dialogPane.getButtonTypes().addAll(ButtonType.CANCEL, ButtonType.OK);
 		
 		this.setResizable(true);
 		
+		// die neue/geänderte Formel zurückgeben, wenn der OK-Button gedrückt wird
 		setResultConverter((dialogButton) -> {
 		    ButtonData data = (dialogButton == null ? null : dialogButton.getButtonData());
 		    return (data == ButtonData.OK_DONE ? model.getFormula() : null);
@@ -104,6 +111,7 @@ public class FormulaDialogView extends Dialog<String> {
 	 * @return
 	 */
 	private GridPane buildDialogGrid() {
+		
 		GridPane grid = new GridPane();
 		int row = 0;
 		
@@ -192,6 +200,9 @@ public class FormulaDialogView extends Dialog<String> {
 		return grid;
 	}
 
+	/**
+	 * Erstellt eine ComboBox für die Funktionen.
+	 */
 	private void buildFunctionsBox() {
 		functionsBox = new ComboBox<>();
 		functionsBox.setItems(model.getFunctions());
@@ -211,11 +222,15 @@ public class FormulaDialogView extends Dialog<String> {
 		functionsBox.valueProperty().addListener((obs, oldval, newval) -> {
 		    if(newval != null)
 		        System.out.println("Selected FunctionDef: " + newval.getName() 
-		            + ". ID: " + newval.getClassName());
+		            + ". ID: " + newval.getFunction().toString());
 		});
 	}
 
+	/**
+	 * Erstellt eine ComboBox für die Variablen.
+	 */
 	private void buildVariablesBox() {
+		
 		variablesBox = new ComboBox<>();
 		variablesBox.setItems(model.getVariables());
 		variablesBox.setConverter(new StringConverter<VariableDef>() {

@@ -1,22 +1,32 @@
 package de.bkroeger.editor4.controller;
 
+import javax.annotation.Resource;
+
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.springframework.beans.factory.config.ConfigurableBeanFactory;
+import org.springframework.context.annotation.Scope;
+import org.springframework.stereotype.Component;
 
+import de.bkroeger.editor4.functions.ColorFunction;
+import de.bkroeger.editor4.functions.ConcatFunction;
+import de.bkroeger.editor4.functions.FunctionDef;
+import de.bkroeger.editor4.functions.IntFunction;
+import de.bkroeger.editor4.functions.TextFunction;
+import de.bkroeger.editor4.functions.VariableDef;
 import de.bkroeger.editor4.model.FormulaDialogModel;
-import de.bkroeger.editor4.model.FunctionDef;
 import de.bkroeger.editor4.model.IModel;
 import de.bkroeger.editor4.model.PageModel;
 import de.bkroeger.editor4.model.ShapeModel;
-import de.bkroeger.editor4.model.VariableDef;
 import de.bkroeger.editor4.view.FormulaDialogView;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.collections.ObservableList;
 
+@Component
+@Scope(value = ConfigurableBeanFactory.SCOPE_PROTOTYPE)
 public class FormulaDialogController implements IController {
 
-	@SuppressWarnings("unused")
 	private static final Logger logger = LogManager.getLogger(FormulaDialogController.class.getName());
 
 	/**
@@ -24,6 +34,15 @@ public class FormulaDialogController implements IController {
 	 * Fields
 	 * =======================================================================
 	 */
+	
+	@Resource
+	private ColorFunction colorFunction;
+	@Resource
+	private ConcatFunction concatFunction;
+	@Resource
+	private IntFunction intFunction;
+	@Resource
+	private TextFunction textFunction;
 
 	/**
 	 * Das {@link FormulaDialogModel Datenmodel}
@@ -60,16 +79,16 @@ public class FormulaDialogController implements IController {
                 	break;
                 case "Text functions":
                 	funcList.clear();
-                	funcList.add(new FunctionDef("concat(text1, ...)", "de.bkroeger.editor4.functions.ConcatFunction"));
-                	funcList.add(new FunctionDef("text(object)", "de.bkroeger.editor4.functions.TextFunction"));
+                	funcList.add(new FunctionDef("concat(text1, ...)", concatFunction));
+                	funcList.add(new FunctionDef("text(object)", textFunction));
                 	break;
                 case "Numeric functions":
                 	funcList.clear();
-                	funcList.add(new FunctionDef("int(number)", "de.bkroeger.editor4.functions.IntFunction"));
+                	funcList.add(new FunctionDef("int(number)", intFunction));
                 	break;
                 case "Attribute functions":
                 	funcList.clear();
-                	funcList.add(new FunctionDef("color(COLOR_CONSTANT)", "de.bkroeger.editor4.functions.ColorFunction"));
+                	funcList.add(new FunctionDef("color(COLOR_CONSTANT)", colorFunction));
                 	break;
                 default:
                 	logger.warn("Invalid function category: "+t1);

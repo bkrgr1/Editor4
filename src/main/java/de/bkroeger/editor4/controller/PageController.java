@@ -2,6 +2,11 @@ package de.bkroeger.editor4.controller;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.config.ConfigurableBeanFactory;
+import org.springframework.context.ApplicationContext;
+import org.springframework.context.annotation.Scope;
+import org.springframework.stereotype.Component;
 
 import de.bkroeger.editor4.Handler.PageDialogCommand;
 import de.bkroeger.editor4.exceptions.CellCalculationException;
@@ -23,11 +28,16 @@ import javafx.scene.layout.Pane;
  * 
  * @author bk
  */
+@Component
+@Scope(value = ConfigurableBeanFactory.SCOPE_PROTOTYPE)
 public class PageController extends BaseController {
 
 	private static final Logger logger = LogManager.getLogger(PageController.class.getName());
     
     private PageDialogCommand pageDialogCommand;
+    
+    @Autowired
+    private ApplicationContext appContext;
 	
 	/**========================================================================
 	 * Constructors
@@ -47,8 +57,6 @@ public class PageController extends BaseController {
         super();
         this.model = pageModel; 
         if (pageModel == null) throw new TechnicalException("Page model is NULL");
-		
-		pageDialogCommand = new PageDialogCommand((PageModel)model);
     }
  	
 	/**========================================================================
@@ -94,7 +102,10 @@ public class PageController extends BaseController {
     			// ???
     		} else if (event.getButton() == MouseButton.SECONDARY) {
     			// Shape-Dialog anzeigen
-    			try {
+    			try {   				
+    				pageDialogCommand = 
+    						appContext.getBean(PageDialogCommand.class, (PageModel)model);
+    					
 					pageDialogCommand.execute(event);
 				} catch (CellCalculationException | TechnicalException e) {
 					logger.error(e.getMessage(), e);

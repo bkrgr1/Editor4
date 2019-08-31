@@ -1,4 +1,4 @@
-package de.bkroeger.editor4.model;
+package de.bkroeger.editor4.functions;
 
 import lombok.Getter;
 import lombok.Setter;
@@ -7,7 +7,7 @@ import lombok.ToString;
 @Getter
 @Setter
 @ToString
-public class VariableDef {
+public class VariableDef implements IFuncVarConst {
 	
 	private String name;
 	

@@ -6,6 +6,8 @@ public class CommandOptions
 {
     protected ArrayList<String> arguments = new ArrayList<>();
     
+    public CommandOptions() { }
+    
     public CommandOptions(String[] args) {
         parse(args);
     }
@@ -15,6 +17,11 @@ public class CommandOptions
         for ( int i = 0; i < args.length; i++ ) {
             arguments.add(args[i]);
         }
+    }
+    
+    public void addOption(String option, String value) {
+    	arguments.add(option);
+    	arguments.add(value);
     }
     
     public int size() {
