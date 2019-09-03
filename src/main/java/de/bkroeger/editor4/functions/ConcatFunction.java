@@ -1,12 +1,17 @@
 package de.bkroeger.editor4.functions;
 
-import org.springframework.stereotype.Service;
+import org.springframework.beans.factory.config.ConfigurableBeanFactory;
+import org.springframework.context.annotation.Scope;
+import org.springframework.stereotype.Component;
 
-@Service
+@Component
+@Scope(value = ConfigurableBeanFactory.SCOPE_PROTOTYPE)
 public class ConcatFunction implements IFunction {
 	
 	@Override
 	public String getKeyword() { return "concat"; }
+	
+	public ConcatFunction() { }
 
 	@Override
 	public void execute() {

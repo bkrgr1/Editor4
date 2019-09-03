@@ -2,6 +2,8 @@ package de.bkroeger.editor4.controller;
 
 import java.util.Optional;
 
+import javax.annotation.Resource;
+
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -12,6 +14,7 @@ import org.springframework.stereotype.Component;
 
 import de.bkroeger.editor4.model.FormulaDialogModel;
 import de.bkroeger.editor4.model.PageDialogModel;
+import de.bkroeger.editor4.services.FunctionService;
 import de.bkroeger.editor4.view.FormulaDialogView;
 import de.bkroeger.editor4.view.PageDialogView;
 import javafx.beans.value.ChangeListener;
@@ -41,6 +44,8 @@ public class PageDialogController implements IController {
 	
 	@Autowired
 	private ApplicationContext appContext;
+	@Resource
+	private FunctionService functionService;
 
 	/**
 	 * Das {@link PageDialogModel Datenmodel}
@@ -98,7 +103,8 @@ public class PageDialogController implements IController {
 				
 				FormulaDialogModel formulaModel = new FormulaDialogModel(
 						model.getPageTitleFormulaProperty().get(),
-						model.getPageModel());
+						model.getPageModel(),
+						functionService);
 				FormulaDialogController formulaController = 
 						appContext.getBean(FormulaDialogController.class, formulaModel); 
 				FormulaDialogView dialog = formulaController.buildView();

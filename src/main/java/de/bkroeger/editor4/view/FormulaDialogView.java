@@ -69,7 +69,9 @@ public class FormulaDialogView extends Dialog<String> {
 	private ComboBox<String> sectionsBox;
 	public ComboBox<String> getSectionsBox() { return this.sectionsBox; }
 	
+	@SuppressWarnings("rawtypes")
 	private ComboBox<VariableDef> variablesBox;
+	@SuppressWarnings("rawtypes")
 	public ComboBox<VariableDef> getVariablesBox() { return this.variablesBox; }
 	
 	/**========================================================================
@@ -249,7 +251,7 @@ public class FormulaDialogView extends Dialog<String> {
 		variablesBox.valueProperty().addListener((obs, oldval, newval) -> {
 		    if(newval != null)
 		        System.out.println("Selected VariablesDef: " + newval.getName() 
-		            + ". ID: " + newval.getVariable());
+		            + ". ID: " + newval.getValue());
 		});
 	}
 }

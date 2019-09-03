@@ -24,7 +24,6 @@ public class TreeNode<T> {
     }
 
     public void setParent(TreeNode<T> parent) {
-        parent.addChild(this);
         this.parent = parent;
     }
 
@@ -57,5 +56,22 @@ public class TreeNode<T> {
 
     public void removeParent() {
         this.parent = null;
+    }
+    
+    public String toString() {
+    	StringBuilder sb = new StringBuilder("{");
+    	sb.append("\"data\": "+(data != null ? data.toString() : "null"));
+    	sb.append(", \"children\": [");
+    	boolean first = true;
+    	for (TreeNode<T> child : children) {
+    		if (!first) {
+    			first = false;
+    			sb.append(", ");
+    		}
+    		sb.append(child.toString());
+    	}
+    	sb.append("]");
+    	sb.append("}");
+    	return sb.toString();
     }
 }

@@ -6,8 +6,11 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.builder.SpringApplicationBuilder;
 import org.springframework.context.ConfigurableApplicationContext;
 import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.ComponentScan;
+import org.springframework.context.annotation.Configuration;
 
 import de.bkroeger.editor4.controller.ControllerResult;
+import de.bkroeger.editor4.controller.EditorController;
 import de.bkroeger.editor4.exceptions.InputFileException;
 import de.bkroeger.editor4.exceptions.TechnicalException;
 import javafx.application.Application;
@@ -22,6 +25,12 @@ import javafx.stage.Stage;
  * @author bk
  */
 @SpringBootApplication
+@Configuration
+@ComponentScan(basePackages = {
+		"de.bkroeger.editor4",
+		"de.bkroeger.editor4.controller",
+		"de.bkroeger.editor4.functions",
+		"de.bkroeger.editor4.services"})
 public class Editor4 extends Application {
 
 	private static final int PANEL_WIDTH = 800;
@@ -61,14 +70,9 @@ public class Editor4 extends Application {
 		
 		SpringApplicationBuilder builder = new SpringApplicationBuilder(Editor4.class);
 		context = builder.run(getParameters().getRaw().toArray(new String[0]));
+		
 		logger.debug("JavaFX init():");
 	}
-	
-//	@Bean
-//	public EditorController editorController(@Autowired EditorController controller) {
-//		//return new EditorController(cmd, PANEL_WIDTH, PANEL_HEIGHT);
-//		return controller;
-//	}
 
 	/**
 	 * <p>JavaFX start method.</p>

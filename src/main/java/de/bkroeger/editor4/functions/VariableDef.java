@@ -1,20 +1,17 @@
 package de.bkroeger.editor4.functions;
 
-import lombok.Getter;
-import lombok.Setter;
-import lombok.ToString;
+public class VariableDef<T> implements IVariable<T> {
+	
+	private T value;
+	public void setValue(T value) { this.value = value; }
+	public T getValue() { return this.value; }
 
-@Getter
-@Setter
-@ToString
-public class VariableDef implements IFuncVarConst {
-	
 	private String name;
+	public void setName(String value) { this.name = value; }
+	public String getName() { return this.name; }
 	
-	private String variable;
-	
-	public VariableDef(String name, String variable) {
+	public VariableDef(String name, T value) {
 		this.name = name;
-		this.variable = variable;
+		this.value = value;
 	}
 }

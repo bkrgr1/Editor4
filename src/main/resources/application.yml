@@ -1,10 +1,10 @@
 spring:
     profiles:
         active: local
+    cloud:
+      config:
+        fail-fast: true
 
 ---
 spring:
     profiles: local
-name: local-YAML
-environment: local
-

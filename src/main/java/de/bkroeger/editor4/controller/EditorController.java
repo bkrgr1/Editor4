@@ -1,4 +1,4 @@
-package de.bkroeger.editor4;
+package de.bkroeger.editor4.controller;
 
 import java.io.File;
 
@@ -10,11 +10,7 @@ import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
 
-import de.bkroeger.editor4.controller.BaseController;
-import de.bkroeger.editor4.controller.ControllerResult;
-import de.bkroeger.editor4.controller.FileController;
-import de.bkroeger.editor4.controller.IController;
-import de.bkroeger.editor4.controller.TopController;
+import de.bkroeger.editor4.CommandOptions;
 import de.bkroeger.editor4.exceptions.CellCalculationException;
 import de.bkroeger.editor4.exceptions.InputFileException;
 import de.bkroeger.editor4.exceptions.TechnicalException;
@@ -27,7 +23,11 @@ import javafx.scene.layout.BorderPane;
 public class EditorController extends BaseController implements IController {
 
     private static final Logger logger = LogManager.getLogger(EditorController.class.getName());
-    
+	
+	/**========================================================================
+	 * Fields
+	 *=======================================================================*/
+   
     @Autowired
     private ApplicationContext appContext;
     
@@ -38,6 +38,10 @@ public class EditorController extends BaseController implements IController {
     
     private TopController topController;
     private FileController fileController;
+	
+	/**========================================================================
+	 * Constructors
+	 *=======================================================================*/
 
 	public EditorController(CommandOptions cmd) {
 		super();
@@ -45,6 +49,10 @@ public class EditorController extends BaseController implements IController {
 		this.panelWidth = Integer.parseInt(cmd.valueOf("panelWidth"));
 		this.panelHeight = Integer.parseInt(cmd.valueOf("panelHeight"));
 	}
+	
+	/**========================================================================
+	 * Public methods
+	 *=======================================================================*/
 
 	public ControllerResult buildView() 
 			throws TechnicalException, InputFileException, CellCalculationException {
@@ -99,4 +107,8 @@ public class EditorController extends BaseController implements IController {
 		
 		return fileController.getTitle();
 	}
+	
+	/**========================================================================
+	 * Private methods
+	 *=======================================================================*/
 }

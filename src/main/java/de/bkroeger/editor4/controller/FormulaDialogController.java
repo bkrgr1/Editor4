@@ -23,6 +23,11 @@ import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.collections.ObservableList;
 
+/**
+ * <p>Dieser Controller steuert den Formular-Dialog.</p>
+ *
+ * @author berthold.kroeger@gmx.de
+ */
 @Component
 @Scope(value = ConfigurableBeanFactory.SCOPE_PROTOTYPE)
 public class FormulaDialogController implements IController {
@@ -49,15 +54,26 @@ public class FormulaDialogController implements IController {
 	 */
 	private FormulaDialogModel model;
 	
+	/**
+	 * Die {@link FormulaDialogView Dialog-Ansicht}
+	 */
 	private FormulaDialogView view;
 	
 	/**========================================================================
 	 * Constructors
 	 *=======================================================================*/
 
+	/**
+	 * Constructor
+	 * @param model übernimmt das {@link FormulaDialogModel Datenmodell}
+	 */
 	public FormulaDialogController(FormulaDialogModel model) {
 		this.model = model;
 	}
+	
+	/**========================================================================
+	 * Public methods
+	 *=======================================================================*/
 
 	/**
 	 * Erstellt die Dialog-Ansicht und weisst den Elementen Handler zu.
