@@ -18,6 +18,7 @@ import de.bkroeger.editor4.model.SectionModelType;
 import de.bkroeger.editor4.model.ShapeModel;
 import de.bkroeger.editor4.view.GroupView;
 import javafx.beans.binding.Bindings;
+import javafx.beans.property.DoubleProperty;
 import javafx.geometry.Insets;
 import javafx.scene.Node;
 import javafx.scene.input.MouseButton;
@@ -124,7 +125,7 @@ public class Shape2DController extends ShapeController implements IMouseHandlerD
 		// Center-Point ist an diesen Koordinaten
 		// z.B. setLayoutX( layoutX - centerX )
 		shapeGroup.layoutXProperty().bind(
-				Bindings.subtract(model.getLayoutXProperty(), model.getCenterXProperty()));
+				Bindings.subtract((DoubleProperty)model.getLayoutXProperty(), (DoubleProperty)model.getCenterXProperty()));
 		shapeGroup.layoutYProperty().bind(
 				Bindings.subtract(model.getLayoutYProperty(), model.getCenterYProperty()));
 		

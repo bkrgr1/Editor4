@@ -5,9 +5,11 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import de.bkroeger.editor4.functions.FunctionDef;
+import de.bkroeger.editor4.functions.IFuncVarConst;
 import de.bkroeger.editor4.functions.VariableDef;
 import de.bkroeger.editor4.model.FormulaDialogModel;
 import de.bkroeger.editor4.model.PageDialogModel;
+import de.bkroeger.editor4.utils.TreeNode;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
@@ -55,6 +57,7 @@ public class FormulaDialogView extends Dialog<String> {
 	private static final int FUNCTION_COL = 0;
 	private static final int VARIABLE_COL = 1;
 	private static final int CONSTANT_COL = 2;
+	private static final String[] colors = new String[] {"red", "green", "blue", "yellow", "grey", "beige", "azur"};
 	
 	private FormulaDialogModel model;
 	
@@ -73,6 +76,9 @@ public class FormulaDialogView extends Dialog<String> {
 	private ComboBox<VariableDef> variablesBox;
 	@SuppressWarnings("rawtypes")
 	public ComboBox<VariableDef> getVariablesBox() { return this.variablesBox; }
+	
+	private TextFlow textflow;
+	public TextFlow getTextFlow() { return this.textflow; }
 	
 	/**========================================================================
 	 * Constructors
@@ -184,13 +190,29 @@ public class FormulaDialogView extends Dialog<String> {
 		
 		row++;
 		
-		TextFlow textflow = new TextFlow();
-		textflow.setBorder(new Border(new BorderStroke(Color.BLACK, 
+		// Textflow
+		this.textflow = new TextFlow();
+		this.textflow.setBorder(new Border(new BorderStroke(Color.BLACK, 
 	            BorderStrokeStyle.SOLID, CornerRadii.EMPTY, BorderWidths.DEFAULT)));
-		Text text1 = new Text(model.getFormula());
-		text1.setFont(Font.font("Tahoma", FontWeight.NORMAL, 16));
-		textflow.getChildren().add(text1);
-		grid.add(textflow, FUNCTION_COL, row, 3, 1);
+		if (model.getFormulaTree() != null) {
+			TreeNode<IFuncVarConst> node = model.getFormulaTree();
+			int i = 0;
+			for (TreeNode<IFuncVarConst> child : node.getChildren()) {
+				flowTreeNode(this.textflow, child, i, colors);
+			}
+		}
+		grid.add(this.textflow, FUNCTION_COL, row, 3, 1);
+		
+		row++;
+		
+		Button addItemLeftButton = new Button("Add item left");
+		grid.add(addItemLeftButton, FUNCTION_COL, row);
+		
+		Button removeItemButton = new Button("Remove item");
+		grid.add(removeItemButton, VARIABLE_COL, row);
+		
+		Button addItemRightButton = new Button("Add item right");
+		grid.add(addItemRightButton, CONSTANT_COL, row);
 
         row += 2;
 	
@@ -200,6 +222,29 @@ public class FormulaDialogView extends Dialog<String> {
         grid.add(errorTextField, 0, row, 4, 1);
         
 		return grid;
+	}
+
+	private int flowTreeNode(TextFlow textflow, TreeNode<IFuncVarConst> node, int i, String[] colors) {
+		
+		textflow.getChildren().add(node.getData().buildText(i, colors));
+		i++;
+		if (node.getChildren().size() > 0) {
+			Text open = new Text("( ");
+			textflow.getChildren().add(open);
+			boolean first = true;
+			for (TreeNode<IFuncVarConst> n : node.getChildren()) {
+				if (first) first = false;
+				else {
+					Text t = new Text(", ");
+					textflow.getChildren().add(t);
+				}
+				flowTreeNode(textflow, n, i, colors);
+				i++;
+			}
+			Text close = new Text(" )");
+			textflow.getChildren().add(close);
+		}
+		return i;
 	}
 
 	/**
@@ -231,6 +276,7 @@ public class FormulaDialogView extends Dialog<String> {
 	/**
 	 * Erstellt eine ComboBox für die Variablen.
 	 */
+	@SuppressWarnings("rawtypes")
 	private void buildVariablesBox() {
 		
 		variablesBox = new ComboBox<>();

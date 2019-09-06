@@ -22,6 +22,11 @@ import de.bkroeger.editor4.view.FormulaDialogView;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.collections.ObservableList;
+import javafx.event.EventHandler;
+import javafx.scene.Node;
+import javafx.scene.input.MouseEvent;
+import javafx.scene.text.Text;
+import javafx.scene.text.TextFlow;
 
 /**
  * <p>Dieser Controller steuert den Formular-Dialog.</p>
@@ -155,7 +160,46 @@ public class FormulaDialogController implements IController {
                 }
             }    
         });
+		
+		TextFlow textflow = view.getTextFlow();
+		for (Node node : textflow.getChildren()) {
+			
+			if (node instanceof Text) {
+				Text text = (Text)node;
+				
+				text.addEventHandler(MouseEvent.MOUSE_ENTERED, new TextMouseEnteredHandler(text));
+				text.addEventHandler(MouseEvent.MOUSE_EXITED, new TextMouseExitedHandler(text));
+			}
+		}
 
 		return view;
+	}
+	
+	public class TextMouseEnteredHandler implements EventHandler<MouseEvent> {
+		
+		private Text text;
+		
+		public TextMouseEnteredHandler(Text text) { this.text = text; }
+
+		@Override
+		public void handle(MouseEvent event) {
+			
+			this.text.setUnderline(true);
+			event.consume();
+		}	
+	}
+	
+	public class TextMouseExitedHandler implements EventHandler<MouseEvent> {
+		
+		private Text text;
+		
+		public TextMouseExitedHandler(Text text) { this.text = text; }
+
+		@Override
+		public void handle(MouseEvent event) {
+			
+			this.text.setUnderline(false);
+			event.consume();
+		}	
 	}
 }

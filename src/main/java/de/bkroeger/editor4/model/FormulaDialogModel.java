@@ -67,24 +67,20 @@ public class FormulaDialogModel {
 	 * Die Liste der {@link FunctionDef Funktionsdefinitionen} pro Funktionskategorie.
 	 */
 	private ObservableList<FunctionDef> functions = 
-		    FXCollections.observableArrayList(
-
-		    );
+		    FXCollections.observableArrayList();
 	
 	/**
 	 * Die Liste der Sections
 	 */
 	private ObservableList<String> sections = 
-		    FXCollections.observableArrayList(
-		    );
+		    FXCollections.observableArrayList();
 	
 	/**
 	 * Die Liste der {@link VariableDef Variablen} pro Section
 	 */
 	@SuppressWarnings("rawtypes")
 	private ObservableList<VariableDef> variables = 
-		    FXCollections.observableArrayList(
-		    );
+		    FXCollections.observableArrayList();
 	
 	/**
 	 * Baumstruktur der Formel
@@ -95,6 +91,12 @@ public class FormulaDialogModel {
 	 * Constructors
 	 *=======================================================================*/
 	
+	/**
+	 * Constructor mit Formell und Kontext-Daten
+	 * @param formula
+	 * @param context
+	 * @param functionService
+	 */
 	public FormulaDialogModel(String formula, IModel context, FunctionService functionService) {
 		this.formula = formula;
 		this.context = context;
@@ -126,6 +128,11 @@ public class FormulaDialogModel {
 	 * Private methods
 	 *=======================================================================*/
 
+	/**
+	 * Formell zerlegen
+	 * @param formula
+	 * @param node
+	 */
 	void parseFormula(String formula, TreeNode<IFuncVarConst> node) {
 		
 		logger.debug("Formula = "+formula);
@@ -162,6 +169,11 @@ public class FormulaDialogModel {
 		}
 	}
 
+	/**
+	 * Zerlegt eine Formell in Einzelteile
+	 * @param formula
+	 * @return
+	 */
 	private List<String> getParts(String formula) {
 		List<String> formParts = new ArrayList<>();
 		String part = "";
@@ -190,6 +202,11 @@ public class FormulaDialogModel {
 		return formParts;
 	}
 
+	/**
+	 * Sucht eine Variable im Kontext-Modell
+	 * @param formula
+	 * @param node
+	 */
 	private void parseVariable(String formula, TreeNode<IFuncVarConst> node) {
 		
 		// TODO: Varialbe prüfen
@@ -197,6 +214,12 @@ public class FormulaDialogModel {
 		node.addChild(new TreeNode<IFuncVarConst>(def));
 	}
 
+	/**
+	 * Ermittelt eine Funktion
+	 * @param formula
+	 * @param functionDef
+	 * @param node
+	 */
 	private void parseFunction(String formula, FunctionDef functionDef, TreeNode<IFuncVarConst> node) {
 		
 		int p = functionDef.getName().length();
@@ -206,6 +229,11 @@ public class FormulaDialogModel {
 		parseFormula(value, child);
 	}
 
+	/**
+	 * Ermittelt eine Konstante
+	 * @param formula
+	 * @param node
+	 */
 	private void parseConstant(String formula, TreeNode<IFuncVarConst> node) {
 		
 		if (formula.startsWith("'")) {
@@ -225,6 +253,12 @@ public class FormulaDialogModel {
 		}		
 	}
 
+	/**
+	 * Prüft, ob die Formell mit einer Funktion beginnt
+	 * @param formula
+	 * @param functions
+	 * @return
+	 */
 	private FunctionDef isAFunction(String formula, List<FunctionDef> functions) {
 		
 		int p = formula.indexOf("(");
