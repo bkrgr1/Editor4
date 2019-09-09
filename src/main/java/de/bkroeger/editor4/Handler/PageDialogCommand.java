@@ -17,7 +17,7 @@ import de.bkroeger.editor4.exceptions.TechnicalException;
 import de.bkroeger.editor4.model.PageDialogModel;
 import de.bkroeger.editor4.model.PageModel;
 import de.bkroeger.editor4.view.PageDialogView;
-import javafx.scene.input.MouseEvent;
+import javafx.event.Event;
 
 /**
  * Dieser Command wird aufgerufen, wenn die über einem Page gedrückt und gehalten wird.
@@ -49,7 +49,7 @@ public class PageDialogCommand implements IMouseCommand {
 	 * @throws CellCalculationException 
 	 * @throws TechnicalException 
 	 */
-	public void execute(MouseEvent event) 
+	public void execute(Event mouseEvent) 
 			throws CellCalculationException, TechnicalException {
 		
 		PageDialogModel dialogModel = new PageDialogModel(pageModel);

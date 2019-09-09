@@ -4,6 +4,7 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import de.bkroeger.editor4.controller.IMouseHandlerData;
+import javafx.event.Event;
 import javafx.scene.input.MouseEvent;
 
 /**
@@ -29,11 +30,14 @@ public class MousePressedCommand implements IMouseCommand {
 	/**
 	 * Event ausführen
 	 */
-	public void execute(MouseEvent event) {
+	public void execute(Event event) {
 		
-		data.setMouseX(event.getScreenX());
-		logger.debug(String.format("%f", event.getScreenX()));
-		data.setMouseY(event.getScreenY());
-		logger.debug(String.format("%f", event.getScreenY()));
+		if (event instanceof MouseEvent) {
+			MouseEvent mouseEvent = (MouseEvent) event;
+			data.setMouseX(mouseEvent.getScreenX());
+			logger.debug(String.format("%f", mouseEvent.getScreenX()));
+			data.setMouseY(mouseEvent.getScreenY());
+			logger.debug(String.format("%f", mouseEvent.getScreenY()));
+		}
 	}
 }

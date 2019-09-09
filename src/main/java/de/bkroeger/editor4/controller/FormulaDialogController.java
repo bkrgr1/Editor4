@@ -120,7 +120,7 @@ public class FormulaDialogController implements IController {
 		// wenn ein Eintrag der Sections-Box ausgewählt wird,
 		// werden die verfügbaren Variablen für das aktuelle Model angezeigt
 		view.getSectionsBox().valueProperty().addListener(new ChangeListener<String>() {
-            @SuppressWarnings("rawtypes")
+            @SuppressWarnings({ "rawtypes", "unchecked" })
 			@Override 
             public void changed(ObservableValue ov, String t, String t1) {                
             	ObservableList<VariableDef> varList = model.getVariables();

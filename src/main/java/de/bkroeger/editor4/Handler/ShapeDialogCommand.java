@@ -11,7 +11,7 @@ import de.bkroeger.editor4.exceptions.TechnicalException;
 import de.bkroeger.editor4.model.SectionModel;
 import de.bkroeger.editor4.model.ShapeModel;
 import de.bkroeger.editor4.view.ShapeDialogView;
-import javafx.scene.input.MouseEvent;
+import javafx.event.Event;
 
 /**
  * Dieser Command wird aufgerufen, wenn die über einem Shape gedrückt und gehalten wird.
@@ -39,7 +39,7 @@ public class ShapeDialogCommand implements IMouseCommand {
 	 * @throws CellCalculationException 
 	 * @throws TechnicalException 
 	 */
-	public void execute(MouseEvent event) 
+	public void execute(Event event) 
 			throws CellCalculationException, TechnicalException {
 		
 		ShapeDialogView dialog = new ShapeDialogView((ShapeModel)SectionModel.cloneSection(this.shapeModel));

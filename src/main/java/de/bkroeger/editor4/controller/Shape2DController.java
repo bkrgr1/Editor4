@@ -19,8 +19,13 @@ import de.bkroeger.editor4.model.ShapeModel;
 import de.bkroeger.editor4.view.GroupView;
 import javafx.beans.binding.Bindings;
 import javafx.beans.property.DoubleProperty;
+import javafx.event.ActionEvent;
+import javafx.event.EventHandler;
 import javafx.geometry.Insets;
 import javafx.scene.Node;
+import javafx.scene.control.ContextMenu;
+import javafx.scene.control.MenuItem;
+import javafx.scene.control.SeparatorMenuItem;
 import javafx.scene.input.MouseButton;
 import javafx.scene.layout.Background;
 import javafx.scene.layout.BackgroundFill;
@@ -47,6 +52,7 @@ public class Shape2DController extends ShapeController implements IMouseHandlerD
 	private MouseDraggedCommand mouseMovedCommand;
 	private MouseReleasedCommand mouseReleasedCommand;
 	private ShapeDialogCommand shapeDialogCommand;
+	private ContextMenu contextMenu;
 	
 	/**========================================================================
 	 * Methods of IMouseHandlerData interface
@@ -54,8 +60,10 @@ public class Shape2DController extends ShapeController implements IMouseHandlerD
 	
 	public double getMouseX() { return mouseX; }
 	public void setMouseX(double value) { this.mouseX = value; }
+	
 	public double getMouseY() { return mouseY; }
 	public void setMouseY(double value) { this.mouseY = value; }
+	
 	public void setDeltaX(double value) throws TechnicalException, CellCalculationException {
 		// Daten ins Modell übernehmen
 		ShapeModel shapeModel = (ShapeModel) this.getModel();
@@ -145,27 +153,27 @@ public class Shape2DController extends ShapeController implements IMouseHandlerD
 		// rotate
 		
 		// scale
-		
-    	// when user clicks on PathView
-    	shapeGroup.setOnMouseClicked(event -> {
-    		logger.debug("Clicked on shape group");
-    		if (event.getButton() == MouseButton.PRIMARY) {
-    			// ???
-    		} else if (event.getButton() == MouseButton.SECONDARY) {
-    			// Shape-Dialog anzeigen
-    			try {
-					shapeDialogCommand.execute(event);
-				} catch (CellCalculationException | TechnicalException e) {
-					logger.error(e.getMessage(), e);
-				}
-    		}
-    		event.consume();
-    	});
-    	
+    	 
+        // Create ContextMenu
+        contextMenu = buildShapeContextMenu();    
+        
     	// when user presses a mouse key over the PathView call command
     	shapeGroup.setOnMousePressed(event -> {
     		logger.debug("Pressed on shape group");
     		mousePressedCommand.execute(event);
+    		event.consume();
+    	});
+		
+    	// when user clicks on PathView
+    	shapeGroup.setOnMouseClicked(event -> {
+    		
+    		logger.debug("Clicked on shape group");
+    		if (event.getButton() == MouseButton.PRIMARY) {
+    			// ???
+    		} else if (event.getButton() == MouseButton.SECONDARY) {
+    			// Context-Menü anzeigen
+    			contextMenu.show(shapeGroup, event.getScreenX(), event.getScreenY());
+    		}
     		event.consume();
     	});
     	
@@ -195,4 +203,65 @@ public class Shape2DController extends ShapeController implements IMouseHandlerD
 				
     	return result;
     }
+	
+	/**
+	 * <p>generiert ein Context-Menu für ein Shape.</p>
+	 * @return das {@link ContextMenu}
+	 */
+	private ContextMenu buildShapeContextMenu() {
+		ContextMenu contextMenu = new ContextMenu();
+ 
+		// ein Menuitem für die Copy-Funktion
+        MenuItem copyItem = new MenuItem("Copy");
+        copyItem.setOnAction(new EventHandler<ActionEvent>() {
+ 
+            @Override
+            public void handle(ActionEvent event) {
+//                label.setText("Select Menu Item 1");
+            }
+        });
+        
+        // ein Menuitem für die Cut-Funktion
+        MenuItem cutItem = new MenuItem("Cut");
+        cutItem.setOnAction(new EventHandler<ActionEvent>() {
+ 
+            @Override
+            public void handle(ActionEvent event) {
+//                label.setText("Select Menu Item 1");
+            }
+        });
+        
+        // ein Menuitem für die Paste-Funktion
+        MenuItem pasteItem = new MenuItem("Paste");
+        pasteItem.setDisable(true);
+        pasteItem.setOnAction(new EventHandler<ActionEvent>() {
+ 
+            @Override
+            public void handle(ActionEvent event) {
+//                label.setText("Select Menu Item 1");
+            }
+        });
+        
+        // eine Trennlinie
+        SeparatorMenuItem separatorMenuItem = new SeparatorMenuItem();
+        
+        // Menuitem für die Anzeige des Shape-Sheet
+        MenuItem shapeSheetItem = new MenuItem("Show Shape Sheet");
+        shapeSheetItem.setOnAction(new EventHandler<ActionEvent>() {
+ 
+            @Override
+            public void handle(ActionEvent event) {
+    			// Shape-Sheet-Dialog anzeigen
+    			try {
+					shapeDialogCommand.execute(event);
+				} catch (CellCalculationException | TechnicalException e) {
+					logger.error(e.getMessage(), e);
+				}
+            }
+        });
+ 
+        // Add MenuItems to ContextMenu
+        contextMenu.getItems().addAll(copyItem, cutItem, pasteItem, separatorMenuItem, shapeSheetItem);
+        return contextMenu;
+	}
 }
