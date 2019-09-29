@@ -33,8 +33,8 @@ import javafx.stage.Stage;
 		"de.bkroeger.editor4.services"})
 public class Editor4 extends Application {
 
-	private static final int PANEL_WIDTH = 800;
-	private static final int PANEL_HEIGHT = 600;
+	private static final int PANEL_WIDTH = 1200;
+	private static final int PANEL_HEIGHT = 800;
 
 	private static final Logger logger = LogManager.getLogger(Editor4.class.getName());
 
@@ -102,6 +102,8 @@ public class Editor4 extends Application {
 			primaryStage.setScene(scene);
 			primaryStage.centerOnScreen();
 			primaryStage.show();
+			
+			
 			
 		} catch(TechnicalException | InputFileException e) {
 			logger.error(e.getMessage(), e);

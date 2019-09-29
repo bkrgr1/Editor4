@@ -94,6 +94,9 @@ public class PageController extends BaseController {
         	Pane pane = (Pane) pageView.getContent();
         	pane.getChildren().add((Node) result.getView());
         }
+        
+        // Cursor setzen
+        
 		
     	// when user clicks on PathView
     	pageView.getContent().setOnMouseClicked(event -> {
