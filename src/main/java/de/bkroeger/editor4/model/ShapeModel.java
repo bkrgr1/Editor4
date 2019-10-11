@@ -1,9 +1,12 @@
 package de.bkroeger.editor4.model;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.UUID;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 
 import de.bkroeger.editor4.exceptions.CellCalculationException;
@@ -27,6 +30,7 @@ public class ShapeModel extends SectionModel {
 	private static final Logger logger = LogManager.getLogger(ShapeModel.class.getName());
 	
 	private static final String DIMENSION_KEY = "shapeDimension";
+	private static final String CONNECTORS_KEY = "connectors";
 	
 	/**========================================================================
 	 * Fields
@@ -43,6 +47,8 @@ public class ShapeModel extends SectionModel {
 	 * Art dieses Shapes
 	 */
 	protected ShapeType shapeType;
+	
+	protected List<ConnectorModel> connectors = new ArrayList<>();
 	
 	/**========================================================================
 	 * Constructors
@@ -64,11 +70,11 @@ public class ShapeModel extends SectionModel {
 	 * @param model ein {@link ShapeModel}
 	 * @throws CellCalculationException 
 	 */
-	public ShapeModel(ShapeModel model) throws CellCalculationException {
+	public ShapeModel(ShapeModel model)  {
 		super(model.getSectionType());
 		
 		this.page = model.page;
-		this.shapeDimension = new String(model.shapeDimension);
+		this.shapeDimension = model.shapeDimension;
 		this.shapeType = model.shapeType;
 		
 		// Sections kopieren
@@ -85,6 +91,7 @@ public class ShapeModel extends SectionModel {
 	 * @throws TechnicalException 
 	 * @throws InputFileException 
 	 */
+	@Override
 	public SectionModel loadModel(JSONObject jsonSection, IModel parentModel) 
 			throws TechnicalException, InputFileException {
     	
@@ -94,6 +101,28 @@ public class ShapeModel extends SectionModel {
     		case DIMENSION_KEY:
 	    		this.shapeDimension = (String) jsonSection.get(DIMENSION_KEY);
 	    		break;
+    		case CONNECTORS_KEY:
+    	    	JSONArray jsonConnectors = (JSONArray) jsonSection.get(CONNECTORS_KEY);
+    	    	for (int j=0; j<jsonConnectors.size(); j++) {
+    	    		
+    	    		JSONObject jsonConnector = (JSONObject) jsonConnectors.get(j);
+    	    		ConnectorModel connectorModel = new ConnectorModel();
+    	    		
+    	    		if (jsonConnector.containsKey("cells")) {
+    	    			
+    	    			JSONArray jsonCells = (JSONArray) jsonSection.get("cells");
+    	    			for (int i=0; i<jsonCells.size(); i++) {
+    	    				
+    	    				// eine Zelle einlesen
+    	    				JSONObject jsonCell = (JSONObject) jsonCells.get(i);
+    	    				
+    	    				CellModel cellModel = CellModel.loadCell(jsonCell, this);
+    	    				connectorModel.addCell(cellModel);
+    	    			}
+    	    		}
+        	    	this.connectors.add(connectorModel);
+    	    	}
+    			break;
     		default:
     			// skip
     		}
@@ -101,8 +130,8 @@ public class ShapeModel extends SectionModel {
 	
 		super.loadModel(jsonSection, this);
     	
-    	logger.debug(String.format("Shape model has %d cells and %d sections",
-    			this.cells.size(), this.sections.size()));
+    	logger.debug(() -> String.format("Shape model has %d cells and %d sections",
+    			this.cells.size(), this.sections.size()));	// Java 8 Supplier lazily evaluated
 		
 		return this;
 	}

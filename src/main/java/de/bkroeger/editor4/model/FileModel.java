@@ -65,11 +65,16 @@ public class FileModel extends SectionModel implements IModel {
      */
     public FileModel(String inFilePath) throws InputFileException {
     	super(SectionModelType.File);
-    	File file = new File(inFilePath);
-    	if (!file.exists()) {
-    		throw new InputFileException("File does not exist: "+inFilePath);
+    	
+    	if (inFilePath != null && !inFilePath.isEmpty()) {
+	    	File file = new File(inFilePath);
+	    	if (!file.exists()) {
+	    		throw new InputFileException("File does not exist: "+inFilePath);
+	    	}
+	    	this.inFile = file;
+    	} else {
+    		this.inFile = null;
     	}
-    	this.inFile = file;
     }
     
     /**
@@ -81,6 +86,9 @@ public class FileModel extends SectionModel implements IModel {
     @Override
     public FileModel loadModel(JSONObject jsonSection, IModel parentSection) 
     		throws TechnicalException, InputFileException {
+    	
+    	logger.debug("Load file model from JSON: "+
+    			(this.inFile != null ? this.inFile.getAbsolutePath() : "No infile"));
     	
     	try {
     		
@@ -112,11 +120,15 @@ public class FileModel extends SectionModel implements IModel {
 		    	
 		    	// die Standard-Elemente laden
 		    	super.loadModel(jsonFile, this);
+		    	
+		    	logger.debug("File model loaded");
 		    
     		} else {
     			
     			// ein leeres File-Datenmodell erstellen
     			buildInitialFileModel();
+    			
+    			logger.debug("File model initialized");
     		}
     		
     		return this;

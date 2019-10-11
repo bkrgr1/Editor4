@@ -86,6 +86,32 @@
 									}
 								]
 							}
+						],
+						"connectors": [
+							{ 	"nameU": "topCenter",
+								"cells": [
+									{ "nameU": "connectorX", "formula": "50.0" },
+									{ "nameU": "connectorY", "formula": "0.0" }
+								]
+							},
+							{ 	"nameU": "bottomCenter",
+								"cells": [
+									{ "nameU": "connectorX", "formula": "50.0" },
+									{ "nameU": "connectorY", "formula": "100.0" }
+								]
+							},
+							{ 	"nameU": "leftMiddle",
+								"cells": [
+									{ "nameU": "connectorX", "formula": "0.0" },
+									{ "nameU": "connectorY", "formula": "50.0" }
+								]
+							},
+							{ 	"nameU": "rightMiddle",
+								"cells": [
+									{ "nameU": "connectorX", "formula": "100.0" },
+									{ "nameU": "connectorY", "formula": "50.0" }
+								]
+							}
 						]
 					},
 					{

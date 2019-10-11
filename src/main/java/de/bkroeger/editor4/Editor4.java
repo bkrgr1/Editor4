@@ -9,10 +9,10 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
 
-import de.bkroeger.editor4.controller.ControllerResult;
 import de.bkroeger.editor4.controller.EditorController;
 import de.bkroeger.editor4.exceptions.InputFileException;
 import de.bkroeger.editor4.exceptions.TechnicalException;
+import de.bkroeger.editor4.runtime.EditorRuntime;
 import javafx.application.Application;
 import javafx.scene.Node;
 import javafx.scene.Scene;
@@ -42,6 +42,15 @@ public class Editor4 extends Application {
 	
   	private static CommandOptions commandOptions;
   	
+  	private static EditorRuntime editorRuntime;
+  	public static EditorRuntime getEditorRuntime() {
+  		return editorRuntime;
+  	}
+  	
+  	/**
+  	 * <p>Spring-Bean-Definition der Command-Options.</p>
+  	 * @return die {@link CommandOptions}
+  	 */
   	@Bean
   	public CommandOptions commandOptions() {
   		return new CommandOptions();
@@ -86,19 +95,22 @@ public class Editor4 extends Application {
 		try {
 			commandOptions.addOption("panelWidth", ""+PANEL_WIDTH);
 			commandOptions.addOption("panelHeight", ""+PANEL_HEIGHT);
-			EditorController editorController = 
-					(EditorController) context.getBean(EditorController.class, commandOptions);
 			
-			ControllerResult result = editorController.buildView();
+			// den Haupt-Controller als Bean generieren lassen
+			EditorController editorController = 
+					context.getBean(EditorController.class, commandOptions);
+			// der Controller erstellt die View und liefert die Runtime-Struktur
+			Editor4.editorRuntime = editorController.buildView();
 	
-			// add the view of the first/only page as pane to the root layout
+			// erzeugt das Root-Stackpane und fügt die Hauptansicht
+			// alls einziges Child hinzu
 			StackPane root = new StackPane();
-			root.getChildren().add((Node) result.getView());
+			root.getChildren().add((Node) editorRuntime.getView());
 	
-			// create a scene
+			// erzeugt eine Szene und zeigt sie auf der Bühne
 			Scene scene = new Scene(root, PANEL_WIDTH, PANEL_HEIGHT);
-			// and show it on the stage
-			primaryStage.setTitle(editorController.getTitle());
+			// setzt den Titel
+			primaryStage.titleProperty().bind(editorRuntime.getTitleProperty());
 			primaryStage.setScene(scene);
 			primaryStage.centerOnScreen();
 			primaryStage.show();

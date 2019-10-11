@@ -7,10 +7,12 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import de.bkroeger.editor4.model.EditorModel;
+import de.bkroeger.editor4.runtime.EditorRuntime;
+import de.bkroeger.editor4.runtime.HeaderRuntime;
 import de.bkroeger.editor4.view.TopView;
-import javafx.scene.Scene;
 import javafx.scene.Cursor;
 import javafx.scene.ImageCursor;
+import javafx.scene.Scene;
 import javafx.scene.control.RadioButton;
 import javafx.scene.control.Toggle;
 import javafx.scene.control.ToggleGroup;
@@ -38,12 +40,12 @@ public class TopController extends BaseController implements IController {
 
 	/**
 	 * 
-	 * @param controllerResult
-	 * @return das {@link ControllerResult Ergebnis}
+	 * @param editorRuntime
+	 * @return das {@link HeaderRuntime Ergebnis}
 	 */
-	public ControllerResult buildView(ControllerResult controllerResult) {
+	public HeaderRuntime buildView(EditorRuntime editorRuntime) {
 		
-		ControllerResult result = new ControllerResult();
+		HeaderRuntime result = new HeaderRuntime(editorRuntime);
 		result.setController(this);
 		
 		TopView topView = new TopView(this.model);

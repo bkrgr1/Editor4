@@ -2,7 +2,8 @@ package de.bkroeger.editor4.controller;
 
 import de.bkroeger.editor4.model.EditorModel;
 import de.bkroeger.editor4.model.IModel;
-import de.bkroeger.editor4.view.TopView;
+import de.bkroeger.editor4.runtime.EditorRuntime;
+import de.bkroeger.editor4.runtime.NavigatorRuntime;
 
 /**
  * 
@@ -22,13 +23,14 @@ public class NavigatorController extends BaseController implements IController {
 
 	/**
 	 * 
-	 * @param controllerResult
-	 * @return das {@link ControllerResult Ergebnis}
+	 * @param editorRuntime
+	 * @return das {@link EditorRuntime Ergebnis}
 	 */
-	public ControllerResult buildView(ControllerResult controllerResult) {
+	public NavigatorRuntime buildView(EditorRuntime editorRuntime) {
 		
-		ControllerResult result = new ControllerResult();
+		NavigatorRuntime result = new NavigatorRuntime(editorRuntime);
 		result.setController(this);
+		result.setModel((EditorModel) model);
 		
 //		TopView topView = new TopView(this.model);
 //		result.setView(topView);

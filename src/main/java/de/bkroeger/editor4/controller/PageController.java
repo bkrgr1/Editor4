@@ -16,6 +16,11 @@ import de.bkroeger.editor4.model.CellModel;
 import de.bkroeger.editor4.model.PageModel;
 import de.bkroeger.editor4.model.SectionModel;
 import de.bkroeger.editor4.model.SectionModelType;
+import de.bkroeger.editor4.model.ShapeModel;
+import de.bkroeger.editor4.runtime.EditorRuntime;
+import de.bkroeger.editor4.runtime.PageRuntime;
+import de.bkroeger.editor4.runtime.ShapeRuntime;
+import de.bkroeger.editor4.view.GroupView;
 import de.bkroeger.editor4.view.PageView;
 import javafx.scene.Node;
 import javafx.scene.input.MouseButton;
@@ -65,38 +70,39 @@ public class PageController extends BaseController {
    
     /**
      * Bildet die View: Tab mit Content-Pane
-     * @param parentController der Controller der übergeordneten Node
-     * @return ein {@link ControllerResult}
+     * @param pageRuntime der Controller der übergeordneten Node
+     * @return ein {@link EditorRuntime}
      * @throws TechnicalException 
      * @throws InputFileException 
      * @throws CellCalculationException 
      */
-    public ControllerResult buildView(ControllerResult parentController) 
+    public PageView buildView(PageRuntime pageRuntime) 
     		throws TechnicalException, InputFileException, CellCalculationException {
     	
-    	ControllerResult controllerResult = new ControllerResult();
-    	controllerResult.setController(this);
+    	pageRuntime.setController(this);
 
         // für diese Seite einen Tab und darin ein Pane generieren
         PageView pageView = new PageView(this);
        
         this.view = pageView.draw();
-        controllerResult.setView(this.view);
+        pageRuntime.setView((PageView) this.view);
 
         // alle Shapes dieser Seite auf dem Pane zeichnen
         for (SectionModel shapeModel : ((PageModel)this.model).selectSections(SectionModelType.Shape)) {
 
+        	ShapeRuntime shapeRuntime = new ShapeRuntime(pageRuntime);
+        	shapeRuntime.setModel((ShapeModel)shapeModel);
+        	
         	// ein Shape zeichnen
 			ShapeController shapeController = ShapeControllerFactory.getShapeController(shapeModel);
-        	ControllerResult result = shapeController.buildView(controllerResult);
+        	shapeRuntime.setView((GroupView) shapeController.buildView(shapeRuntime));
         	
         	// und zur Seite hinzufügen
         	Pane pane = (Pane) pageView.getContent();
-        	pane.getChildren().add((Node) result.getView());
+        	pane.getChildren().add((Node) shapeRuntime.getView());
+        	
+        	pageRuntime.putShape(shapeModel.getId(), shapeRuntime);
         }
-        
-        // Cursor setzen
-        
 		
     	// when user clicks on PathView
     	pageView.getContent().setOnMouseClicked(event -> {
@@ -117,7 +123,7 @@ public class PageController extends BaseController {
     		event.consume();
     	});
         
-        return controllerResult;
+        return pageView;
     }
     
     /**

@@ -2,7 +2,7 @@ package de.bkroeger.editor4.view;
 
 import java.util.List;
 
-import de.bkroeger.editor4.controller.PathController;
+import de.bkroeger.editor4.controller.PathElemController;
 import de.bkroeger.editor4.exceptions.CellCalculationException;
 import de.bkroeger.editor4.exceptions.InputFileException;
 import de.bkroeger.editor4.exceptions.TechnicalException;
@@ -18,13 +18,13 @@ import javafx.scene.shape.StrokeType;
 
 public class PathView extends Path implements IView {
 	
-	private PathController controller;
+	private PathElemController controller;
 	
 	/**========================================================================
 	 * Constructors
 	 *=======================================================================*/
 	
-	public PathView(PathController controller) {
+	public PathView(PathElemController controller) {
 		super();
 		this.controller = controller;
 	}

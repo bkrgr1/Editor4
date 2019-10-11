@@ -7,6 +7,8 @@ import de.bkroeger.editor4.exceptions.CellCalculationException;
 import de.bkroeger.editor4.exceptions.InputFileException;
 import de.bkroeger.editor4.exceptions.TechnicalException;
 import de.bkroeger.editor4.model.PathModel;
+import de.bkroeger.editor4.runtime.EditorRuntime;
+import de.bkroeger.editor4.runtime.PathElemRuntime;
 import de.bkroeger.editor4.view.PathView;
 
 /**
@@ -14,9 +16,9 @@ import de.bkroeger.editor4.view.PathView;
  * 
  * @author berthold.kroeger@gmx.de
  */
-public class PathController extends BaseController {
+public class PathElemController extends BaseController {
 
-	private static final Logger logger = LogManager.getLogger(PathController.class.getName());
+	private static final Logger logger = LogManager.getLogger(PathElemController.class.getName());
 	
 	/**========================================================================
 	 * Fields
@@ -31,7 +33,7 @@ public class PathController extends BaseController {
 	 * @param pathModel das {@link PathModel}
 	 * @throws TechnicalException
 	 */
-    public PathController(PathModel pathModel) throws TechnicalException {
+    public PathElemController(PathModel pathModel) throws TechnicalException {
         super();
         this.model = pathModel; 
         if (pathModel == null) throw new TechnicalException("Path model is NULL");
@@ -43,26 +45,23 @@ public class PathController extends BaseController {
 
     /**
      * <p>Erstellt einen {@link PathView Grafik-Pfad} aus den Daten des {@link PathModel}.</p>
-     * @param shapeResult ein {@link ControllerResult} mit den Details des Parent-Views
-     * @return ein {@link ControllerResult} mit den Details des Path-Views
+     * @param shapeResult ein {@link EditorRuntime} mit den Details des Parent-Views
+     * @return ein {@link EditorRuntime} mit den Details des Path-Views
      * @throws TechnicalException
      * @throws CellCalculationException
      * @throws InputFileException
      */
-	public ControllerResult buildView(ControllerResult shapeResult) 
+	public PathView buildView(PathElemRuntime runtime) 
 			throws TechnicalException, CellCalculationException, InputFileException {
-		
-		ControllerResult result = new ControllerResult(this);
 		
 		// Pfad zeichnen
 		PathView pathView = new PathView(this).draw();
-    	result.setView(pathView);
 			
     	// when user clicks on PathView
     	pathView.setOnMouseClicked(event -> {
     		logger.trace("Clicked on path view");
     	});
     	
-		return result;
+		return pathView;
 	}
 }

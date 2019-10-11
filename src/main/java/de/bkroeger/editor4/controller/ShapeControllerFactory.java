@@ -18,7 +18,7 @@ public class ShapeControllerFactory {
 			
 			if (shapeModel.getShapeDimension().equals("2D")) {
 				
-				return new Shape2DController(model);
+				return new Shape2DController(shapeModel);
 			} else {
 				
 				return new Shape1DController(model);

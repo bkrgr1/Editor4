@@ -8,11 +8,11 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.json.simple.JSONObject;
 
-import de.bkroeger.editor4.controller.ControllerResult;
 import de.bkroeger.editor4.controller.IShapeController;
 import de.bkroeger.editor4.exceptions.CellCalculationException;
 import de.bkroeger.editor4.exceptions.InputFileException;
 import de.bkroeger.editor4.exceptions.TechnicalException;
+import de.bkroeger.editor4.runtime.EditorRuntime;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
@@ -73,7 +73,7 @@ public class PageModel extends SectionModel {
 
 	private IModel parentModel;
 	
-	private ControllerResult parentResult;
+	private EditorRuntime parentResult;
 
 	private List<IArrowModel> arrowModels = new ArrayList<>();
 
@@ -109,7 +109,7 @@ public class PageModel extends SectionModel {
 		return this;
 	}
 	
-	public ControllerResult buildView(ControllerResult parentResult,
+	public EditorRuntime buildView(EditorRuntime parentResult,
 			int panelWidth, int panelHeight) {
 				return parentResult;		
 	}

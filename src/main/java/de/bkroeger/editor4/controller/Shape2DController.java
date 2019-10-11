@@ -1,6 +1,9 @@
 package de.bkroeger.editor4.controller;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.Map.Entry;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -12,11 +15,16 @@ import de.bkroeger.editor4.Handler.ShapeDialogCommand;
 import de.bkroeger.editor4.exceptions.CellCalculationException;
 import de.bkroeger.editor4.exceptions.InputFileException;
 import de.bkroeger.editor4.exceptions.TechnicalException;
+import de.bkroeger.editor4.model.ConnectorModel;
+import de.bkroeger.editor4.model.EditorModel;
 import de.bkroeger.editor4.model.PathModel;
 import de.bkroeger.editor4.model.SectionModel;
 import de.bkroeger.editor4.model.SectionModelType;
 import de.bkroeger.editor4.model.ShapeModel;
+import de.bkroeger.editor4.runtime.PathElemRuntime;
+import de.bkroeger.editor4.runtime.ShapeRuntime;
 import de.bkroeger.editor4.view.GroupView;
+import de.bkroeger.editor4.view.PathView;
 import javafx.beans.binding.Bindings;
 import javafx.beans.property.DoubleProperty;
 import javafx.event.ActionEvent;
@@ -54,6 +62,8 @@ public class Shape2DController extends ShapeController implements IMouseHandlerD
 	private ShapeDialogCommand shapeDialogCommand;
 	private ContextMenu contextMenu;
 	
+	private Map<ConnectorController, ConnectorModel> connectors = new HashMap<>();
+	
 	/**========================================================================
 	 * Methods of IMouseHandlerData interface
 	 *=======================================================================*/
@@ -86,8 +96,15 @@ public class Shape2DController extends ShapeController implements IMouseHandlerD
 	 * Constructor
 	 * @param model
 	 */
-	public Shape2DController(SectionModel model) {
+	public Shape2DController(ShapeModel model) {
 		super(model);
+			
+			for (ConnectorModel m : model.getConnectors()) {
+				
+				// a connector is displayed as a cross
+				ConnectorController c = new ConnectorController(m);
+				connectors.put(c, m);
+			}
 
         // create the commands
 		mousePressedCommand = new MousePressedCommand(this);
@@ -107,22 +124,25 @@ public class Shape2DController extends ShapeController implements IMouseHandlerD
 	 * @throws CellCalculationException 
 	 */
 	@Override
-    public ControllerResult buildView(ControllerResult parentController) 
+    public GroupView buildView(ShapeRuntime shapeRuntime) 
     		throws TechnicalException, InputFileException, CellCalculationException {
-    	
-		ControllerResult result = new ControllerResult();
 
 		ShapeModel model = (ShapeModel) this.getModel();
 
 		// eine Shape-Group erzeugen
-		GroupView shapeGroup = new GroupView();
+		GroupView shapeGroup = new GroupView(model);
 		shapeGroup.prefWidthProperty().bind(model.getWidthProperty());
 		shapeGroup.prefHeightProperty().bind(model.getHeightProperty());
 		
 		// TEST TEST TEST
 		shapeGroup.setBackground(new Background(new BackgroundFill(Color.BEIGE, CornerRadii.EMPTY, Insets.EMPTY)));
 		
-		result.setView(shapeGroup);
+		for (Entry<ConnectorController, ConnectorModel> entry : connectors.entrySet()) {
+			ConnectorController ctl = entry.getKey();
+			ctl.buildView();
+		}
+
+		shapeRuntime.setView(shapeGroup);
 		
 		// TODO: wie berechnet sich die Grösse des Pane?
 		// muss das vor dem Hinzufügen der Pathes erfolgen?
@@ -141,13 +161,20 @@ public class Shape2DController extends ShapeController implements IMouseHandlerD
 		List<SectionModel> pathSections = model.selectSections(SectionModelType.Path);
 		for (SectionModel pathSection : pathSections) {
 
+			PathElemRuntime pathElemRuntime = new PathElemRuntime(shapeRuntime);
+			pathElemRuntime.setModel((PathModel)pathSection);
+			
         	// Path zeichnen
 			PathModel pathModel = (PathModel) pathSection;
-			PathController pathController = new PathController(pathModel);
-        	ControllerResult pathResult = pathController.buildView(result);
+			PathElemController pathElemController = new PathElemController(pathModel);
+			pathElemRuntime.setController(pathElemController);
+			
+        	PathView pathView = pathElemController.buildView(pathElemRuntime);
         	
         	// und zur Gruppe hinzufügen
-        	shapeGroup.getChildren().add((Node) pathResult.getView());
+        	shapeGroup.getChildren().add((Node) pathView);
+        	
+        	shapeRuntime.addPathElem(pathElemRuntime);
 		}
 		
 		// rotate
@@ -156,6 +183,10 @@ public class Shape2DController extends ShapeController implements IMouseHandlerD
     	 
         // Create ContextMenu
         contextMenu = buildShapeContextMenu();    
+    	
+    	/**========================================================================
+    	 * Event handlers
+    	 *=======================================================================*/
         
     	// when user presses a mouse key over the PathView call command
     	shapeGroup.setOnMousePressed(event -> {
@@ -200,8 +231,28 @@ public class Shape2DController extends ShapeController implements IMouseHandlerD
 			}
     		event.consume();
     	});
+    	
+    	// when mouse enters a shape
+    	// and the ToolMode = Connector
+    	shapeGroup.setOnMouseEntered(event -> {
+    		
+    		EditorModel editorModel = EditorModel.getEditorModel();
+    		// is connector mode active?
+    		if (editorModel.isToolConnector()) {
+    			
+    			// show the connector points
+    			shapeGroup.showConnectorPoints(true);
+    		}
+    	});
+    	
+    	// when mouse exits a shape
+    	shapeGroup.setOnMouseExited(event -> {
+    		
+    		// don't show the connector points
+    		shapeGroup.showConnectorPoints(false);
+    	});
 				
-    	return result;
+    	return shapeGroup;
     }
 	
 	/**

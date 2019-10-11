@@ -4,6 +4,8 @@ import de.bkroeger.editor4.exceptions.CellCalculationException;
 import de.bkroeger.editor4.exceptions.InputFileException;
 import de.bkroeger.editor4.exceptions.TechnicalException;
 import de.bkroeger.editor4.model.SectionModel;
+import de.bkroeger.editor4.runtime.ShapeRuntime;
+import de.bkroeger.editor4.view.GroupView;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -27,7 +29,7 @@ public class ShapeController extends BaseController {
         this.model = shapeModel; 
 	}
     
-    public ControllerResult buildView(ControllerResult parentController) 
+    public GroupView buildView(ShapeRuntime shapeRuntime) 
     		throws TechnicalException, InputFileException, CellCalculationException {	
     	throw new TechnicalException("Has to be overridden by sub classes.");
     }

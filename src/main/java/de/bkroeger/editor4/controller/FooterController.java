@@ -2,7 +2,8 @@ package de.bkroeger.editor4.controller;
 
 import de.bkroeger.editor4.model.EditorModel;
 import de.bkroeger.editor4.model.IModel;
-import de.bkroeger.editor4.view.TopView;
+import de.bkroeger.editor4.runtime.EditorRuntime;
+import de.bkroeger.editor4.runtime.FooterRuntime;
 
 /**
  * 
@@ -23,12 +24,13 @@ public class FooterController extends BaseController implements IController {
 	/**
 	 * 
 	 * @param controllerResult
-	 * @return das {@link ControllerResult Ergebnis}
+	 * @return das {@link EditorRuntime Ergebnis}
 	 */
-	public ControllerResult buildView(ControllerResult controllerResult) {
+	public FooterRuntime buildView(EditorRuntime editorRuntime) {
 		
-		ControllerResult result = new ControllerResult();
+		FooterRuntime result = new FooterRuntime(editorRuntime);
 		result.setController(this);
+		result.setModel((EditorModel) model);
 		
 //		TopView topView = new TopView(this.model);
 //		result.setView(topView);
