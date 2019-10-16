@@ -22,7 +22,6 @@ import de.bkroeger.editor4.runtime.NavigatorRuntime;
 import de.bkroeger.editor4.view.EditorView;
 import javafx.beans.property.StringProperty;
 import javafx.scene.Node;
-import javafx.scene.layout.BorderPane;
 
 /**
  * <p>Dies ist der zentrale Controller für die Editor4-Anwendung.</p>
@@ -143,7 +142,7 @@ public class EditorController extends BaseController implements IController {
 		editorRuntime.putViewPart("BOTTOM", footerRuntime);
 		
 		// die Footer-View unten anzeigen
-		((BorderPane)editorView).setBottom((Node) footerRuntime.getView());
+		editorView.setBottom((Node) footerRuntime.getView());
         
         return editorRuntime;
 	}

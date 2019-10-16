@@ -99,12 +99,12 @@ public class Shape2DController extends ShapeController implements IMouseHandlerD
 	public Shape2DController(ShapeModel model) {
 		super(model);
 			
-			for (ConnectorModel m : model.getConnectors()) {
-				
-				// a connector is displayed as a cross
-				ConnectorController c = new ConnectorController(m);
-				connectors.put(c, m);
-			}
+		for (ConnectorModel m : model.getConnectors()) {
+			
+			// a connector is displayed as a cross
+			ConnectorController c = new ConnectorController(m);
+			connectors.put(c, m);
+		}
 
         // create the commands
 		mousePressedCommand = new MousePressedCommand(this);
@@ -133,9 +133,6 @@ public class Shape2DController extends ShapeController implements IMouseHandlerD
 		GroupView shapeGroup = new GroupView(model);
 		shapeGroup.prefWidthProperty().bind(model.getWidthProperty());
 		shapeGroup.prefHeightProperty().bind(model.getHeightProperty());
-		
-		// TEST TEST TEST
-		shapeGroup.setBackground(new Background(new BackgroundFill(Color.BEIGE, CornerRadii.EMPTY, Insets.EMPTY)));
 		
 		for (Entry<ConnectorController, ConnectorModel> entry : connectors.entrySet()) {
 			ConnectorController ctl = entry.getKey();
@@ -182,7 +179,11 @@ public class Shape2DController extends ShapeController implements IMouseHandlerD
 		// scale
     	 
         // Create ContextMenu
-        contextMenu = buildShapeContextMenu();    
+        contextMenu = buildShapeContextMenu();   
+        
+        // Connectors (unsichtbar) zeichnen
+        List<Node> connectors = shapeGroup.buildConnectorViews(shapeRuntime.getModel().getConnectors());
+        shapeGroup.getChildren().addAll(connectors);
     	
     	/**========================================================================
     	 * Event handlers

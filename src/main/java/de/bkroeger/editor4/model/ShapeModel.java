@@ -48,8 +48,6 @@ public class ShapeModel extends SectionModel {
 	 */
 	protected ShapeType shapeType;
 	
-	protected List<ConnectorModel> connectors = new ArrayList<>();
-	
 	/**========================================================================
 	 * Constructors
 	 *=======================================================================*/
@@ -106,21 +104,9 @@ public class ShapeModel extends SectionModel {
     	    	for (int j=0; j<jsonConnectors.size(); j++) {
     	    		
     	    		JSONObject jsonConnector = (JSONObject) jsonConnectors.get(j);
-    	    		ConnectorModel connectorModel = new ConnectorModel();
-    	    		
-    	    		if (jsonConnector.containsKey("cells")) {
-    	    			
-    	    			JSONArray jsonCells = (JSONArray) jsonSection.get("cells");
-    	    			for (int i=0; i<jsonCells.size(); i++) {
-    	    				
-    	    				// eine Zelle einlesen
-    	    				JSONObject jsonCell = (JSONObject) jsonCells.get(i);
-    	    				
-    	    				CellModel cellModel = CellModel.loadCell(jsonCell, this);
-    	    				connectorModel.addCell(cellModel);
-    	    			}
-    	    		}
-        	    	this.connectors.add(connectorModel);
+    	    		ConnectorModel connectorModel = new ConnectorModel(); 	    		
+    	    		connectorModel.loadModel(jsonConnector, this);
+        	    	this.sections.add(connectorModel);
     	    	}
     			break;
     		default:
@@ -214,5 +200,19 @@ public class ShapeModel extends SectionModel {
 	
 	public void acceptChanges(ShapeModel model) {
 		// TODO: Änderungen kopieren
+	}
+	
+	/**
+	 * Liefert die Sections vom Typ {@link ConnectorModel}.
+	 * @return eine Liste der Connectors
+	 */
+	public List<ConnectorModel> getConnectors() {
+		List<ConnectorModel> connectors = new ArrayList<>();
+		for (SectionModel section : this.sections) {
+			if (section instanceof ConnectorModel) {
+				connectors.add((ConnectorModel)section);
+			}
+		}
+		return connectors;
 	}
 }
