@@ -23,22 +23,20 @@ import de.bkroeger.editor4.model.SectionModelType;
 import de.bkroeger.editor4.model.ShapeModel;
 import de.bkroeger.editor4.runtime.PathElemRuntime;
 import de.bkroeger.editor4.runtime.ShapeRuntime;
+import de.bkroeger.editor4.view.ConnectorPointView;
+import de.bkroeger.editor4.view.ConnectorView;
 import de.bkroeger.editor4.view.GroupView;
 import de.bkroeger.editor4.view.PathView;
 import javafx.beans.binding.Bindings;
 import javafx.beans.property.DoubleProperty;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
-import javafx.geometry.Insets;
 import javafx.scene.Node;
 import javafx.scene.control.ContextMenu;
 import javafx.scene.control.MenuItem;
 import javafx.scene.control.SeparatorMenuItem;
 import javafx.scene.input.MouseButton;
-import javafx.scene.layout.Background;
-import javafx.scene.layout.BackgroundFill;
-import javafx.scene.layout.CornerRadii;
-import javafx.scene.paint.Color;
+import javafx.scene.layout.Pane;
 
 /**
  * <p>Dies ist der Controller für 2-dimensionale Shapes.</p>
@@ -182,11 +180,11 @@ public class Shape2DController extends ShapeController implements IMouseHandlerD
         contextMenu = buildShapeContextMenu();   
         
         // Connectors (unsichtbar) zeichnen
-        List<Node> connectors = shapeGroup.buildConnectorViews(shapeRuntime.getModel().getConnectors());
+        List<ConnectorPointView> connectors = shapeGroup.buildConnectorViews(shapeRuntime.getModel().getConnectors());
         shapeGroup.getChildren().addAll(connectors);
     	
     	/**========================================================================
-    	 * Event handlers
+    	 * Event handlers for shapeGroup
     	 *=======================================================================*/
         
     	// when user presses a mouse key over the PathView call command
@@ -252,6 +250,28 @@ public class Shape2DController extends ShapeController implements IMouseHandlerD
     		// don't show the connector points
     		shapeGroup.showConnectorPoints(false);
     	});
+    	
+    	/**========================================================================
+    	 * Event handlers for connectors
+    	 *=======================================================================*/
+    	
+    	for (ConnectorPointView connector : shapeGroup.getConnectors()) {
+    		
+    		connector.setOnMouseEntered(event -> {
+    			// highlight the connector
+    			connector.setHighlight(true);
+    		});
+    		
+    		connector.setOnMouseExited(event -> {
+    			// switch off highlighting
+    			connector.setHighlight(false);
+    		});
+    		
+    		connector.setOnMouseClicked(event -> {
+    			// create Line
+    			
+    		});
+    	}
 				
     	return shapeGroup;
     }

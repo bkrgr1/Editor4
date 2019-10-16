@@ -23,6 +23,11 @@ public class TopView extends VBox implements IView {
 	public ToggleGroup getToolModeGroup() {
 		return toolModeGroup;
 	}
+	
+	private ToggleGroup lineModeGroup;
+	public ToggleGroup getLineModeGroup() {
+		return lineModeGroup;
+	}
 
 	/**
 	 * 
@@ -90,8 +95,10 @@ public class TopView extends VBox implements IView {
 		HBox toolBarBox = new HBox();
 		
         VBox tb1 = buildToolBar1(model);
+        
+        VBox tb2 = buildToolBar2(model);
 
-        toolBarBox.getChildren().addAll(tb1);
+        toolBarBox.getChildren().addAll(tb1, tb2);
         return toolBarBox;
 	}
 
@@ -127,6 +134,43 @@ public class TopView extends VBox implements IView {
             );
         
         toolBar.getItems().addAll(toolPointer, toolConnector, toolText);
+        
+        vbox.getChildren().addAll(label, toolBar);
+        return vbox;
+	}
+
+	private VBox buildToolBar2(EditorModel model) {
+		
+		VBox vbox = new VBox();
+		ToolBar toolBar = new ToolBar();
+        toolBar.setOrientation(Orientation.VERTICAL);
+
+        Label label = new Label("Lines");
+        
+        RadioButton straightLine = new RadioButton("Straight line");
+        straightLine.selectedProperty().bindBidirectional(model.getStraightLine());
+//        Image img1 = new Image("/images/connector1_16.bmp");       
+//        straightLine.setGraphic(new ImageView(img1));
+        straightLine.setUserData("Straight");
+        
+        RadioButton ortogonalLine = new RadioButton("Ortogonal line");
+        ortogonalLine.selectedProperty().bindBidirectional(model.getOrtogonalLine());
+//        Image img2 = new Image("/images/Pointer1_16.bmp");       
+//        ortogonalLine.setGraphic(new ImageView(img2));
+        ortogonalLine.setUserData("Ortogonal");
+        
+        RadioButton curvedLine = new RadioButton("Curved line");
+        curvedLine.selectedProperty().bindBidirectional(model.getCurvedLine());
+        curvedLine.setUserData("Curved");
+        
+        lineModeGroup = new ToggleGroup();
+        lineModeGroup.getToggles().addAll(
+                straightLine,
+                ortogonalLine,
+                curvedLine
+            );
+        
+        toolBar.getItems().addAll(ortogonalLine, straightLine, curvedLine);
         
         vbox.getChildren().addAll(label, toolBar);
         return vbox;

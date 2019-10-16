@@ -24,7 +24,10 @@ public class GroupView extends Pane implements IView {
 	private static final double CONNECTORY = 5.0;
 	private static final double CONNECTORX = 5.0;
 	
-	private List<Node> connectors = new ArrayList<>();
+	private List<ConnectorPointView> connectors = new ArrayList<>();
+	public List<ConnectorPointView> getConnectors() {
+		return connectors;
+	}
 
 	/**
 	 * <p>Constructor</p>
@@ -46,14 +49,14 @@ public class GroupView extends Pane implements IView {
 	 * @return Liste der ConnectorViews
 	 * @throws CellCalculationException 
 	 */
-	public List<Node> buildConnectorViews(List<ConnectorModel> connectorModels) 
+	public List<ConnectorPointView> buildConnectorViews(List<ConnectorModel> connectorModels) 
 			throws CellCalculationException {
 		
 		this.connectors.clear();
 		// die Connector-Points zeichnen
 		for (ConnectorModel connectorModel : connectorModels) {
 			
-			Pane connectorPane = new Pane();
+			ConnectorPointView connectorPane = new ConnectorPointView();
 			connectorPane.setPrefSize(CONNECTORX * 2.0, CONNECTORY * 2.0);
 			connectorPane.layoutXProperty().bind(Bindings.subtract(connectorModel.getXProperty(), CONNECTORX));
 			connectorPane.layoutYProperty().bind(Bindings.subtract(connectorModel.getYProperty(), CONNECTORY));

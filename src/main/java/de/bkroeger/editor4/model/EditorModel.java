@@ -81,6 +81,36 @@ public class EditorModel implements IModel {
 	public final void setToolText(boolean value) { 
 	    toolText.set(value);
 	}
+	
+	/**
+	 * Flag, ob das Connector-Tool ausgewählt wurde.</p>
+	 * <p>Default-Wert = false</p>
+	 */
+	private final BooleanProperty ortogonalLine = new SimpleBooleanProperty(this, "ortogonalLine", false);
+	public final boolean isOrtogonalLine() { return ortogonalLine.get(); }
+	public final void setOrtogonalLine(boolean value) { 
+	    ortogonalLine.set(value);
+	}
+	
+	/**
+	 * Flag, ob das Text-Tool ausgewählt wurde.</p>
+	 * <p>Default-Wert = false</p>
+	 */
+	private final BooleanProperty curvedLine= new SimpleBooleanProperty(this, "curvedLine", true);
+	public final boolean isCurvedLine() { return curvedLine.get(); }
+	public final void setCurvedLine(boolean value) { 
+	    curvedLine.set(value);
+	}
+	
+	/**
+	 * Flag, ob das Pointer-Tool ausgewählt wurde.</p>
+	 * <p>Default-Wert = true</p>
+	 */
+	private final BooleanProperty straightLine = new SimpleBooleanProperty(this, "Straight line", false);
+	public final boolean isStraightLine() { return straightLine.get(); }
+	public final void setStraightLine(boolean value) { 
+	    straightLine.set(value);
+	}
 
 	@Override
 	public SectionModel loadModel(JSONObject jsonSection, IModel parentSection)
