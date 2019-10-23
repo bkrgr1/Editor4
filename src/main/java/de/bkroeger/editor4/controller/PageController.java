@@ -91,10 +91,11 @@ public class PageController extends BaseController {
         for (SectionModel shapeModel : ((PageModel)this.model).selectSections(SectionModelType.Shape)) {
 
         	ShapeRuntime shapeRuntime = new ShapeRuntime(pageRuntime);
+        	shapeModel.setParentModel(this.model);
         	shapeRuntime.setModel((ShapeModel)shapeModel);
         	
         	// ein Shape zeichnen
-			ShapeController shapeController = ShapeControllerFactory.getShapeController(shapeModel);
+			ShapeController shapeController = ShapeControllerFactory.getShapeController(shapeRuntime);
         	shapeRuntime.setView((GroupView) shapeController.buildView(shapeRuntime));
         	
         	// und zur Seite hinzufügen

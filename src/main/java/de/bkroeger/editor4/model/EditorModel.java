@@ -1,6 +1,8 @@
 package de.bkroeger.editor4.model;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.json.simple.JSONObject;
 
@@ -25,6 +27,10 @@ import lombok.ToString;
 @ToString
 public class EditorModel implements IModel {
 	
+	/**========================================================================
+	 * Constructors
+	 *=======================================================================*/
+	
 	private static EditorModel editorModel;
 	
 	/**
@@ -42,6 +48,8 @@ public class EditorModel implements IModel {
 		return editorModel;
 	}
 	
+	//================================================
+	
 	/**
 	 * <p>Flag, ob autoConnect eingeschaltet ist.</p>
 	 * <p>Default-Wert = true</p>
@@ -51,6 +59,8 @@ public class EditorModel implements IModel {
 	public final void setAutoConnect(boolean value) { 
 	    autoConnect.set(value);
 	}
+	
+	//================================================
 	
 	/**
 	 * Flag, ob das Pointer-Tool ausgewählt wurde.</p>
@@ -82,21 +92,23 @@ public class EditorModel implements IModel {
 	    toolText.set(value);
 	}
 	
+	//==================================================
+	
 	/**
 	 * Flag, ob das Connector-Tool ausgewählt wurde.</p>
 	 * <p>Default-Wert = false</p>
 	 */
-	private final BooleanProperty ortogonalLine = new SimpleBooleanProperty(this, "ortogonalLine", false);
-	public final boolean isOrtogonalLine() { return ortogonalLine.get(); }
-	public final void setOrtogonalLine(boolean value) { 
-	    ortogonalLine.set(value);
+	private final BooleanProperty orthogonalLine = new SimpleBooleanProperty(this, "ortogonalLine", true);
+	public final boolean isOrthogonalLine() { return orthogonalLine.get(); }
+	public final void setOrthogonalLine(boolean value) { 
+	    orthogonalLine.set(value);
 	}
 	
 	/**
 	 * Flag, ob das Text-Tool ausgewählt wurde.</p>
 	 * <p>Default-Wert = false</p>
 	 */
-	private final BooleanProperty curvedLine= new SimpleBooleanProperty(this, "curvedLine", true);
+	private final BooleanProperty curvedLine= new SimpleBooleanProperty(this, "curvedLine", false);
 	public final boolean isCurvedLine() { return curvedLine.get(); }
 	public final void setCurvedLine(boolean value) { 
 	    curvedLine.set(value);
@@ -111,6 +123,48 @@ public class EditorModel implements IModel {
 	public final void setStraightLine(boolean value) { 
 	    straightLine.set(value);
 	}
+	
+	public LineType getLineType() {
+		if (isStraightLine()) return LineType.STRAIGHT;
+		if (isOrthogonalLine()) return LineType.ORTHOGONAL;
+		if (isCurvedLine()) return LineType.CURVED;
+		return LineType.NONE;
+	}
+	
+	//=================================================
+	
+	private Map<LineType, ShapeTemplate> lineTemplates = new HashMap<>();
+	public Map<LineType, ShapeTemplate> getLineTemplates() {
+		
+		if (lineTemplates.isEmpty()) {
+			
+			// Templates laden, die immer vorhanden sind
+			loadGlobalLineTemplates();
+			
+			// Templates laden, die gewählten Template-Sets laden
+			loadCurrentLineTemplates();
+		}
+		return lineTemplates;
+	}
+	
+	private Map<String, ShapeTemplate> shapeTemplates = new HashMap<>();
+	public Map<String, ShapeTemplate> getShapeTemplates() {
+		
+		if (shapeTemplates.isEmpty()) {
+			
+			// Templates laden, die immer vorhanden sind
+			loadGlobalShapeTemplates();
+			
+			// Templates laden, die gewählten Template-Sets laden
+			loadCurrentShapeTemplates();
+		}
+		return shapeTemplates;
+	}
+
+	
+	/**========================================================================
+	 * Public methods
+	 *=======================================================================*/
 
 	@Override
 	public SectionModel loadModel(JSONObject jsonSection, IModel parentSection)
@@ -160,4 +214,29 @@ public class EditorModel implements IModel {
 		// TODO Auto-generated method stub
 		return null;
 	}
+	
+	/**========================================================================
+	 * Private methods
+	 *=======================================================================*/
+	
+	private void loadGlobalLineTemplates() {
+		
+		lineTemplates.put(LineType.ORTHOGONAL, LineTemplate.buildOrthogonalLineTemplate());
+		lineTemplates.put(LineType.STRAIGHT,  LineTemplate.buildStraightLineTemplate());
+		lineTemplates.put(LineType.CURVED, LineTemplate.buildCurvedLineTemplate());
+	}
+	
+	private void loadCurrentLineTemplates() {
+		
+	}
+	
+	private void loadGlobalShapeTemplates() {
+		
+	}
+	
+	private void loadCurrentShapeTemplates() {
+		
+	}
+	
+	
 }

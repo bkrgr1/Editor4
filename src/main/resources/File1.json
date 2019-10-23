@@ -91,25 +91,29 @@
 							{ 	"nameU": "topCenter",
 								"cells": [
 									{ "nameU": "connectorX", "formula": "50.0" },
-									{ "nameU": "connectorY", "formula": "5.0" }
+									{ "nameU": "connectorY", "formula": "5.0" },
+									{ "nameU": "compass", "formula": "'N'", "dataType": "string" }
 								]
 							},
 							{ 	"nameU": "bottomCenter",
 								"cells": [
 									{ "nameU": "connectorX", "formula": "50.0" },
-									{ "nameU": "connectorY", "formula": "95.0" }
+									{ "nameU": "connectorY", "formula": "95.0" },
+									{ "nameU": "compass", "formula": "'S'", "dataType": "string" }
 								]
 							},
 							{ 	"nameU": "leftMiddle",
 								"cells": [
 									{ "nameU": "connectorX", "formula": "5.0" },
-									{ "nameU": "connectorY", "formula": "50.0" }
+									{ "nameU": "connectorY", "formula": "50.0" },
+									{ "nameU": "compass", "formula": "'W'", "dataType": "string" }
 								]
 							},
 							{ 	"nameU": "rightMiddle",
 								"cells": [
 									{ "nameU": "connectorX", "formula": "95.0" },
-									{ "nameU": "connectorY", "formula": "50.0" }
+									{ "nameU": "connectorY", "formula": "50.0" },
+									{ "nameU": "compass", "formula": "'E'", "dataType": "string" }
 								]
 							}
 						]

@@ -56,7 +56,7 @@ public class GroupView extends Pane implements IView {
 		// die Connector-Points zeichnen
 		for (ConnectorModel connectorModel : connectorModels) {
 			
-			ConnectorPointView connectorPane = new ConnectorPointView();
+			ConnectorPointView connectorPane = new ConnectorPointView(connectorModel);
 			connectorPane.setPrefSize(CONNECTORX * 2.0, CONNECTORY * 2.0);
 			connectorPane.layoutXProperty().bind(Bindings.subtract(connectorModel.getXProperty(), CONNECTORX));
 			connectorPane.layoutYProperty().bind(Bindings.subtract(connectorModel.getYProperty(), CONNECTORY));

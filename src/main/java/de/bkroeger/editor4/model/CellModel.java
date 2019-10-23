@@ -62,7 +62,7 @@ public class CellModel implements CellValueListener {
 	/**
 	 * Legt fest, welchen Datentyp diese Zelle als Wert liefert.
 	 */
-	private CellValueType cellValueType;
+	private CellValueType cellValueType = CellValueType.number;
 
 	/**
 	 * Die Formel für den Zellenwert als String
@@ -519,9 +519,16 @@ public class CellModel implements CellValueListener {
 		// TODO Was muss passieren, wenn sich ein verwendeter Wert ändert
 	}
 	
-	public CellModel(String nameU, String formula) {
+	public CellModel(String nameU, String formula, SectionModel section) {
 		this.nameU = nameU;
 		this.formula = formula;
+		this.section = section;
+	}
+	
+	public CellModel(String nameU, String formula, CellValueType cellValueType) {
+		this.nameU = nameU;
+		this.formula = formula;
+		this.cellValueType = cellValueType;
 	}
 	
 	@SuppressWarnings({ "rawtypes", "unchecked" })

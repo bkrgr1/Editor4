@@ -35,7 +35,7 @@ public class MouseReleasedCommand implements IMouseCommand {
 	 */
 	public void execute(Event event) throws TechnicalException, CellCalculationException {
 		
-		if (event instanceof MouseEvent) {
+		if (event instanceof MouseEvent && data != null) {
 			MouseEvent mouseEvent = (MouseEvent) event;
 			double deltaX = mouseEvent.getScreenX() - data.getMouseX();
 			logger.debug(String.format("%f = %f - %f", deltaX, mouseEvent.getScreenX(), data.getMouseX()));

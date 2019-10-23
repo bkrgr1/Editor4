@@ -1,8 +1,8 @@
 package de.bkroeger.editor4.controller;
 
 import de.bkroeger.editor4.exceptions.TechnicalException;
-import de.bkroeger.editor4.model.SectionModel;
 import de.bkroeger.editor4.model.ShapeModel;
+import de.bkroeger.editor4.runtime.ShapeRuntime;
 
 /**
  * <p>Die ShapeControllerFactory erzeugt einen passenden Controller für das jeweilige Shape.</p>
@@ -10,21 +10,18 @@ import de.bkroeger.editor4.model.ShapeModel;
  * @author berthold.kroeger@gmx.de
  */
 public class ShapeControllerFactory {
+	
+	private ShapeControllerFactory() { }
 
-	public static ShapeController getShapeController(SectionModel model) throws TechnicalException {
+	public static ShapeController getShapeController(ShapeRuntime shapeRuntime) throws TechnicalException {
 		
-		if (model instanceof ShapeModel) {
-			ShapeModel shapeModel = (ShapeModel) model;
+		ShapeModel shapeModel = shapeRuntime.getModel();
+		if (shapeModel.getShapeDimension().equals("2D")) {
 			
-			if (shapeModel.getShapeDimension().equals("2D")) {
-				
-				return new Shape2DController(shapeModel);
-			} else {
-				
-				return new Shape1DController(model);
-			}
+			return new Shape2DController(shapeRuntime);
 		} else {
-			throw new TechnicalException("Model is not of type 'ShapeModel'");
+			
+			return new Shape1DController(shapeRuntime);
 		}
 	}
 }

@@ -7,7 +7,12 @@ import javafx.scene.shape.Path;
 
 public class ConnectorView extends Path {
 	
+	private ConnectorModel model;
+	public ConnectorModel getModel() { return this.model; }
+	
 	public ConnectorView(ConnectorModel model) {
+		super();
+		this.model = model;
 		
 		// MoveTo: X - HalfX; Y - HalfY
 		MoveTo moveTo1 = new MoveTo();

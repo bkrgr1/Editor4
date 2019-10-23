@@ -15,16 +15,18 @@ import de.bkroeger.editor4.Handler.ShapeDialogCommand;
 import de.bkroeger.editor4.exceptions.CellCalculationException;
 import de.bkroeger.editor4.exceptions.InputFileException;
 import de.bkroeger.editor4.exceptions.TechnicalException;
+import de.bkroeger.editor4.model.CellModel;
 import de.bkroeger.editor4.model.ConnectorModel;
 import de.bkroeger.editor4.model.EditorModel;
+import de.bkroeger.editor4.model.PageModel;
 import de.bkroeger.editor4.model.PathModel;
 import de.bkroeger.editor4.model.SectionModel;
 import de.bkroeger.editor4.model.SectionModelType;
 import de.bkroeger.editor4.model.ShapeModel;
 import de.bkroeger.editor4.runtime.PathElemRuntime;
+import de.bkroeger.editor4.runtime.Shape1DRuntime;
 import de.bkroeger.editor4.runtime.ShapeRuntime;
 import de.bkroeger.editor4.view.ConnectorPointView;
-import de.bkroeger.editor4.view.ConnectorView;
 import de.bkroeger.editor4.view.GroupView;
 import de.bkroeger.editor4.view.PathView;
 import javafx.beans.binding.Bindings;
@@ -36,7 +38,6 @@ import javafx.scene.control.ContextMenu;
 import javafx.scene.control.MenuItem;
 import javafx.scene.control.SeparatorMenuItem;
 import javafx.scene.input.MouseButton;
-import javafx.scene.layout.Pane;
 
 /**
  * <p>Dies ist der Controller für 2-dimensionale Shapes.</p>
@@ -74,6 +75,7 @@ public class Shape2DController extends ShapeController implements IMouseHandlerD
 	
 	public void setDeltaX(double value) throws TechnicalException, CellCalculationException {
 		// Daten ins Modell übernehmen
+		if (this.getModel() == null) return;
 		ShapeModel shapeModel = (ShapeModel) this.getModel();
 		double x = shapeModel.getLayoutX();
 		shapeModel.setLayoutX(x + value);
@@ -81,6 +83,7 @@ public class Shape2DController extends ShapeController implements IMouseHandlerD
 	
 	public void setDeltaY(double value) throws TechnicalException, CellCalculationException {
 		// Daten ins Modell übernehmen
+		if (this.getModel() == null) return;
 		ShapeModel shapeModel = (ShapeModel) this.getModel();
 		double y = shapeModel.getLayoutY();
 		shapeModel.setLayoutY(y + value);
@@ -94,10 +97,12 @@ public class Shape2DController extends ShapeController implements IMouseHandlerD
 	 * Constructor
 	 * @param model
 	 */
-	public Shape2DController(ShapeModel model) {
-		super(model);
+	public Shape2DController(ShapeRuntime runtime) {
+		super(runtime);
+		
+		this.model = runtime.getModel();
 			
-		for (ConnectorModel m : model.getConnectors()) {
+		for (ConnectorModel m : runtime.getModel().getConnectors()) {
 			
 			// a connector is displayed as a cross
 			ConnectorController c = new ConnectorController(m);
@@ -125,12 +130,10 @@ public class Shape2DController extends ShapeController implements IMouseHandlerD
     public GroupView buildView(ShapeRuntime shapeRuntime) 
     		throws TechnicalException, InputFileException, CellCalculationException {
 
-		ShapeModel model = (ShapeModel) this.getModel();
-
 		// eine Shape-Group erzeugen
-		GroupView shapeGroup = new GroupView(model);
-		shapeGroup.prefWidthProperty().bind(model.getWidthProperty());
-		shapeGroup.prefHeightProperty().bind(model.getHeightProperty());
+		GroupView shapeGroup = new GroupView((ShapeModel)model);
+		shapeGroup.prefWidthProperty().bind(((ShapeModel)model).getWidthProperty());
+		shapeGroup.prefHeightProperty().bind(((ShapeModel)model).getHeightProperty());
 		
 		for (Entry<ConnectorController, ConnectorModel> entry : connectors.entrySet()) {
 			ConnectorController ctl = entry.getKey();
@@ -148,9 +151,11 @@ public class Shape2DController extends ShapeController implements IMouseHandlerD
 		// Center-Point ist an diesen Koordinaten
 		// z.B. setLayoutX( layoutX - centerX )
 		shapeGroup.layoutXProperty().bind(
-				Bindings.subtract((DoubleProperty)model.getLayoutXProperty(), (DoubleProperty)model.getCenterXProperty()));
+				Bindings.subtract((DoubleProperty)((ShapeModel)model).getLayoutXProperty(), 
+						(DoubleProperty)((ShapeModel)model).getCenterXProperty()));
 		shapeGroup.layoutYProperty().bind(
-				Bindings.subtract(model.getLayoutYProperty(), model.getCenterYProperty()));
+				Bindings.subtract(((ShapeModel)model).getLayoutYProperty(), 
+						((ShapeModel)model).getCenterYProperty()));
 		
 		// alle Path-Sections ermitteln und die Pfade zeichnen
 		List<SectionModel> pathSections = model.selectSections(SectionModelType.Path);
@@ -187,17 +192,27 @@ public class Shape2DController extends ShapeController implements IMouseHandlerD
     	 * Event handlers for shapeGroup
     	 *=======================================================================*/
         
-    	// when user presses a mouse key over the PathView call command
+    	/**
+    	 * wenn der Mouse-Button über einem Shape gedrückt wird...
+    	 */
     	shapeGroup.setOnMousePressed(event -> {
-    		logger.debug("Pressed on shape group");
-    		mousePressedCommand.execute(event);
+    		logger.debug("Mouse pressed on shape group");
+    		
+    		EditorModel editorModel = EditorModel.getEditorModel();
+    		if (editorModel.isToolConnector()) {
+    			
+    			// Line-Shape erzeugen und mit dem Mittelpunkt des Shapes verbinden
+    			
+    		} else {
+    			mousePressedCommand.execute(event);
+    		}
     		event.consume();
     	});
 		
     	// when user clicks on PathView
     	shapeGroup.setOnMouseClicked(event -> {
     		
-    		logger.debug("Clicked on shape group");
+    		logger.debug("Mouse clicked on shape group");
     		if (event.getButton() == MouseButton.PRIMARY) {
     			// ???
     		} else if (event.getButton() == MouseButton.SECONDARY) {
@@ -242,6 +257,7 @@ public class Shape2DController extends ShapeController implements IMouseHandlerD
     			// show the connector points
     			shapeGroup.showConnectorPoints(true);
     		}
+    		event.consume();
     	});
     	
     	// when mouse exits a shape
@@ -249,6 +265,7 @@ public class Shape2DController extends ShapeController implements IMouseHandlerD
     		
     		// don't show the connector points
     		shapeGroup.showConnectorPoints(false);
+    		event.consume();
     	});
     	
     	/**========================================================================
@@ -260,16 +277,59 @@ public class Shape2DController extends ShapeController implements IMouseHandlerD
     		connector.setOnMouseEntered(event -> {
     			// highlight the connector
     			connector.setHighlight(true);
+        		event.consume();
     		});
     		
     		connector.setOnMouseExited(event -> {
     			// switch off highlighting
     			connector.setHighlight(false);
+        		event.consume();
     		});
     		
-    		connector.setOnMouseClicked(event -> {
-    			// create Line
+    		/**
+    		 * wenn über einem Connector-Point der Mouse-Button gedrückt wird...
+    		 */
+    		connector.setOnMousePressed(event -> {
     			
+    			// create a new Line-Shape wenn der Connector-Mode aktiv ist
+    			EditorModel editorModel = EditorModel.getEditorModel();
+    			if (editorModel.isToolConnector()) {
+    				
+    				// Line-Shape erzeugen und mit dem Connector-Point verbinden
+    				Shape1DRuntime lineRuntime = new Shape1DRuntime(runtime);
+    				
+    				ShapeModel lineModel = 
+    						ShapeModel.buildShapeFromTemplate(
+    								editorModel.getLineTemplates().get(editorModel.getLineType()),
+    								(PageModel)model.getParentModel());
+    				lineRuntime.setModel(lineModel);
+    				ConnectorPointView connectorView = (ConnectorPointView)event.getSource();
+    				ConnectorModel connectorModel = connectorView.getModel();
+    				CellModel cell = new CellModel("LayoutX", "${"+connectorModel.getNameU()+".ConnectorX}", lineModel);
+    				lineModel.addCell(cell);
+    				cell = new CellModel("LayoutY", "${"+connectorModel.getNameU()+".ConnectorY}", lineModel);
+    				lineModel.addCell(cell);
+    				
+    				try {
+						lineModel.calculate(false);
+					} catch (CellCalculationException e1) {
+						logger.error(e1.getMessage(), e1);
+						return;
+					}
+    				
+    				Shape1DController lineController = new Shape1DController(lineRuntime);
+    				lineRuntime.setController(lineController);
+    				
+    				GroupView lineView = null;
+    				try {
+						lineView = lineController.buildView(shapeRuntime);
+					} catch (TechnicalException | InputFileException | CellCalculationException e) {
+						logger.error(e.getMessage(), e);
+						return;
+					}
+    				lineRuntime.setView(lineView);
+    			}
+        		event.consume();
     		});
     	}
 				

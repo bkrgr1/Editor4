@@ -48,6 +48,11 @@ public class ShapeModel extends SectionModel {
 	 */
 	protected ShapeType shapeType;
 	
+	/**
+	 * Art der Linie
+	 */
+	protected LineType lineType;
+	
 	/**========================================================================
 	 * Constructors
 	 *=======================================================================*/
@@ -214,5 +219,13 @@ public class ShapeModel extends SectionModel {
 			}
 		}
 		return connectors;
+	}
+
+	public static ShapeModel buildShapeFromTemplate(ShapeTemplate shapeTemplate, PageModel pageModel) {
+		
+		ShapeModel shapeModel = (ShapeModel) shapeTemplate;
+		shapeModel.setParentModel(pageModel);
+		pageModel.addSection(shapeModel);
+		return shapeModel;
 	}
 }

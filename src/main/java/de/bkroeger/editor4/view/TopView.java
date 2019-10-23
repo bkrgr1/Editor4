@@ -153,11 +153,11 @@ public class TopView extends VBox implements IView {
 //        straightLine.setGraphic(new ImageView(img1));
         straightLine.setUserData("Straight");
         
-        RadioButton ortogonalLine = new RadioButton("Ortogonal line");
-        ortogonalLine.selectedProperty().bindBidirectional(model.getOrtogonalLine());
+        RadioButton orthogonalLine = new RadioButton("Ortogonal line");
+        orthogonalLine.selectedProperty().bindBidirectional(model.getOrthogonalLine());
 //        Image img2 = new Image("/images/Pointer1_16.bmp");       
 //        ortogonalLine.setGraphic(new ImageView(img2));
-        ortogonalLine.setUserData("Ortogonal");
+        orthogonalLine.setUserData("Ortogonal");
         
         RadioButton curvedLine = new RadioButton("Curved line");
         curvedLine.selectedProperty().bindBidirectional(model.getCurvedLine());
@@ -166,11 +166,11 @@ public class TopView extends VBox implements IView {
         lineModeGroup = new ToggleGroup();
         lineModeGroup.getToggles().addAll(
                 straightLine,
-                ortogonalLine,
+                orthogonalLine,
                 curvedLine
             );
         
-        toolBar.getItems().addAll(ortogonalLine, straightLine, curvedLine);
+        toolBar.getItems().addAll(orthogonalLine, straightLine, curvedLine);
         
         vbox.getChildren().addAll(label, toolBar);
         return vbox;
