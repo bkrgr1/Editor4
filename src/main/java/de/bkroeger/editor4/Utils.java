@@ -2,7 +2,7 @@ package de.bkroeger.editor4;
 
 import de.bkroeger.editor4.exceptions.CellCalculationException;
 import de.bkroeger.editor4.model.CellModelType;
-import de.bkroeger.editor4.model.SectionModelType;
+import de.bkroeger.editor4.model.ModelType;
 
 public class Utils {
 
@@ -24,9 +24,9 @@ public class Utils {
 		}
 	}
 
-	public static SectionModelType isSectionType(String value) throws CellCalculationException {
+	public static ModelType isSectionType(String value) throws CellCalculationException {
 		try {
-			SectionModelType ct = SectionModelType.valueOf(value);
+			ModelType ct = ModelType.valueOf(value);
 			return ct;
 		} catch(Exception e) {
 			throw new CellCalculationException("Invalid section model type: "+value);

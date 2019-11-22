@@ -1,22 +1,41 @@
 package de.bkroeger.editor4.model;
 
-import org.json.simple.JSONObject;
+import java.util.ArrayList;
+import java.util.List;
 
 import de.bkroeger.editor4.exceptions.CellCalculationException;
-import de.bkroeger.editor4.exceptions.InputFileException;
-import de.bkroeger.editor4.exceptions.TechnicalException;
 import javafx.beans.property.DoubleProperty;
+import lombok.Getter;
+import lombok.Setter;
+import lombok.ToString;
 
-public class ConnectorModel extends SectionModel {
+@Getter
+@Setter
+@ToString(callSuper=true)
+public class ConnectorModel extends BaseModel {
+		
+	/**========================================================================
+	 * Fields
+	 *=======================================================================*/
 	
+	protected List<CellModel> cells = new ArrayList<>();
+	
+	/**========================================================================
+	 * Constructors
+	 *=======================================================================*/
+
 	public ConnectorModel() {
-		super(SectionModelType.Connector);
+		super(ModelType.Connector);
 	}
 
-	public ConnectorModel(SectionModelType st) {
+	public ConnectorModel(ModelType st) {
 		super(st);
 	}
-    
+    	
+	/**========================================================================
+	 * Public methods
+	 *=======================================================================*/
+
     /**
      * Fügt eine Zelle hinzu
      * @param cell
@@ -40,13 +59,4 @@ public class ConnectorModel extends SectionModel {
     public DoubleProperty getYProperty() throws CellCalculationException {
     	return cells.get("connectory").getDoubleProperty();
     }
-    
-	@Override
-	public SectionModel loadModel(JSONObject jsonSection, IModel parentModel) 
-			throws TechnicalException, InputFileException {
-	
-		super.loadModel(jsonSection, this);
-		
-		return this;
-	}
 }

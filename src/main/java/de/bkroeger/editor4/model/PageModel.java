@@ -6,12 +6,8 @@ import java.util.UUID;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.json.simple.JSONObject;
 
-import de.bkroeger.editor4.controller.IShapeController;
 import de.bkroeger.editor4.exceptions.CellCalculationException;
-import de.bkroeger.editor4.exceptions.InputFileException;
-import de.bkroeger.editor4.exceptions.TechnicalException;
 import de.bkroeger.editor4.runtime.EditorRuntime;
 import lombok.Getter;
 import lombok.Setter;
@@ -19,10 +15,10 @@ import lombok.ToString;
 
 @Getter
 @Setter
-@ToString
-public class PageModel extends SectionModel {
+@ToString(callSuper=true)
+public class PageModel extends BaseModel {
 
-	private static final Logger logger = LogManager.getLogger(FileModel.class.getName());
+	private static final Logger logger = LogManager.getLogger(PageModel.class.getName());
 
 	private static final String PAGE_TITLE_CELL = "PageTitle";
 	private static final String PAGE_NO_CELL = "PageNo";
@@ -30,56 +26,55 @@ public class PageModel extends SectionModel {
 	/**========================================================================
 	 * Fields
 	 *=======================================================================*/
-
-    /**
-     * UUID of the section
-     */
-	private UUID id;
 	
-	protected List<IShapeController> shapeControllers = new ArrayList<>();
+	private List<CellModel> cells = new ArrayList<>();
+	
+	private List<ShapeModel> shapes = new ArrayList<>();
 
 	public Integer getPageNo() {
-		CellModel cell = this.getCellByName(PAGE_NO_CELL);
-		if (cell != null) {
-			double d = cell.getDoubleValue();
-			return (int)d;
-		} else {
-			return 0;
-		}
+		return null;
+//		ICell cell = this.getCellByName(PAGE_NO_CELL);
+//		if (cell != null) {
+//			double d = cell.getDoubleValue();
+//			return (int)d;
+//		} else {
+//			return 0;
+//		}
 	}
 	
 	public void setPageNo(int value) throws CellCalculationException {
-		CellModel cell = this.getCellByName(PAGE_NO_CELL);
-		if (cell != null) {
-			cell.getDoubleProperty().set(value);
-		}
+//		ICell cell = this.getCellByName(PAGE_NO_CELL);
+//		if (cell != null) {
+//			cell.getDoubleProperty().set(value);
+//		}
 	}
 
 	public String getPageTitle() {
-		CellModel cell = this.getCellByName(PAGE_TITLE_CELL);
-		if (cell != null) {
-			return cell.getStringValue();
-		} else {
-			return "";
-		}
+		return "title";
+//		CellModel cell = this.getCellByName(PAGE_TITLE_CELL);
+//		if (cell != null) {
+//			return cell.getStringValue();
+//		} else {
+//			return "";
+//		}
 	}
 	
 	public void setPageTitle(String value) throws CellCalculationException {
-		CellModel cell = this.getCellByName(PAGE_TITLE_CELL);
-		if (cell != null) {
-			cell.getStringProperty().set(value);
-		}
+//		CellModel cell = this.getCellByName(PAGE_TITLE_CELL);
+//		if (cell != null) {
+//			cell.getStringProperty().set(value);
+//		}
 	}
 
-	private IModel parentModel;
-	
-	private EditorRuntime parentResult;
-
-	private List<IArrowModel> arrowModels = new ArrayList<>();
-
-	public void addArrowModel(IArrowModel model) {
-		this.arrowModels.add(model);
-	}
+//	private IModel parentModel;
+//	
+//	private EditorRuntime parentResult;
+//
+//	private List<IArrowModel> arrowModels = new ArrayList<>();
+//
+//	public void addArrowModel(IArrowModel model) {
+//		this.arrowModels.add(model);
+//	}
 	
 	/**========================================================================
 	 * Constructors
@@ -89,24 +84,8 @@ public class PageModel extends SectionModel {
 	 * Constructor
 	 */
 	public PageModel() {
-		super(SectionModelType.Page);
+		super(ModelType.Page);
 		
-	}
-	
-	/**
-	 * Load the section data from JSON
-	 * @throws TechnicalException 
-	 * @throws InputFileException 
-	 */
-	public SectionModel loadModel(JSONObject jsonSection, IModel parentModel) 
-			throws TechnicalException, InputFileException {
-    	
-    	super.loadModel(jsonSection, this);
-    	
-    	logger.debug(String.format("Page model has %d cells and %d sections",
-    			this.cells.size(), this.sections.size()));
-    	
-		return this;
 	}
 	
 	public EditorRuntime buildView(EditorRuntime parentResult,
@@ -125,8 +104,8 @@ public class PageModel extends SectionModel {
 		this.id = UUID.fromString(dialog.getPageIdProperty().get());
 		this.setPageNo(Integer.parseInt(dialog.getPageNoProperty().get()));
 		
-		CellModel titleCell = this.getCellByName(PAGE_TITLE_CELL);
-		titleCell.setStringValue(dialog.getPageTitleValueProperty().get());
-		titleCell.setFormula(dialog.getPageTitleFormulaProperty().get());
+//		CellModel titleCell = this.getCellByName(PAGE_TITLE_CELL);
+//		titleCell.setStringValue(dialog.getPageTitleValueProperty().get());
+//		titleCell.setFormula(dialog.getPageTitleFormulaProperty().get());
 	}
 }

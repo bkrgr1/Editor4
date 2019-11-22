@@ -1,15 +1,15 @@
 package de.bkroeger.editor4.model;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.json.simple.JSONObject;
 
 import de.bkroeger.editor4.exceptions.CellCalculationException;
-import de.bkroeger.editor4.exceptions.InputFileException;
 import de.bkroeger.editor4.exceptions.TechnicalException;
 import javafx.beans.property.BooleanProperty;
 import javafx.beans.property.DoubleProperty;
-import javafx.beans.property.SimpleBooleanProperty;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
@@ -22,7 +22,7 @@ import lombok.ToString;
 @Getter
 @Setter
 @ToString(callSuper=true)
-public class PathElementModel extends SectionModel {
+public class PathElementModel extends BaseModel {
 
 	private static final Logger logger = LogManager.getLogger(PathElementModel.class.getName());
 	
@@ -30,6 +30,7 @@ public class PathElementModel extends SectionModel {
 	 * Fields
 	 *=======================================================================*/
 
+	protected List<CellModel> cells = new ArrayList<>();
     /**
      * Art des PathElement
      */
@@ -56,40 +57,46 @@ public class PathElementModel extends SectionModel {
 	}
 	
 	public BooleanProperty getLargeArcFlagProperty() throws TechnicalException, CellCalculationException {
+		return null;
 		
-		CellModel cell = this.cells.get("largeArcFlag");
-		if (cell != null) {
-			return cell.getBooleanProperty();
-		} else {
-			return new SimpleBooleanProperty(false);
-		}
+//		CellModel cell = this.cells.get("largeArcFlag");
+//		if (cell != null) {
+//			return cell.getBooleanProperty();
+//		} else {
+//			return new SimpleBooleanProperty(false);
+//		}
 	}
 	
 	public BooleanProperty getSweepFlagProperty() throws TechnicalException, CellCalculationException {
+		return null;
 		
-		CellModel cell = this.cells.get("sweepFlag");
-		if (cell != null) {
-			return cell.getBooleanProperty();
-		} else {
-			return new SimpleBooleanProperty(false);
-		}
+//		CellModel cell = this.cells.get("sweepFlag");
+//		if (cell != null) {
+//			return cell.getBooleanProperty();
+//		} else {
+//			return new SimpleBooleanProperty(false);
+//		}
 	}
 	
 	/**========================================================================
 	 * Constructors
 	 *=======================================================================*/
 	
+	public PathElementModel() {
+		super(ModelType.PathElement);
+	}
+	
 	/**
 	 * Constructor
 	 * @param pt
 	 */
 	public PathElementModel(PathElementType pt) {
-		super(SectionModelType.PathElement);
+		super(ModelType.PathElement);
 		this.elemType = pt;
 	}
 
 	public PathElementModel(PathElementModel model) {
-		super(SectionModelType.PathElement);
+		super(ModelType.PathElement);
 		this.elemType = model.elemType;
 	}
 
@@ -97,34 +104,19 @@ public class PathElementModel extends SectionModel {
 	 * Public methods
 	 *=======================================================================*/
 	
-	/**
-	 * Load the section data from JSON
-	 * @throws TechnicalException 
-	 * @throws InputFileException 
-	 */
-	public SectionModel loadModel(JSONObject jsonSection, IModel parentModel) 
-			throws TechnicalException, InputFileException {
-    
-    	super.loadModel(jsonSection, this);
-    	
-    	logger.debug(String.format("PathElement model "+this.nameU+" has %d cells and %d sections",
-    			this.cells.size(), this.sections.size()));
-    	
-		return this;
-	}
-	
 	/**========================================================================
 	 * Private methods
 	 *=======================================================================*/
 
 	private DoubleProperty getDoubleCellProperty(String cellName) 
 			throws CellCalculationException, TechnicalException {
+				return null;
 		
-		CellModel cell = this.cells.get(cellName.toLowerCase());
-		if (cell != null) {
-			return cell.getDoubleProperty();
-		} else {
-			throw new TechnicalException("Cell with type '"+cellName+"' not found");
-		}
+//		CellModel cell = this.cells.get(cellName.toLowerCase());
+//		if (cell != null) {
+//			return cell.getDoubleProperty();
+//		} else {
+//			throw new TechnicalException("Cell with type '"+cellName+"' not found");
+//		}
 	}
 }

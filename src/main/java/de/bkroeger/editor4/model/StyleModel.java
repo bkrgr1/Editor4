@@ -13,16 +13,16 @@ import lombok.ToString;
 @Getter
 @Setter
 @ToString(callSuper=true)
-public class StyleModel extends SectionModel {
+public class StyleModel extends BaseModel {
 
     @SuppressWarnings("unused")
 	private static final Logger logger = LogManager.getLogger(StyleModel.class.getName());
 	
 	public StyleModel() {
-		super(SectionModelType.Style);
+		super(ModelType.Style);
 	}
 	
-	public SectionModel loadModel(JSONObject jsonSection, IModel parentModel) 
+	public BaseModel loadModel(JSONObject jsonSection, IModel parentModel) 
 			throws TechnicalException, InputFileException {
     
     	super.loadModel(jsonSection, this);

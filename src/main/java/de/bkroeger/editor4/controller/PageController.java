@@ -14,8 +14,8 @@ import de.bkroeger.editor4.exceptions.InputFileException;
 import de.bkroeger.editor4.exceptions.TechnicalException;
 import de.bkroeger.editor4.model.CellModel;
 import de.bkroeger.editor4.model.PageModel;
-import de.bkroeger.editor4.model.SectionModel;
-import de.bkroeger.editor4.model.SectionModelType;
+import de.bkroeger.editor4.model.BaseModel;
+import de.bkroeger.editor4.model.ModelType;
 import de.bkroeger.editor4.model.ShapeModel;
 import de.bkroeger.editor4.runtime.EditorRuntime;
 import de.bkroeger.editor4.runtime.PageRuntime;
@@ -47,6 +47,8 @@ public class PageController extends BaseController {
 	/**========================================================================
 	 * Constructors
 	 *=======================================================================*/
+    
+    public PageController() { }
 
     /**
      * <p>
@@ -88,11 +90,12 @@ public class PageController extends BaseController {
         pageRuntime.setView((PageView) this.view);
 
         // alle Shapes dieser Seite auf dem Pane zeichnen
-        for (SectionModel shapeModel : ((PageModel)this.model).selectSections(SectionModelType.Shape)) {
+        for (BaseModel shapeModel : ((PageModel)this.model).selectChildMotel(ModelType.Shape)) {
 
         	ShapeRuntime shapeRuntime = new ShapeRuntime(pageRuntime);
         	shapeModel.setParentModel(this.model);
         	shapeRuntime.setModel((ShapeModel)shapeModel);
+        	shapeModel.setRuntime(shapeRuntime);
         	
         	// ein Shape zeichnen
 			ShapeController shapeController = ShapeControllerFactory.getShapeController(shapeRuntime);

@@ -2,6 +2,9 @@ package de.bkroeger.editor4.controller;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.springframework.beans.factory.config.ConfigurableBeanFactory;
+import org.springframework.context.annotation.Scope;
+import org.springframework.stereotype.Component;
 
 import de.bkroeger.editor4.exceptions.CellCalculationException;
 import de.bkroeger.editor4.exceptions.InputFileException;
@@ -9,6 +12,7 @@ import de.bkroeger.editor4.exceptions.TechnicalException;
 import de.bkroeger.editor4.model.PathModel;
 import de.bkroeger.editor4.runtime.EditorRuntime;
 import de.bkroeger.editor4.runtime.PathElemRuntime;
+import de.bkroeger.editor4.view.PathElemView;
 import de.bkroeger.editor4.view.PathView;
 
 /**
@@ -16,6 +20,8 @@ import de.bkroeger.editor4.view.PathView;
  * 
  * @author berthold.kroeger@gmx.de
  */
+@Component
+@Scope(value = ConfigurableBeanFactory.SCOPE_PROTOTYPE)
 public class PathElemController extends BaseController {
 
 	private static final Logger logger = LogManager.getLogger(PathElemController.class.getName());
@@ -27,6 +33,8 @@ public class PathElemController extends BaseController {
 	/**========================================================================
 	 * Constructors
 	 *=======================================================================*/
+	
+	public PathElemController() { }
 	
 	/**
 	 * Constructor
@@ -55,7 +63,7 @@ public class PathElemController extends BaseController {
 			throws TechnicalException, CellCalculationException, InputFileException {
 		
 		// Pfad zeichnen
-		PathView pathView = new PathView(this).draw();
+		PathElemView pathView = new PathElemView(this).draw();
 			
     	// when user clicks on PathView
     	pathView.setOnMouseClicked(event -> {

@@ -15,7 +15,7 @@ import lombok.ToString;
 @Getter
 @Setter
 @ToString(callSuper=true)
-public class LocationModel extends SectionModel {
+public class LocationModel extends BaseModel {
 
     @SuppressWarnings("unused")
 	private static final Logger logger = LogManager.getLogger(LocationModel.class.getName());
@@ -24,7 +24,7 @@ public class LocationModel extends SectionModel {
 	 * Constructor
 	 */
 	public LocationModel() {
-		super(SectionModelType.Location);
+		super(ModelType.Location);
 	}
 
 	/**
@@ -32,7 +32,7 @@ public class LocationModel extends SectionModel {
 	 * @throws TechnicalException 
 	 * @throws InputFileException 
 	 */
-	public SectionModel loadModel(JSONObject jsonSection, IModel parentModel) 
+	public BaseModel loadModel(JSONObject jsonSection, IModel parentModel) 
 			throws TechnicalException, InputFileException {
     
     	super.loadModel(jsonSection, this);

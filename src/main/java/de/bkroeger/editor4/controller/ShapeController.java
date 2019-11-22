@@ -1,24 +1,36 @@
 package de.bkroeger.editor4.controller;
 
+import org.springframework.beans.factory.config.ConfigurableBeanFactory;
+import org.springframework.context.annotation.Scope;
+import org.springframework.stereotype.Component;
+
 import de.bkroeger.editor4.exceptions.CellCalculationException;
 import de.bkroeger.editor4.exceptions.InputFileException;
 import de.bkroeger.editor4.exceptions.TechnicalException;
 import de.bkroeger.editor4.runtime.ShapeRuntime;
 import de.bkroeger.editor4.view.GroupView;
-import lombok.Getter;
-import lombok.Setter;
 
 /**
  * <p>Dies ist die Basisklasse für Shape-Controller.</p>
  *
  * @author berthold.kroeger@gmx.de
  */
-@Getter
-@Setter
+@Component
+@Scope(value = ConfigurableBeanFactory.SCOPE_PROTOTYPE)
 public class ShapeController extends BaseController {
-	
-	protected ShapeRuntime runtime;
+		
+	/**========================================================================
+	 * Fields
+	 *=======================================================================*/
 
+	protected ShapeRuntime runtime;
+	
+	/**========================================================================
+	 * Constructors
+	 *=======================================================================*/
+
+	public ShapeController() { }
+	
 	/**
 	 * Constructor with Model
 	 * @param shapeModel

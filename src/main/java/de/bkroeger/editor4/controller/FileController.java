@@ -5,15 +5,16 @@ import java.util.Comparator;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.config.ConfigurableBeanFactory;
 import org.springframework.context.ApplicationContext;
+import org.springframework.context.annotation.Scope;
+import org.springframework.stereotype.Component;
 
 import de.bkroeger.editor4.exceptions.CellCalculationException;
 import de.bkroeger.editor4.exceptions.InputFileException;
 import de.bkroeger.editor4.exceptions.TechnicalException;
 import de.bkroeger.editor4.model.FileModel;
 import de.bkroeger.editor4.model.PageModel;
-import de.bkroeger.editor4.model.SectionModel;
-import de.bkroeger.editor4.model.SectionModelType;
 import de.bkroeger.editor4.runtime.CenterRuntime;
 import de.bkroeger.editor4.runtime.PageRuntime;
 import de.bkroeger.editor4.view.PageView;
@@ -46,6 +47,8 @@ import lombok.Setter;
  */
 @Getter
 @Setter
+@Component
+@Scope(value = ConfigurableBeanFactory.SCOPE_PROTOTYPE)
 public class FileController extends BaseController implements IController  {
 
     private static final Logger logger = LogManager.getLogger(FileController.class.getName());
@@ -61,7 +64,15 @@ public class FileController extends BaseController implements IController  {
     
     private StringProperty titleProperty = new SimpleStringProperty("New file");
     private String changedIndicator = "";
+	
+	/**========================================================================
+	 * Constructors
+	 *=======================================================================*/
 
+    public FileController() {
+    	// default constructor
+    }
+    
     /**
      * Controller
      * 
@@ -78,9 +89,9 @@ public class FileController extends BaseController implements IController  {
         this.panelHeight = panelHeight;
             
 	    this.model = fileModel;
-		
-	    // Datenmodell aus Datei laden oder initialisieren
-		this.model.loadModel(null, null);
+//		
+//	    // Datenmodell aus Datei laden oder initialisieren
+//		this.model.loadModel(null, null);
     }
 
 	/**
@@ -122,7 +133,7 @@ public class FileController extends BaseController implements IController  {
         }
 
         // für jede Seite...
-    	for (SectionModel pageModel : this.model.selectSections(SectionModelType.Page)) {
+    	for (PageModel pageModel : ((FileModel)this.model).getPages()) {
         	
     		PageRuntime pageRuntime = new PageRuntime(centerRuntime);
     		pageRuntime.setModel((PageModel)pageModel);

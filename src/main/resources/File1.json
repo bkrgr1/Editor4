@@ -1,218 +1,211 @@
 {
-	"file": {
-		"id": "74d1f547-5d9f-4f76-b962-0a75a5b45a43",
-		"description": "Eine Test-Datei",
-		"name": "Datei",
-		"nameU": "File",
-		"locale": "de-DE",
-		"sections": [
-			{
-				"sectionType": "Page",
-				"id": "cccf302b-fa4d-4eeb-8ed6-f03bc1a1980a",
-				"description": "Eine Bildschirmseite",
-				"name": "Seite 1",
-				"nameU": "Page_1",
-				"cells": [
-					{ "nameU": "PageNo", "formula": "1.0" },
-					{ "nameU": "PageTitle", 
-					  "formula": "concat('Page ',text(int(${PageNo})))",
-					  "dataType": "string" }
-				],
-				"sections": [
-					{
-						"sectionType": "Shape",
-						"id": "9805ca70-1673-4a5a-80bf-a071f7ba6746",
-						"description": "Ein Rechteck",
-						"nameU": "Shape_1",
-						"shapeDimension": "2D",
-						"cells": [
-							{ "nameU": "LayoutX", "formula": "400.0" },
-							{ "nameU": "LayoutY", "formula": "100.0" },
-							{ "nameU": "Width", "formula": "100.0" },
-							{ "nameU": "Height", "formula": "100.0" },
-							{ "nameU": "Rotate", "formula": "45.0" },
-							{ "nameU": "Scale", "formula": "1.5" },
-							{ "nameU": "centerX", "formula": "50.0" },
-							{ "nameU": "centerY", "formula": "50.0" },
-							{ "nameU": "StrokeWidth", "formula": "1.5" },
-							{ "nameU": "FillColor", "formula": "color(BLUE)", "dataType": "object" }
-						],
-						"sections": [
-							{
-								"sectionType": "Path",
-								"nameU": "Path 1",
-								"cells": [
-									{ "nameU": "StrokeWidth", "formula": "1.5" },
-									{ "nameU": "StrokeColor", "formula": "color(BLACK)", "dataType": "object" },
-									{ "nameU": "FillColor", "formula": "${Shape_1.FillColor}", "dataType": "object" },
-									{ "nameU": "Transparency", "formula": "0.33" }
-								],								
-								"sections": [
-									{
-										"sectionType": "MoveTo",
-										"nameU": "MoveTo_1",
-										"cells": [
-											{ "nameU": "X", "formula": "5.0" },
-											{ "nameU": "Y", "formula": "5.0" }
-										]
-									},
-									{
-										"sectionType": "LineTo",
-										"nameU": "LineTo_1",
-										"cells": [
-											{ "nameU": "X", "formula": "95.0" },
-											{ "nameU": "Y", "formula": "5.0" }
-										]
-									},
-									{
-										"sectionType": "LineTo",
-										"nameU": "LineTo_2",
-										"cells": [
-											{ "nameU": "X", "formula": "95.0" },
-											{ "nameU": "Y", "formula": "95.0" }
-										]
-									},
-									{
-										"sectionType": "LineTo",
-										"nameU": "LineTo_3",
-										"cells": [
-											{ "nameU": "X", "formula": "5.0" },
-											{ "nameU": "Y", "formula": "95.0" }
-										]
-									},
-									{
-										"sectionType": "ClosePath",
-										"nameU": "ClosePath_1"
-									}
-								]
-							}
-						],
-						"connectors": [
-							{ 	"nameU": "topCenter",
-								"cells": [
-									{ "nameU": "connectorX", "formula": "50.0" },
-									{ "nameU": "connectorY", "formula": "5.0" },
-									{ "nameU": "compass", "formula": "'N'", "dataType": "string" }
-								]
-							},
-							{ 	"nameU": "bottomCenter",
-								"cells": [
-									{ "nameU": "connectorX", "formula": "50.0" },
-									{ "nameU": "connectorY", "formula": "95.0" },
-									{ "nameU": "compass", "formula": "'S'", "dataType": "string" }
-								]
-							},
-							{ 	"nameU": "leftMiddle",
-								"cells": [
-									{ "nameU": "connectorX", "formula": "5.0" },
-									{ "nameU": "connectorY", "formula": "50.0" },
-									{ "nameU": "compass", "formula": "'W'", "dataType": "string" }
-								]
-							},
-							{ 	"nameU": "rightMiddle",
-								"cells": [
-									{ "nameU": "connectorX", "formula": "95.0" },
-									{ "nameU": "connectorY", "formula": "50.0" },
-									{ "nameU": "compass", "formula": "'E'", "dataType": "string" }
-								]
-							}
-						]
-					},
-					{
-						"sectionType": "Shape",
-						"id": "e6621d13-cc75-4bc8-8d19-c590ef44b606",
-						"description": "Ein Kreis",
-						"nameU": "Shape_2",
-						"shapeDimension": "2D",
-						"cells": [
-							{ "nameU": "LayoutX", "formula": "200.0" },
-							{ "nameU": "LayoutY", "formula": "50.0" },
-							{ "nameU": "Width", "formula": "100.0" },
-							{ "nameU": "Height", "formula": "100.0" },
-							{ "nameU": "Rotate", "formula": "45.0" },
-							{ "nameU": "Scale", "formula": "1.5" },
-							{ "nameU": "StrokeWidth", "formula": "1.5" },
-							{ "nameU": "FillColor", "formula": "color(BLUE)", "dataType": "object" },
-							{ "nameU": "CenterX", "formula": "50.0" },
-							{ "nameU": "CenterY", "formula": "50.0" }
-						],
-						"sections": [
-							{
-								"sectionType": "Path",
-								"nameU": "Path 2-1",
-								"cells": [
-									{ "nameU": "StrokeWidth", "formula": "1.5" },
-									{ "nameU": "StrokeColor", "formula": "color(BLACK)", "dataType": "object" },
-									{ "nameU": "FillColor", "formula": "color(RED)", "dataType": "object" },
-									{ "nameU": "Transparency", "formula": "0.33" }
-								],
-								"sections": [
-									{
-										"sectionType": "MoveTo",
-										"nameU": "MoveTo_1",
-										"cells": [
-											{ "nameU": "X", "formula": "10.0" },
-											{ "nameU": "Y", "formula": "50.0" }
-										]
-									},
-									{
-										"sectionType": "ArcTo",
-										"nameU": "ArcTo_1",
-										"cells": [
-											{ "nameU": "X", "formula": "90.0" },
-											{ "nameU": "Y", "formula": "50.0" },
-											{ "nameU": "radiusX", "formula": "40.0" },
-											{ "nameU": "radiusY", "formula": "40.0" },
-											{ "nameU": "largeArcFlag", "formula": "true", "dataType": "bool" },
-											{ "nameU": "sweepFlag", "formula": "true", "dataType": "bool" }
-										]
-									},
-									{
-										"sectionType": "ArcTo",
-										"nameU": "ArcTo_1",
-										"cells": [
-											{ "nameU": "X", "formula": "10.0" },
-											{ "nameU": "Y", "formula": "50.0" },
-											{ "nameU": "radiusX", "formula": "40.0" },
-											{ "nameU": "radiusY", "formula": "40.0" },
-											{ "nameU": "largeArcFlag", "formula": "false", "dataType": "bool" },
-											{ "nameU": "sweepFlag", "formula": "false", "dataType": "bool" }
-										]
-									}
-								]
-							}
-						],
-						"connectors": [
-							{ 	"nameU": "topCenter",
-								"cells": [
-									{ "nameU": "connectorX", "formula": "50.0" },
-									{ "nameU": "connectorY", "formula": "10.0" }
-								]
-							},
-							{ 	"nameU": "bottomCenter",
-								"cells": [
-									{ "nameU": "connectorX", "formula": "50.0" },
-									{ "nameU": "connectorY", "formula": "90.0" }
-								]
-							},
-							{ 	"nameU": "leftMiddle",
-								"cells": [
-									{ "nameU": "connectorX", "formula": "10.0" },
-									{ "nameU": "connectorY", "formula": "50.0" }
-								]
-							},
-							{ 	"nameU": "rightMiddle",
-								"cells": [
-									{ "nameU": "connectorX", "formula": "90.0" },
-									{ "nameU": "connectorY", "formula": "50.0" }
-								]
-							}
-						]														
-					}
-				]
-			}
-		],
-		"cells": [		
-		]
-	}
+	"id": "74d1f547-5d9f-4f76-b962-0a75a5b45a43",
+	"description": "Eine Test-Datei",
+	"name": "Datei",
+	"nameU": "File",
+	"locale": "de-DE",
+	"pages": [
+		{
+			"id": "cccf302b-fa4d-4eeb-8ed6-f03bc1a1980a",
+			"description": "Eine Bildschirmseite",
+			"name": "Seite 1",
+			"nameU": "Page_1",
+			"cells": [
+				{ "nameU": "PageNo", "formula": "1.0" },
+				{ "nameU": "PageTitle", 
+				  "formula": "=concat('Page ',text(int(${PageNo})))",
+				  "dataType": "string" }
+			],
+			"shapes": [
+				{
+					"id": "9805ca70-1673-4a5a-80bf-a071f7ba6746",
+					"description": "Ein Rechteck",
+					"nameU": "Shape_1",
+					"shapeDimension": "2D",
+					"cells": [
+						{ "nameU": "LayoutX", "formula": "400.0" },
+						{ "nameU": "LayoutY", "formula": "100.0" },
+						{ "nameU": "Width", "formula": "100.0" },
+						{ "nameU": "Height", "formula": "100.0" },
+						{ "nameU": "Rotate", "formula": "45.0" },
+						{ "nameU": "Scale", "formula": "1.5" },
+						{ "nameU": "centerX", "formula": "50.0" },
+						{ "nameU": "centerY", "formula": "50.0" },
+						{ "nameU": "StrokeWidth", "formula": "1.5" },
+						{ "nameU": "FillColor", "formula": "=color(BLUE)", "dataType": "object" }
+					],
+					"paths": [
+						{
+							"nameU": "Path 1",
+							"cells": [
+								{ "nameU": "StrokeWidth", "formula": "1.5" },
+								{ "nameU": "StrokeColor", "formula": "=color(BLACK)", "dataType": "object" },
+								{ "nameU": "FillColor", "formula": "=${Shape_1.FillColor}", "dataType": "object" },
+								{ "nameU": "Transparency", "formula": "0.33" }
+							],								
+							"elements": [
+								{
+									"elemType": "MoveTo",
+									"nameU": "MoveTo_1",
+									"cells": [
+										{ "nameU": "X", "formula": "5.0" },
+										{ "nameU": "Y", "formula": "5.0" }
+									]
+								},
+								{
+									"elemType": "LineTo",
+									"nameU": "LineTo_1",
+									"cells": [
+										{ "nameU": "X", "formula": "95.0" },
+										{ "nameU": "Y", "formula": "5.0" }
+									]
+								},
+								{
+									"elemType": "LineTo",
+									"nameU": "LineTo_2",
+									"cells": [
+										{ "nameU": "X", "formula": "95.0" },
+										{ "nameU": "Y", "formula": "95.0" }
+									]
+								},
+								{
+									"elemType": "LineTo",
+									"nameU": "LineTo_3",
+									"cells": [
+										{ "nameU": "X", "formula": "5.0" },
+										{ "nameU": "Y", "formula": "95.0" }
+									]
+								},
+								{
+									"elemType": "ClosePath",
+									"nameU": "ClosePath_1"
+								}
+							]
+						}
+					],
+					"connectors": [
+						{ 	"nameU": "topCenter",
+							"cells": [
+								{ "nameU": "connectorX", "formula": "50.0" },
+								{ "nameU": "connectorY", "formula": "5.0" },
+								{ "nameU": "compass", "formula": "'N'", "dataType": "string" }
+							]
+						},
+						{ 	"nameU": "bottomCenter",
+							"cells": [
+								{ "nameU": "connectorX", "formula": "50.0" },
+								{ "nameU": "connectorY", "formula": "95.0" },
+								{ "nameU": "compass", "formula": "'S'", "dataType": "string" }
+							]
+						},
+						{ 	"nameU": "leftMiddle",
+							"cells": [
+								{ "nameU": "connectorX", "formula": "5.0" },
+								{ "nameU": "connectorY", "formula": "50.0" },
+								{ "nameU": "compass", "formula": "'W'", "dataType": "string" }
+							]
+						},
+						{ 	"nameU": "rightMiddle",
+							"cells": [
+								{ "nameU": "connectorX", "formula": "95.0" },
+								{ "nameU": "connectorY", "formula": "50.0" },
+								{ "nameU": "compass", "formula": "'E'", "dataType": "string" }
+							]
+						}
+					]
+				},
+				{
+					"id": "e6621d13-cc75-4bc8-8d19-c590ef44b606",
+					"description": "Ein Kreis",
+					"nameU": "Shape_2",
+					"shapeDimension": "2D",
+					"cells": [
+						{ "nameU": "LayoutX", "formula": "200.0" },
+						{ "nameU": "LayoutY", "formula": "50.0" },
+						{ "nameU": "Width", "formula": "100.0" },
+						{ "nameU": "Height", "formula": "100.0" },
+						{ "nameU": "Rotate", "formula": "45.0" },
+						{ "nameU": "Scale", "formula": "1.5" },
+						{ "nameU": "StrokeWidth", "formula": "1.5" },
+						{ "nameU": "FillColor", "formula": "=color(BLUE)", "dataType": "object" },
+						{ "nameU": "CenterX", "formula": "50.0" },
+						{ "nameU": "CenterY", "formula": "50.0" }
+					],
+					"paths": [
+						{
+							"nameU": "Path 2-1",
+							"cells": [
+								{ "nameU": "StrokeWidth", "formula": "1.5" },
+								{ "nameU": "StrokeColor", "formula": "=color(BLACK)", "dataType": "object" },
+								{ "nameU": "FillColor", "formula": "=color(RED)", "dataType": "object" },
+								{ "nameU": "Transparency", "formula": "0.33" }
+							],
+							"elements": [
+								{
+									"elemType": "MoveTo",
+									"nameU": "MoveTo_1",
+									"cells": [
+										{ "nameU": "X", "formula": "10.0" },
+										{ "nameU": "Y", "formula": "50.0" }
+									]
+								},
+								{
+									"elemType": "ArcTo",
+									"nameU": "ArcTo_1",
+									"cells": [
+										{ "nameU": "X", "formula": "90.0" },
+										{ "nameU": "Y", "formula": "50.0" },
+										{ "nameU": "radiusX", "formula": "40.0" },
+										{ "nameU": "radiusY", "formula": "40.0" },
+										{ "nameU": "largeArcFlag", "formula": "true", "dataType": "bool" },
+										{ "nameU": "sweepFlag", "formula": "true", "dataType": "bool" }
+									]
+								},
+								{
+									"elemType": "ArcTo",
+									"nameU": "ArcTo_1",
+									"cells": [
+										{ "nameU": "X", "formula": "10.0" },
+										{ "nameU": "Y", "formula": "50.0" },
+										{ "nameU": "radiusX", "formula": "40.0" },
+										{ "nameU": "radiusY", "formula": "40.0" },
+										{ "nameU": "largeArcFlag", "formula": "false", "dataType": "bool" },
+										{ "nameU": "sweepFlag", "formula": "false", "dataType": "bool" }
+									]
+								}
+							]
+						}
+					],
+					"connectors": [
+						{ 	"nameU": "topCenter",
+							"cells": [
+								{ "nameU": "connectorX", "formula": "50.0" },
+								{ "nameU": "connectorY", "formula": "10.0" }
+							]
+						},
+						{ 	"nameU": "bottomCenter",
+							"cells": [
+								{ "nameU": "connectorX", "formula": "50.0" },
+								{ "nameU": "connectorY", "formula": "90.0" }
+							]
+						},
+						{ 	"nameU": "leftMiddle",
+							"cells": [
+								{ "nameU": "connectorX", "formula": "10.0" },
+								{ "nameU": "connectorY", "formula": "50.0" }
+							]
+						},
+						{ 	"nameU": "rightMiddle",
+							"cells": [
+								{ "nameU": "connectorX", "formula": "90.0" },
+								{ "nameU": "connectorY", "formula": "50.0" }
+							]
+						}
+					]														
+				}
+			]
+		}
+	],
+	"cells": [		
+	]
 }

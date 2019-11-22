@@ -15,7 +15,7 @@ import lombok.ToString;
 @Getter
 @Setter
 @ToString(callSuper=true)
-public class CenterModel extends SectionModel implements IModel {
+public class CenterModel extends BaseModel implements IModel {
 
 	private static final Logger logger = LogManager.getLogger(CenterModel.class.getName());
 
@@ -28,11 +28,11 @@ public class CenterModel extends SectionModel implements IModel {
     private static final String SECTION_TYPE_KEY = "sectionType";
 	
 	public CenterModel() {
-		super(SectionModelType.Center);
+		super(ModelType.Center);
 	}
 	
 	@Override
-	public SectionModel loadModel(JSONObject jsonSection, IModel parentSection) 
+	public BaseModel loadModel(JSONObject jsonSection, IModel parentSection) 
 			throws TechnicalException, InputFileException {
 	  	
 		for (Object key : jsonSection.keySet()) {
@@ -69,7 +69,7 @@ public class CenterModel extends SectionModel implements IModel {
     	super.loadModel(jsonSection, this);
     	
     	logger.debug(String.format("Centermodel has %d cells and %d sections",
-    			this.cells.size(), this.sections.size()));
+    			this.cells.size(), this.childModels.size()));
     	
 		return this;
 	}

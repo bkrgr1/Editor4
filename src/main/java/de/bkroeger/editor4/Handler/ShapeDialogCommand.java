@@ -8,7 +8,7 @@ import org.apache.logging.log4j.Logger;
 import de.bkroeger.editor4.controller.IMouseHandlerData;
 import de.bkroeger.editor4.exceptions.CellCalculationException;
 import de.bkroeger.editor4.exceptions.TechnicalException;
-import de.bkroeger.editor4.model.SectionModel;
+import de.bkroeger.editor4.model.BaseModel;
 import de.bkroeger.editor4.model.ShapeModel;
 import de.bkroeger.editor4.view.ShapeDialogView;
 import javafx.event.Event;
@@ -42,7 +42,7 @@ public class ShapeDialogCommand implements IMouseCommand {
 	public void execute(Event event) 
 			throws CellCalculationException, TechnicalException {
 		
-		ShapeDialogView dialog = new ShapeDialogView((ShapeModel)SectionModel.cloneSection(this.shapeModel));
+		ShapeDialogView dialog = new ShapeDialogView((ShapeModel)BaseModel.cloneSection(this.shapeModel));
 		Optional<ShapeModel> result = dialog.showAndWait();
 		result.ifPresent(newModel -> {
 			this.shapeModel.acceptChanges(newModel);

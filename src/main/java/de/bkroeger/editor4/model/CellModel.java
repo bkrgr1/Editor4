@@ -27,7 +27,7 @@ import lombok.Getter;
 import lombok.Setter;
 
 /**
- * <p>Dies ist die Basis-Datenstruktur für eine Shape-Zelle.</p>
+ * <p>Dies ist die Basis-Datenstruktur für eine Zelle mit einer bestimmten Eigenschaft.</p>
  *
  * @author berthold.kroeger@gmx.de
  */
@@ -42,6 +42,12 @@ public class CellModel implements CellValueListener {
 	private static final String VARIABLE_PREFIX = "${";
 	private static final String VARIABLE_SUFFIX = "}";
 	private static final String APOSTROPHE = "'";
+	
+	/**========================================================================
+	 * Fields
+	 *=======================================================================*/
+	
+	private CellValueType dataType;
 
 	/**
 	 * Liefert den Schlüssel dieser Zelle
@@ -52,6 +58,12 @@ public class CellModel implements CellValueListener {
 		return sectionKey+
 				"."+this.nameU;
 	}
+	
+	/**
+	 * Flag, ob der Wert dieser Zelle gültig oder ungültig ist.
+	 */
+	protected boolean isValid = true;
+	public void setValid(boolean value) { this.isValid = value; }
 	
 	/**
 	 * Map der {@link CellValueListener}. 
@@ -68,7 +80,11 @@ public class CellModel implements CellValueListener {
 	 * Die Formel für den Zellenwert als String
 	 */
 	private String formula;
-	
+		
+	/**========================================================================
+	 * Public methods
+	 *=======================================================================*/
+
 	public void initFormula(String value) {
 		this.formula = value;
 	}
@@ -81,11 +97,11 @@ public class CellModel implements CellValueListener {
 	public void setFormula(String value) throws CellCalculationException {
 		
 		this.formula = value;
-		
-		this.calculate(false);
-		
-		// registrierte Listener über Änderung informieren
-		notifyListener();
+//		
+//		this.calculate(false);
+//		
+//		// registrierte Listener über Änderung informieren
+//		notifyListener();
 	}
 	
 	private boolean calculated = false;
@@ -162,7 +178,7 @@ public class CellModel implements CellValueListener {
 	/**
 	 * Backreferenz zur Section
 	 */
-	private SectionModel section;
+	private BaseModel section;
 	
 	/**
 	 * sprachunabhängiger Name
@@ -245,7 +261,13 @@ public class CellModel implements CellValueListener {
 		return this.objectProperty.get();
 	}
 	
-	// Constructors
+	/**========================================================================
+	 * Constructors
+	 *=======================================================================*/
+	
+	public CellModel() {
+		
+	}
 	
 	public CellModel(String nameU) {
 		this.nameU = nameU;
@@ -283,8 +305,8 @@ public class CellModel implements CellValueListener {
 	 */
 	private Object calculateValue(String expression, boolean firstRound) throws CellCalculationException {
 		
-		@SuppressWarnings("unused")
-		String cellName = this.nameU;
+//		@SuppressWarnings("unused")
+//		String cellName = this.nameU;
 		
 		if (expression == null) return null;
 		String formPart = expression.trim();
@@ -297,14 +319,22 @@ public class CellModel implements CellValueListener {
 			
 			return formPart.substring(1, formPart.length()-1);
 			
-		} else if (formPart.toLowerCase().equals("true") || formPart.toLowerCase().equals("false")) {
+		} else if (formPart.equalsIgnoreCase("true") || formPart.equalsIgnoreCase("false")) {
 			result = Boolean.parseBoolean(formPart.toLowerCase());
 			return result;
 			
+		// ist dies eine Variable?
 		} else if (formPart.startsWith(VARIABLE_PREFIX)) {
 			
 			if (!firstRound) {
-				return calculateVariableValue(formPart, firstRound);
+				// ist dies eine Koordinaten-Variable?
+				if (formPart.matches("[XYZ]{1}")) {
+					// ja, Koordinaten umrechnen
+					return calculateVariableCoordinates(formPart, this.getSection());
+				} else {
+					// nein, nur numerischen Wert ermitteln
+					return calculateVariableValue(formPart);
+				}
 			} else return null;
 			
 		} else {
@@ -316,7 +346,31 @@ public class CellModel implements CellValueListener {
 		return result;
 	}
 	
-	private Object calculateVariableValue(String formPart, boolean firstRound) throws CellCalculationException {
+	private Object calculateVariableCoordinates(String formPart, BaseModel targetSection)
+			throws CellCalculationException {
+		
+		if (formPart.endsWith(VARIABLE_SUFFIX)) {
+			
+			String variableName = formPart.substring(VARIABLE_PREFIX.length());
+			variableName = variableName.substring(0, variableName.length()-1);
+			
+			CellModel cell = searchForVariable(variableName);
+				
+			Double result = null;
+			BaseModel sourceSection = cell.getSection();
+			if (sourceSection != null && targetSection != null) {
+				// TODO: Koordinaten umrechnen
+			}
+			
+			cell.getDoubleValue();
+			return result;
+			
+		} else {
+			throw new CellCalculationException("Invalid variable syntax: "+formPart);
+		}
+	}
+
+	private Object calculateVariableValue(String formPart) throws CellCalculationException {
 		
 		Object result = null;
 		if (formPart.endsWith(VARIABLE_SUFFIX)) {
@@ -361,7 +415,7 @@ public class CellModel implements CellValueListener {
 			
 		} else {
 			
-			cell = this.section.getCellByName(name);
+			cell = (CellModel) this.section.getCellByName(name);
 		}
 		
 		if (cell != null) {
@@ -382,19 +436,19 @@ public class CellModel implements CellValueListener {
 		IModel model = this.section;
 		do {				
 			// gibt es diese Section dort?
-			List<SectionModel> sects = model.searchSections(sectionName);
-			if (sects != null && sects.size() == 1) {
-				
-				cell = scanDown(subName, sects.get(0));
-			} else {
-				
-				model = model.getParentModel();
-			}
+//			List<BaseModel> sects = model.searchSections(sectionName);
+//			if (sects != null && sects.size() == 1) {
+//				
+//				cell = scanDown(subName, sects.get(0));
+//			} else {
+//				
+//				model = model.getParentModel();
+//			}
 		} while (cell == null && model != null);
 		return cell;
 	}
 	
-	private CellModel scanDown(String name, SectionModel model) throws CellCalculationException {
+	private CellModel scanDown(String name, BaseModel model) throws CellCalculationException {
 		
 		CellModel cell = null;
 		if (name.contains(".")) {
@@ -404,18 +458,18 @@ public class CellModel implements CellValueListener {
 			String sectionName = name.substring(0, p);
 			String subName = name.substring(p+1);
 
-			List<SectionModel> sects = model.searchSections(sectionName);
-			if (sects.size() == 1) {
-				
-				cell = scanDown(subName, sects.get(0));
-			} else if (sects.size() == 0) {
-				// Fehler: Section nicht gefunden
-				throw new CellCalculationException("Section not found: "+sectionName);
-			}
+//			List<BaseModel> sects = model.searchSections(sectionName);
+//			if (sects.size() == 1) {
+//				
+//				cell = scanDown(subName, sects.get(0));
+//			} else if (sects.size() == 0) {
+//				// Fehler: Section nicht gefunden
+//				throw new CellCalculationException("Section not found: "+sectionName);
+//			}
 		} else {
 			
 			String cellName = name;
-			cell = model.getCellByName(cellName);
+			cell = (CellModel) model.getCellByName(cellName);
 		}
 		return cell;
 	}
@@ -516,10 +570,12 @@ public class CellModel implements CellValueListener {
 
 	@Override
 	public void cellValueChanged(CellValueEvent event) {
-		// TODO Was muss passieren, wenn sich ein verwendeter Wert ändert
+		// Wenn sich der Wert der referenzierten Zelle ändert,
+		// wird der Wert dieser Zelle ungültig.
+		this.setValid(false);
 	}
 	
-	public CellModel(String nameU, String formula, SectionModel section) {
+	public CellModel(String nameU, String formula, BaseModel section) {
 		this.nameU = nameU;
 		this.formula = formula;
 		this.section = section;
@@ -548,7 +604,7 @@ public class CellModel implements CellValueListener {
 		this.referencedCells = cloneCells(model.referencedCells);
 		this.section = model.section;
 		this.stringProperty = (model.getStringProperty() != null ?
-				new SimpleObjectProperty<String>(model.getStringProperty().get()) : null);
+				new SimpleObjectProperty<String>((String)model.getStringProperty().get()) : null);
 	}
 	
 	private Map<String, CellModel> cloneCells(Map<String, CellModel> referencedCells2) {
@@ -559,47 +615,5 @@ public class CellModel implements CellValueListener {
 	private List<CellValueListener> cloneCellListeners(List<CellValueListener> cellListeners2) {
 		// TODO Auto-generated method stub
 		return null;
-	}
-
-	/**
-	 * Erstellt aus dem JSON-Element ein CellModel-Object.
-	 * @param jsonCell
-	 * @param nameU
-	 * @param cellFormula
-	 * @param section
-	 * @return ein {@link CellModel}
-	 * @throws TechnicalException
-	 * @throws InputFileException
-	 */
-	public static CellModel loadCell(
-			JSONObject jsonCell, SectionModel section) 
-			throws TechnicalException, InputFileException {
-
-		CellModel cellModel = null;
-		if (jsonCell.containsKey("nameU")) {
-			cellModel = new CellModel((String) jsonCell.get("nameU"));
-		} else {
-			throw new InputFileException("Cell attribute 'nameU' missing: "+jsonCell.toJSONString());
-		}
-		
-		if (jsonCell.containsKey("name")) {
-			cellModel.name = (String) jsonCell.get("name");
-		}
-		
-		if (jsonCell.containsKey("formula")) {
-			cellModel.formula = (String) jsonCell.get("formula");
-		} else {
-			throw new InputFileException("Cell attribute 'formula' missing: "+jsonCell.toJSONString());
-		}
-		
-		if (jsonCell.containsKey("dataType")) {
-			String dataType = (String) jsonCell.get("dataType");
-			cellModel.cellValueType = CellValueType.valueOf(dataType);
-		} else {
-			cellModel.cellValueType = CellValueType.number;
-		}
-		
-		cellModel.setSection(section);
-		return cellModel;
 	}
 }

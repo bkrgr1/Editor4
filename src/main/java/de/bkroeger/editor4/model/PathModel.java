@@ -1,11 +1,12 @@
 package de.bkroeger.editor4.model;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.json.simple.JSONObject;
 
 import de.bkroeger.editor4.exceptions.CellCalculationException;
-import de.bkroeger.editor4.exceptions.InputFileException;
 import de.bkroeger.editor4.exceptions.TechnicalException;
 import javafx.beans.property.DoubleProperty;
 import lombok.Getter;
@@ -20,16 +21,18 @@ import lombok.ToString;
 @Getter
 @Setter
 @ToString(callSuper=true)
-public class PathModel extends SectionModel implements IModel {
+public class PathModel extends BaseModel implements IModel {
 
 	private static final Logger logger = LogManager.getLogger(PathModel.class.getName());
 		
 	/**========================================================================
 	 * Fields
 	 *=======================================================================
-	 * @throws TechnicalException 
-	 * @throws CellCalculationException */
 	
+	private List<CellModel> cells = new ArrayList<>();
+		
+	protected List<PathElemModel> elements = new ArrayList<>();
+
 	public DoubleProperty getXProperty() throws CellCalculationException, TechnicalException {
 		
 		return getDoubleCellProperty("x");
@@ -45,36 +48,28 @@ public class PathModel extends SectionModel implements IModel {
 	 *=======================================================================*/
 	
 	public PathModel() {
-		super(SectionModelType.Path);
+		super(ModelType.Path);
 	}
 	
 	private PathType pathType;
 	
 	public PathModel(PathType pt) {
-		super(SectionModelType.Path);
+		super(ModelType.Path);
 		this.pathType = pt;
 	}
 	
 	public PathModel(PathModel model) {
-		super(SectionModelType.Path);
+		super(ModelType.Path);
 		this.pathType = model.pathType;
 	}
+	
+	protected List<CellModel> cells = new ArrayList<>();
+	
+	protected List<PathElementModel> elements = new ArrayList<>();
 	
 	/**========================================================================
 	 * Public methods
 	 *=======================================================================*/
-	
-	@Override
-	public SectionModel loadModel(JSONObject jsonSection, IModel parentSection) 
-			throws TechnicalException, InputFileException {
-    
-    	super.loadModel(jsonSection, this);
-    	
-    	logger.debug(String.format("Pathmodel has %d cells and %d sections",
-    			this.cells.size(), this.sections.size()));
-    	
-		return this;
-	}
 	
 	/**========================================================================
 	 * Private methods
@@ -82,12 +77,13 @@ public class PathModel extends SectionModel implements IModel {
 
 	private DoubleProperty getDoubleCellProperty(String cellName) 
 			throws CellCalculationException, TechnicalException {
+				return null;
 		
-		CellModel cell = this.cells.get(cellName.toLowerCase());
-		if (cell != null) {
-			return cell.getDoubleProperty();
-		} else {
-			throw new TechnicalException("Cell with type '"+cellName+"' not found");
-		}
+//		CellModel cell = this.cells.get(cellName.toLowerCase());
+//		if (cell != null) {
+//			return cell.getDoubleProperty();
+//		} else {
+//			throw new TechnicalException("Cell with type '"+cellName+"' not found");
+//		}
 	}
 }

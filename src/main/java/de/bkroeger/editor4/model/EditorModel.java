@@ -1,16 +1,18 @@
 package de.bkroeger.editor4.model;
 
+import java.util.EnumMap;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
-import org.json.simple.JSONObject;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+import org.springframework.stereotype.Component;
 
-import de.bkroeger.editor4.exceptions.CellCalculationException;
-import de.bkroeger.editor4.exceptions.InputFileException;
-import de.bkroeger.editor4.exceptions.TechnicalException;
+import javafx.application.Application.Parameters;
 import javafx.beans.property.BooleanProperty;
 import javafx.beans.property.SimpleBooleanProperty;
+import javafx.beans.property.SimpleStringProperty;
+import javafx.beans.property.StringProperty;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
@@ -24,31 +26,46 @@ import lombok.ToString;
  */
 @Getter
 @Setter
-@ToString
-public class EditorModel implements IModel {
+@ToString(callSuper=true)
+@Component
+public class EditorModel extends BaseModel implements IModel {
+
+	@SuppressWarnings("unused")
+	private static final Logger logger = LogManager.getLogger(EditorModel.class.getName());
+	
+	private static final int DEFAULT_PANEL_WIDTH = 1200;
+	private static final int DEFAULT_PANEL_HEIGHT = 800;
 	
 	/**========================================================================
-	 * Constructors
+	 * Fields
 	 *=======================================================================*/
 	
-	private static EditorModel editorModel;
+	private int panelWidth;
 	
-	/**
-	 * <p>Der Controller für EditorModel ist privat.</p>
-	 */
-	private EditorModel() { }
+	private int panelHeight;
 	
-	/**
-	 * <p>Liefert die einzige Instanz von EditorModel.</p>
-	 * <p>Wenn noch keine Instanz erstellt wurde, wird sie mit dem privaten Constructor erstellt.</p>
-	 * @return das einzige EditorModel
-	 */
-	public static EditorModel getEditorModel() {
-		if (editorModel == null) editorModel = new EditorModel();
-		return editorModel;
+	private String panelWidthString;
+	public void setPanelWidthString(String value) {
+		try {
+			panelWidth = Integer.parseInt(value);
+		} catch(NumberFormatException e) {
+			panelWidth = DEFAULT_PANEL_WIDTH;
+		}
 	}
 	
-	//================================================
+	private String panelHeightString;
+	public void setPanelHeigthString(String value) {
+		try {
+			panelHeight = Integer.parseInt(value);
+		} catch(NumberFormatException e) {
+			panelHeight = DEFAULT_PANEL_HEIGHT;
+		}
+	}
+	
+	/**
+	 * Die Aufrufparameter
+	 */
+	private Parameters parameters;
 	
 	/**
 	 * <p>Flag, ob autoConnect eingeschaltet ist.</p>
@@ -124,6 +141,11 @@ public class EditorModel implements IModel {
 	    straightLine.set(value);
 	}
 	
+	private final StringProperty title = new SimpleStringProperty(this, "title", "Editor 4");
+	public final String getTitle() { return title.get(); }
+	public final void setTitle(String value) { title.set(value); }
+	public StringProperty getTitleProperty() { return title; }
+	
 	public LineType getLineType() {
 		if (isStraightLine()) return LineType.STRAIGHT;
 		if (isOrthogonalLine()) return LineType.ORTHOGONAL;
@@ -133,7 +155,7 @@ public class EditorModel implements IModel {
 	
 	//=================================================
 	
-	private Map<LineType, ShapeTemplate> lineTemplates = new HashMap<>();
+	private Map<LineType, ShapeTemplate> lineTemplates = new EnumMap<>(LineType.class);
 	public Map<LineType, ShapeTemplate> getLineTemplates() {
 		
 		if (lineTemplates.isEmpty()) {
@@ -160,60 +182,19 @@ public class EditorModel implements IModel {
 		}
 		return shapeTemplates;
 	}
+	
+	/**========================================================================
+	 * Constructors
+	 *=======================================================================*/
+	
+	public EditorModel() { 
+		super(ModelType.Editor);
+	}
 
 	
 	/**========================================================================
 	 * Public methods
 	 *=======================================================================*/
-
-	@Override
-	public SectionModel loadModel(JSONObject jsonSection, IModel parentSection)
-			throws TechnicalException, InputFileException {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	@Override
-	public CellModel getCellByName(String name) {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	@Override
-	public List<SectionModel> selectSections(SectionModelType type) {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	@Override
-	public SectionModel getSection(SectionModelType location) throws InputFileException, CellCalculationException {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	@Override
-	public IModel calculate(boolean firstRound) throws CellCalculationException {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	@Override
-	public SectionModel traverseSectionsUp(String name) throws CellCalculationException {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	@Override
-	public IModel getParentModel() {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	@Override
-	public List<SectionModel> searchSections(String sectionName) {
-		// TODO Auto-generated method stub
-		return null;
-	}
 	
 	/**========================================================================
 	 * Private methods
@@ -227,16 +208,14 @@ public class EditorModel implements IModel {
 	}
 	
 	private void loadCurrentLineTemplates() {
-		
+		throw new UnsupportedOperationException();
 	}
 	
 	private void loadGlobalShapeTemplates() {
-		
+		throw new UnsupportedOperationException();
 	}
 	
 	private void loadCurrentShapeTemplates() {
-		
+		throw new UnsupportedOperationException();
 	}
-	
-	
 }

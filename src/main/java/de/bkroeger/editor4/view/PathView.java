@@ -2,6 +2,7 @@ package de.bkroeger.editor4.view;
 
 import java.util.List;
 
+import de.bkroeger.editor4.controller.PathController;
 import de.bkroeger.editor4.controller.PathElemController;
 import de.bkroeger.editor4.exceptions.CellCalculationException;
 import de.bkroeger.editor4.exceptions.InputFileException;
@@ -9,8 +10,8 @@ import de.bkroeger.editor4.exceptions.TechnicalException;
 import de.bkroeger.editor4.model.CellModel;
 import de.bkroeger.editor4.model.PathElementModel;
 import de.bkroeger.editor4.model.PathModel;
-import de.bkroeger.editor4.model.SectionModel;
-import de.bkroeger.editor4.model.SectionModelType;
+import de.bkroeger.editor4.model.BaseModel;
+import de.bkroeger.editor4.model.ModelType;
 import javafx.scene.paint.Paint;
 import javafx.scene.shape.Path;
 import javafx.scene.shape.PathElement;
@@ -18,13 +19,13 @@ import javafx.scene.shape.StrokeType;
 
 public class PathView extends Path implements IView {
 	
-	private PathElemController controller;
+	private PathController controller;
 	
 	/**========================================================================
 	 * Constructors
 	 *=======================================================================*/
 	
-	public PathView(PathElemController controller) {
+	public PathView(PathController controller) {
 		super();
 		this.controller = controller;
 	}
@@ -42,8 +43,8 @@ public class PathView extends Path implements IView {
 		
 		// alle untergeordneten Sections verarbeiten
 		PathModel model = (PathModel) controller.getModel();
-		List<SectionModel> elemSections = model.selectSections(SectionModelType.PathElement);
-		for (SectionModel elemSection : elemSections) {
+		List<BaseModel> elemSections = model.selectChildModel(ModelType.PathElement);
+		for (BaseModel elemSection : elemSections) {
 			
 			PathElement elem = PathElementFactory.buildPathElement((PathElementModel) elemSection);
 			this.getElements().add(elem);

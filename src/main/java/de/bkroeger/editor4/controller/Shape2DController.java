@@ -5,8 +5,11 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 
+import javax.annotation.Resource;
+
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.springframework.stereotype.Component;
 
 import de.bkroeger.editor4.Handler.MouseDraggedCommand;
 import de.bkroeger.editor4.Handler.MousePressedCommand;
@@ -20,9 +23,10 @@ import de.bkroeger.editor4.model.ConnectorModel;
 import de.bkroeger.editor4.model.EditorModel;
 import de.bkroeger.editor4.model.PageModel;
 import de.bkroeger.editor4.model.PathModel;
-import de.bkroeger.editor4.model.SectionModel;
-import de.bkroeger.editor4.model.SectionModelType;
+import de.bkroeger.editor4.model.BaseModel;
+import de.bkroeger.editor4.model.ModelType;
 import de.bkroeger.editor4.model.ShapeModel;
+import de.bkroeger.editor4.runtime.PageRuntime;
 import de.bkroeger.editor4.runtime.PathElemRuntime;
 import de.bkroeger.editor4.runtime.Shape1DRuntime;
 import de.bkroeger.editor4.runtime.ShapeRuntime;
@@ -30,6 +34,7 @@ import de.bkroeger.editor4.view.ConnectorPointView;
 import de.bkroeger.editor4.view.GroupView;
 import de.bkroeger.editor4.view.PathView;
 import javafx.beans.binding.Bindings;
+import javafx.beans.binding.DoubleBinding;
 import javafx.beans.property.DoubleProperty;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
@@ -51,6 +56,9 @@ public class Shape2DController extends ShapeController implements IMouseHandlerD
 	/**========================================================================
 	 * Fields
 	 *=======================================================================*/
+	
+	@Resource
+	private EditorModel editorModel;
 	
 	private double mouseX;
 	private double mouseY;
@@ -158,8 +166,8 @@ public class Shape2DController extends ShapeController implements IMouseHandlerD
 						((ShapeModel)model).getCenterYProperty()));
 		
 		// alle Path-Sections ermitteln und die Pfade zeichnen
-		List<SectionModel> pathSections = model.selectSections(SectionModelType.Path);
-		for (SectionModel pathSection : pathSections) {
+		List<BaseModel> pathSections = model.selectChildMotel(ModelType.Path);
+		for (BaseModel pathSection : pathSections) {
 
 			PathElemRuntime pathElemRuntime = new PathElemRuntime(shapeRuntime);
 			pathElemRuntime.setModel((PathModel)pathSection);
@@ -168,6 +176,9 @@ public class Shape2DController extends ShapeController implements IMouseHandlerD
 			PathModel pathModel = (PathModel) pathSection;
 			PathElemController pathElemController = new PathElemController(pathModel);
 			pathElemRuntime.setController(pathElemController);
+			
+			// fehlt hier eine PathRuntime?
+//			pathModel.setRuntime(pathRuntime);
 			
         	PathView pathView = pathElemController.buildView(pathElemRuntime);
         	
@@ -198,7 +209,6 @@ public class Shape2DController extends ShapeController implements IMouseHandlerD
     	shapeGroup.setOnMousePressed(event -> {
     		logger.debug("Mouse pressed on shape group");
     		
-    		EditorModel editorModel = EditorModel.getEditorModel();
     		if (editorModel.isToolConnector()) {
     			
     			// Line-Shape erzeugen und mit dem Mittelpunkt des Shapes verbinden
@@ -250,7 +260,6 @@ public class Shape2DController extends ShapeController implements IMouseHandlerD
     	// and the ToolMode = Connector
     	shapeGroup.setOnMouseEntered(event -> {
     		
-    		EditorModel editorModel = EditorModel.getEditorModel();
     		// is connector mode active?
     		if (editorModel.isToolConnector()) {
     			
@@ -292,7 +301,6 @@ public class Shape2DController extends ShapeController implements IMouseHandlerD
     		connector.setOnMousePressed(event -> {
     			
     			// create a new Line-Shape wenn der Connector-Mode aktiv ist
-    			EditorModel editorModel = EditorModel.getEditorModel();
     			if (editorModel.isToolConnector()) {
     				
     				// Line-Shape erzeugen und mit dem Connector-Point verbinden
@@ -305,13 +313,48 @@ public class Shape2DController extends ShapeController implements IMouseHandlerD
     				lineRuntime.setModel(lineModel);
     				ConnectorPointView connectorView = (ConnectorPointView)event.getSource();
     				ConnectorModel connectorModel = connectorView.getModel();
-    				CellModel cell = new CellModel("LayoutX", "${"+connectorModel.getNameU()+".ConnectorX}", lineModel);
+    				CellModel cell = new CellModel(
+    						"LayoutX", 
+    						"${"+shapeRuntime.getModel().getNameU()+"."+
+    								connectorModel.getNameU()+".ConnectorX}", lineModel);
     				lineModel.addCell(cell);
-    				cell = new CellModel("LayoutY", "${"+connectorModel.getNameU()+".ConnectorY}", lineModel);
+    				cell = new CellModel(
+    						"LayoutY", 
+    						"${"+shapeRuntime.getModel().getNameU()+"."+
+    								connectorModel.getNameU()+".ConnectorY}", lineModel);
     				lineModel.addCell(cell);
     				
     				try {
 						lineModel.calculate(false);
+						
+						// TODO: die Shape-lokalen Koordinaten des Connectors
+						// müssen in Page-Koordinaten umgerechnet werden.
+						// Dies sollte nicht statisch erfolgen, sondern muss
+						// als Funktion eingefügt werden.						
+						CellModel cell1 = lineModel.getCellByName("LayoutX");
+						logger.info("LineModel.layoutX="+cell1.getDoubleValue());
+						CellModel cell2 = lineModel.getCellByName("LayoutY");
+						logger.info("LineModel.layoutY="+cell2.getDoubleValue());
+						
+						// Beispiel für custom Binding
+						@SuppressWarnings("unused")
+						DoubleBinding area = new DoubleBinding() {
+					 
+				            {
+				                super.bind(cell1.getDoubleProperty(), cell2.getDoubleProperty());
+				            }
+				 
+				            @Override
+				            protected double computeValue() {
+				                System.out.println("computeValue() is called.");
+				                try {
+				                	return cell1.getDoubleProperty().get() * cell2.getDoubleProperty().get();
+				                } catch(Exception e) {
+				                	return 0.0D;
+				                }
+				            }
+				        };
+						
 					} catch (CellCalculationException e1) {
 						logger.error(e1.getMessage(), e1);
 						return;
@@ -322,14 +365,31 @@ public class Shape2DController extends ShapeController implements IMouseHandlerD
     				
     				GroupView lineView = null;
     				try {
-						lineView = lineController.buildView(shapeRuntime);
+						lineView = lineController.buildView(lineRuntime);
 					} catch (TechnicalException | InputFileException | CellCalculationException e) {
 						logger.error(e.getMessage(), e);
 						return;
 					}
     				lineRuntime.setView(lineView);
+    				
+    				PageRuntime pageRuntime = (PageRuntime) shapeRuntime.getParent();
+    				pageRuntime.getView().getChildren().add(lineView);
     			}
         		event.consume();
+    		});
+        	
+    		connector.setOnMouseDragged(event -> {
+    			
+    			// TODO: die LayoutX/Y-Werte abhängig vom Drag-Fortschritt setzen
+    			
+    			event.consume();
+    		});
+        	
+    		connector.setOnMouseReleased(event -> {
+    			
+    			// TODO: prüfen, ob ein anderer Connector in der Nähe ist
+    			
+    			event.consume();
     		});
     	}
 				
